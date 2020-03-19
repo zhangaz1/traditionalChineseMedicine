@@ -29,6 +29,11 @@ export default new Router({
             path: '/me',
             name: 'me',
             component: () => import(/* webpackChunkName: 'login' */ '@/view/me/me.vue')
+        },
+        {
+            path: '/doctorCase/components/doctorDetail',
+            name: 'doctorDetail',
+            component: () => import(/* webpackChunkName: 'login' */ '@/view/doctorCase/components/doctorDetail.vue')
         }
     ]
 });

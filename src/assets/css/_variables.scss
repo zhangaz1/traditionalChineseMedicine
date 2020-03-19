@@ -1,10 +1,11 @@
 //color
 $color-default: #fff;
-$icon-color: #ccc;
+$ccc-color: #ccc;
 $link-active-color: #de181b;
 $border-color: #e5e5e5;
 $color: #a33823;
-
+$coloe_3: #333;
+$color_999: #999;
 
 //bgc
 $bgc-theme: #fff;
@@ -16,7 +17,7 @@ $bgColor: #fefff9;
 $font-size-base: 12px;
 $font-size-l: $font-size-base + 2;
 $icon-font-size-sm: 18px;
-$icon-font-size: 24px;
+$icon-font-size: 48px;
 $size: 100%;
 
 //z-index
@@ -24,7 +25,7 @@ $navbar-z-index: 9999;
 $tabbar-z-index: 1000;
 $backtop-z-index: 1100;
 $search-z-index: 99;
-$product-z-index: 1200;
+$dropDown: 999;
 $search-popup-z-index: $search-z-index + 10;
 $category-popup-z-index: $search-z-index - 10;
 

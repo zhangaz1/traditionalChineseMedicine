@@ -9,7 +9,6 @@
                 maxlength="20 "
                 @input="getSearchVal"
         />
-        <van-icon name="envelop-o" class="headSerach_icon" @click="onEmail" />
     </div>
 </template>
 
@@ -37,8 +36,13 @@
 </script>
 
 <style lang="scss" scoped>
+    .van-search__content {
+        background-color: #f3f2ed;
+    }
+    .van-field__left-icon .van-icon {
+        font-size: 48px;
+    }
     .headSerach {
-        height: 100px;
         background: #fff;
         display: flex;
         align-items: center;

@@ -4,6 +4,9 @@
 .mb30 {
     margin-bottom: 30px;
 }
+.mr20 {
+    margin-right: 20px;
+}
 .mt20 {
     margin-top: 20px;
 }
@@ -39,4 +42,15 @@
 }
 .bg_f {
     background: #fff;
+}
+
+.pb100 {
+    padding-bottom: 100px;
+}
+.pl100 {
+    padding-left: 100px;
+}
+.mtb100 {
+    margin-top: 100px;
+    margin-bottom: 100px;
 }

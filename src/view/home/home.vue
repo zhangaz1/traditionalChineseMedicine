@@ -1,25 +1,47 @@
 <template>
-    <div class="home ptb108">
+    <div class="home pb100">
         <van-sticky>
-            <headSearch
-                    class="home_search"
-                    @searchVal="searchVal"
-                    @onEmail="onEmail"
-            />
+            <div class="home_sticky">
+                <van-nav-bar
+                        title="人身通考"
+                        right-text="..."
+                        @click-right="onClickRight"
+                        class="mb10"
+                />
+                <headSearch
+                        class="home_search"
+                        @searchVal="searchVal"
+                        @onEmail="onEmail"
+                />
+                <ul class="home_dropDown" v-show="isShow">
+                    <li class="home_dropDown_item pl100">
+                        <van-icon name="browsing-history-o" />
+                        <span class="txt">我的足迹</span>
+                    </li>
+                    <li class="home_dropDown_item pl100">
+                        <van-icon name="star-o" />
+                        <span class="txt">我的收藏</span>
+                    </li>
+                    <li class="home_dropDown_item pl100">
+                        <van-icon name="share" />
+                        <span class="txt ">分享好友</span>
+                    </li>
+                </ul>
+            </div>
         </van-sticky>
         <publicSwipe heightVal="200">
             <van-swipe-item v-for="(image, index) in images" :key="index + 'image'"  class="home_swiper_item" slot="swiperItem">
                 <img :src="image" class="img"/>
             </van-swipe-item>
         </publicSwipe>
-        <subMenu class="plr30 bg_f" title="医案推荐榜">
+        <subMenu class="plr30 bg_f" title="医案推荐榜" toRouter="/doctorCase">
             <ul class="home_nav ptb20" slot="content">
                 <router-link :to="nav.url" class="home_nav_li mb20" v-for="(nav, index) of navData" :key="'nav' + index">
                     <p class="txt ptb10 plr20">{{nav.txt}}</p>
                 </router-link>
             </ul>
         </subMenu>
-        <subMenu class="plr30 bg_f" title="书籍推荐榜">
+        <subMenu class="plr30 bg_f" title="书籍推荐榜" toRouter="/book">
             <swiper class="swiper_common" :options="swiperBook" slot="content">
                 <swiper-slide v-for="(image, index) of images" :key="'image' + index"  class="swiper_common_item">
                     <router-link to="/" class="swiper_common_item_link">
@@ -32,7 +54,7 @@
                 </swiper-slide>
             </swiper>
         </subMenu>
-        <subMenu class="plr30 bg_f" title="视频推荐榜">
+        <subMenu class="plr30 bg_f" title="视频推荐榜" toRouter="/videoBox">
             <swiper class="swiper_common" :options="swiperVideo" slot="content">
                 <swiper-slide v-for="(image, index) in images" :key="index + index + image"  class="swiper_common_item">
                     <router-link to="/" class="swiper_common_item_link">
@@ -70,14 +92,7 @@
                     'https://www.zk120.com/media/widgets/banners/2020/03/190222160830508.20200310145039990.jpg',
                     'https://www.zk120.com/media/widgets/banners/2020/03/190222160830508.20200310145039990.jpg'
                 ],
-                swiperOption: {
-                    slidesPerView: 3,
-                    spaceBetween: 30,
-                    pagination: {
-                        el: '.swiper-pagination',
-                        clickable: true
-                    }
-                }
+                isShow: false // 是否显示顶部菜单
             };
         },
         components: {
@@ -94,6 +109,18 @@
             },
             onEmail() {
                 console.log('点击了邮箱');
+            },
+            /** 2020-3-19 0019
+             *作者:青型科技
+             *功能:
+             *参数:
+             */
+            onClickRight() {
+                if (this.isShow) {
+                    this.isShow = false;
+                } else {
+                    this.isShow = true;
+                }
             }
         }
     };
@@ -101,17 +128,71 @@
 
 <style lang="scss" scoped>
     @import "~@/assets/css/_mixins";
+    .van-nav-bar__right {
+        font-size: $icon-font-size;
+        padding-bottom: 10px;
+    }
+    /* 设置导航栏背景图 */
+    .van-nav-bar__title {
+        color: $color;
+        /*background:url('')*/
+    }
+    .van-nav-bar__text {
+        color: $coloe_3;
+    }
+    .van-sticky {
+        background: #f3f2eb;
+    }
     .home {
         background: #f3f2eb;
         position: relative;
-        &_search {
-            position:fixed;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 108px;
-            z-index: $search-z-index;
+        &_dropDown {
+            position: absolute;
+            right: 20px;
+            top: 90px;
+            background: $bgc-theme;
+            width: 300px;
+            z-index: $dropDown;
+            box-shadow: 0 -2px 16px 2px rgba(102,102,102,0.2);
+            border-radius: 12px;
+            &::after {
+                content: "";
+                position: absolute;
+                right: 10px;
+                top: -20px;
+                border-color: $bgc-theme transparent;
+                border-width: 0 28px 20px 28px;
+                border-style: solid;
+                width: 0;
+                height: 0;
+            }
+            &_item {
+                height: 100px;
+                line-height: 100px;
+                position: relative;
+                .van-icon {
+                    position: absolute;
+                    left: 30px;
+                    top: 30px;
+                    font-size: 48px;
+                }
+                .txt {
+                    display: block;
+                    font-size: 28px;
+                    color: $coloe_3;
+                    text-align: left;
+                    border-bottom: 1px solid #f2f2f2;
+                }
+            }
         }
+        &_sticky {
+            background: #f3f2eb;
+            position: relative;
+        }
+        &_search {
+
+        }
+
         /* banner图 start */
         &_swiper_item {
             height: 200px;

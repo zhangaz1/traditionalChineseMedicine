@@ -1,31 +1,41 @@
 <template>
-    <div class="book ptb108">
+    <div class="doctorCase ptb108">
         <publicTitle
                 class="publicTitle"
                 :navData="navData"
                 @getCurrent="getCurrent"
                 @onSearch="onSearch"
         ></publicTitle>
-        <div class="book_box plr30 mt20">
-            <div class="book_box_menu" v-for="(item, index) of menuData" :key="item.data[index].id + index">
+        <!--  热门  start -->
+        <div class="doctorCase_box plr30 mt20">
+            <div class="doctorCase_box_menu" v-for="(item, index) of menuData" :key="item.data[index].id + index">
                 <div class="title ptb10">{{item.title}}</div>
-                <ul class="library_list ptb20">
-                    <router-link
-                            tag="li"
-                            :to="{path: '/', query: {id: item.data[index].id}}"
-                            class="library_list_li ptb10 mb30 plr20 mr70"
-                            v-for="(list, index) of item.data"
-                            :key="'list' + index"
-                            :class="{_active: currentColor === index}"
-                    >{{list.name}}</router-link>
-                </ul>
+                <pupblicPanel :listData="item.data" @switchTab="switchTab"/>
             </div>
         </div>
+        <!--  热门  end -->
+        <!--  科室  start -->
+        <div class="doctorCase_box plr30 mt20">
+            <div class="doctorCase_box_menu" v-for="(item, index) of menuData" :key="item.data[index].id + index">
+                <div class="title ptb10">{{item.title}}</div>
+                <pupblicPanel :listData="item.data" @switchTab="switchTab"/>
+            </div>
+        </div>
+        <!--  科室  end -->
+        <!--  科室分类  start -->
+        <div class="doctorCase_box plr30 mt20">
+            <div class="doctorCase_box_menu" v-for="(item, index) of menuData" :key="item.data[index].id + index">
+                <div class="title ptb10">{{item.title}}</div>
+                <pupblicPanel :listData="item.data" @switchTab="switchTab"/>
+            </div>
+        </div>
+        <!--  科室分类 end -->
     </div>
 </template>
 
 <script>
     import publicTitle from '@/components/publicTitle';
+    import pupblicPanel from '@/components/publicPanel';
     import { navData, menuData } from './config';
     export default {
         name: 'doctorCase',
@@ -34,7 +44,6 @@
                 navData, // 导航项
                 menuData, // 列表内容
                 current: 0,
-                currentColor: 0 //
             };
         },
         methods: {
@@ -54,17 +63,27 @@
             */
             onSearch() {
                 console.log('点击了搜索');
+            },
+            /** 2020-3-19 0019
+             *作者:王青高
+             *功能: {} 获取当前点击的
+             *参数:
+             */
+            switchTab(data) {
+                console.log('data', data);
+                this.$router.push({path: '/doctorCase/components/doctorDetail', query: { id: 1}});
             }
         },
         components: {
-            publicTitle
+            publicTitle,
+            pupblicPanel
         }
     };
 </script>
 
 <style lang="scss" scoped>
     @import "~@/assets/css/_mixins";
-    .book {
+    .doctorCase {
         background: #f3f2eb;
         &_box {
             background: $bgc-theme;
@@ -91,7 +110,5 @@
             }
         }
     }
-    ._active {
-        color: $color;
-    }
+
 </style>

@@ -2,7 +2,7 @@
     <div class="subMenu">
         <div class="subMenu_title">
             <div class="subMenu_left">{{title}}</div>
-            <router-link to="/" class="subMenu_more">更多 ></router-link>
+            <router-link :to="toRouter" class="subMenu_more">更多 ></router-link>
         </div>
         <slot name="content"></slot>
     </div>
@@ -20,6 +20,10 @@
             title: {
                 type: String,
                 default: '标题'
+            },
+            toRouter: {
+                type: String,
+                default: '/'
             }
         }
     };

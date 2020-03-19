@@ -1,7 +1,7 @@
 <template>
     <div class="footer">
         <ul class="footer_txt">
-            <router-link tag="li" @click="switchTap(index)" :class="{active: current === index}" :to="item.name" v-for="(item, index) of footerData" :key="'item.txt' + index" class="footer_txt_li" >
+            <router-link tag="li" :to="item.path" v-for="(item, index) of footerData" :key="'item.txt' + index" class="footer_txt_li" exact>
                 <van-icon :name="item.icon" class="icon" />
                 <span>{{item.txt}}</span>
             </router-link>
@@ -18,43 +18,31 @@
                     {
                         'txt': '主页',
                         'icon': 'wap-home-o',
-                        'name': '/'
+                        'path': '/'
                     },
                     {
                         'txt': '书库',
                         'icon': 'newspaper-o',
-                        'name': 'book'
+                        'path': '/book'
                     },
                     {
                         'txt': '医案',
                         'icon': 'wap-home-o',
-                        'name': 'doctorCase'
+                        'path': '/doctorCase'
                     },
                     {
                         'txt': '视频',
                         'icon': 'wap-home-o',
-                        'name': 'videoBox'
+                        'path': '/videoBox'
                     },
                     {
                         'txt': '我的',
                         'icon': 'wap-home-o',
-                        'name': 'me'
+                        'path': '/me'
                     }
                 ],
-                current: 0
             };
         },
-        methods: {
-            /* 2020/3/19
-            * 作者：王青高
-            * 功能：{} 切换路由改变焦点颜色
-            * 参数：{String} index: 下标索引
-            */
-            switchTap(index) {
-                console.log(index);
-                this.current = index;
-            }
-        }
     };
 </script>
 
@@ -88,7 +76,7 @@
             }
         }
     }
-    .active {
+    .router-link-active {
         background: $bgColor;
         color: $color;
     }
