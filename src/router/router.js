@@ -34,6 +34,16 @@ export default new Router({
             path: '/doctorCase/components/doctorDetail',
             name: 'doctorDetail',
             component: () => import(/* webpackChunkName: 'login' */ '@/view/doctorCase/components/doctorDetail.vue')
+        },
+        {
+            path: '/videoBox/components/videoBoxDetail',
+            name: 'videoBoxDetail',
+            component: () => import(/* webpackChunkName: 'login' */ '@/view/videoBox/components/videoBoxDetail.vue')
+        },
+        {
+            path: '/login',
+            name: 'login',
+            component: () => import(/* webpackChunkName: 'login' */ '@/view/login/login.vue')
         }
     ]
 });

@@ -84,7 +84,6 @@
 <style lang="scss" scoped>
     @import "~@/assets/css/_mixins";
     .doctorCase {
-        background: #f3f2eb;
         &_box {
             background: $bgc-theme;
         }

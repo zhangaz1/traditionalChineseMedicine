@@ -16,5 +16,9 @@
 </script>
 
 <style lang="scss">
-
+  .van-field__error-message {
+    position: absolute !important;
+    right: 0 !important;
+    top: 0 !important;
+  }
 </style>

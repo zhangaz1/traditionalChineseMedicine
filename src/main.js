@@ -13,12 +13,12 @@ import '@/assets/css/index.scss';
 import 'vue-social-share/dist/client.css';
 import '../node_modules/social-share.js/dist/js/social-share.min.js';
 
-import { Icon, Search, Swipe, SwipeItem, Lazyload, sticky, Tab, Tabs, Dialog, NavBar } from 'vant';
+import { Icon, Search, Swipe, SwipeItem, Lazyload, sticky, Tab, Tabs, Dialog, NavBar, Form, Field, Button, Checkbox, CheckboxGroup } from 'vant';
 Vue.use(VueAwesomeSwiper);
 Vue.config.productionTip = false;
 Vue.use(Alert);
 
-Vue.use(Icon).use(Search).use(Swipe).use(SwipeItem).use(Lazyload).use(sticky).use(Tabs).use(Tab).use(Dialog).use(NavBar);
+Vue.use(Icon).use(Search).use(Swipe).use(SwipeItem).use(Lazyload).use(sticky).use(Tabs).use(Tab).use(Dialog).use(NavBar).use(Form).use(Field).use(Button).use(Checkbox).use(CheckboxGroup);
 new Vue({
   router,
   render: h => h(App)

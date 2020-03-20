@@ -141,10 +141,8 @@
         color: $coloe_3;
     }
     .van-sticky {
-        background: #f3f2eb;
     }
     .home {
-        background: #f3f2eb;
         position: relative;
         &_dropDown {
             position: absolute;

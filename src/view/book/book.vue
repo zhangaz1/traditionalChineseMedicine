@@ -63,7 +63,6 @@
 <style lang="scss" scoped>
     @import "~@/assets/css/_mixins";
     .book {
-        background: #f3f2eb;
         &_box {
             background: $bgc-theme;
         }
