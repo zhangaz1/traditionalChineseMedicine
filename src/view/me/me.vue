@@ -58,7 +58,7 @@
             * 参数：{}
             */
             openVip() {
-                console.log('开通会员');
+                this.$router.push({path: '/buyVip'});
             },
             /* 2020/3/20
             * 作者：王青高

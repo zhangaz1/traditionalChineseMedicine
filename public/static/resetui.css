@@ -1,0 +1,36 @@
+/* login组件 start */
+.login .van-field__left-icon .van-icon {
+    line-height: 0.5em;
+}
+.login .van-icon__image {
+    width: 2em;
+    height: 1.5em;
+}
+/* login组件 end */
+
+/* registered start */
+.registered .van-uploader__wrapper {
+    width: 100%;
+    height: 100%;
+}
+.registered .van-uploader__preview {
+    margin: 0;
+}
+.registered .van-uploader__preview-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+.registered .van-uploader__preview-delete {
+    top: calc(50% - 50px);
+    left: calc(50% - 50px);
+    font-size: 100px;
+    opacity: 0;
+}
+.registered .van-uploader__upload {
+    width: 100%;
+    height: 100%;
+    margin:0;
+    opacity: 0;
+}
+/* registered end */

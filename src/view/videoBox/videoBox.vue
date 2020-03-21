@@ -30,7 +30,7 @@
                 <div class="videoBox_content_num">共有41部</div>
             </div>
             <ul class="videoBox_content_item">
-                <router-link :to="{path: '/', query: {id: '1'}}" tag="li" class="videoBox_content_item_li mr20">
+                <router-link :to="{path: '/videoBox/components/videoBoxDetail', query: {id: '1'}}" tag="li" class="videoBox_content_item_li mr20">
                     <div class="item_img">
                         <img src="https://www.zk120.com/media/widgets/banners/2020/03/190805112845859.20200310145039745.jpg" class="_img mb10"/>
                         <span class="_txt p8">小二推拿</span>
@@ -44,7 +44,7 @@
                     </div>
                     <p class="txt_title ptb20">小二推拿</p>
                 </router-link>
-                <router-link :to="{path: '/', query: {id: '1'}}" tag="li" class="videoBox_content_item_li mr20">
+                <router-link :to="{path: '/videoBox/components/videoBoxDetail', query: {id: '1'}}" tag="li" class="videoBox_content_item_li mr20">
                     <div class="item_img">
                         <img src="https://www.zk120.com/media/widgets/banners/2020/03/190805112845859.20200310145039745.jpg" class="_img mb10"/>
                         <span class="_txt p8">小二推拿</span>

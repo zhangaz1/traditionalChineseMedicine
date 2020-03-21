@@ -15,20 +15,19 @@
         <div class="plr30 mtb50">
             <van-form @submit="onSubmit">
                 <van-field
-                        label="手机号"
                         v-model="moblie"
                         name="validator"
                         placeholder="手机号"
-                        :rules="[{ validator, message: '请输入正确内容' }]"
+                        :rules="[{ validator, message: '请输入正确格式的手机号' }]"
                         class="validator"
                         left-icon="https://www.zk120.com/static/accounts/images/accounts_mobile_20180116.png"
                         label-class="icon_img"
+                        maxlength="11"
                 />
                 <van-field
                         v-model="password"
                         type="password"
                         name="密码"
-                        label="密码"
                         placeholder="密码"
                         :rules="[{ required: true, message: '请填写密码' }]"
                         class="validator"
@@ -52,10 +51,6 @@
             </div>
         </div>
         <div class="login_agreement ptb20">
-<!--            <van-radio-group v-model="isRadio" @click="getRadio" class="login_agreement_group">-->
-<!--                <van-radio name="1">我已经阅读，并同意《 <span class="agreement" @click="getAgreement">用户协议</span> 》</van-radio>-->
-<!--                <van-radio name="2" v-show="false"></van-radio>-->
-<!--            </van-radio-group>-->
             <van-checkbox v-model="checked" @click="getRadio" class="login_agreement_group" checked-color="#333">
                 我已经阅读，并同意《 <span class="agreement" @click="getAgreement">用户协议</span> 》
             </van-checkbox>
@@ -88,7 +83,7 @@
             * 参数：{}
             */
             onGoRegistered() {
-                this.$router.push({path: '/'});
+                this.$router.push({path: '/registered'});
             },
             /* 2020/3/20
             * 作者：王青高
@@ -150,8 +145,8 @@
         padding-bottom:5px;
     }
     .van-button--info {
-        background:#fefff9;
-        border: 1px solid #ddcdaf;
+        background: $bgColor;
+        border: 1px solid $bgColor;
         color: $color;
     }
     .login {

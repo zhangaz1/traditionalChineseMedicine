@@ -44,6 +44,17 @@ export default new Router({
             path: '/login',
             name: 'login',
             component: () => import(/* webpackChunkName: 'login' */ '@/view/login/login.vue')
+        },
+        {
+            path: '/registered',
+            name: 'registered',
+            component: () => import(/* webpackChunkName: 'login' */ '@/view/registered/registered.vue')
+        },
+        {
+            path: '/buyVip',
+            name: 'buyVip',
+            component: () => import(/* webpackChunkName: 'login' */ '@/view/buyVip/buyVip.vue')
         }
-    ]
+    ],
+    scrollBehavior: () => ({ y: 0 })
 });

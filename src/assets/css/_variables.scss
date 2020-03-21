@@ -9,9 +9,9 @@ $color_999: #999;
 $color_666: #666;
 //bgc
 $bgc-theme: #fff;
-$header-bgc: rgb(222, 24, 27);
-$header-bgc-translucent: rgba(222, 24, 27, 0.9);
-$modal-bgc: rgba(0, 0, 0, 0.4);
+$bg_ddcdaf: #ddcdaf;
+$bg_a33823: #a33823;
+
 $bgColor: #fefff9;
 //font size
 $font-size-base: 12px;
@@ -26,8 +26,7 @@ $tabbar-z-index: 1000;
 $backtop-z-index: 1100;
 $search-z-index: 99;
 $dropDown: 999;
-$search-popup-z-index: $search-z-index + 10;
-$category-popup-z-index: $search-z-index - 10;
+$head-z-index: 9;
 
 //size
 $navbar-height: 50px;
