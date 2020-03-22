@@ -35,22 +35,21 @@
         <div class="buyVip_information plr30 ptb30">
             <div class="buyVip_information_title mb40">账号和购买须知</div>
             <ul class="buyVip_information_ul mb200">
-                <li class="li ptb10">会员有效期内，所有内容都可使用</li>
-                <li class="li ptb10">会员服务为虚拟内容服务，开通成功后不支持退款</li>
-                <li class="li ptb10">委托支付或支付问题请联系：微信(13260530903)QQ(250444)</li>
-                <li class="li ptb10">永久会员无时间和特权限制，一次购买，永久使用</li>
-                <li class="li ptb10">支付成功未开通会员:1.重新登录2.超过10分钟请联系客服</li>
+                <li class="li ptb10 pl20 mb10">会员有效期内，所有内容都可使用</li>
+                <li class="li ptb10 pl20 mb10">会员服务为虚拟内容服务，开通成功后不支持退款</li>
+                <li class="li ptb10 pl20 mb10">委托支付或支付问题请联系：微信(<span class="tel">13260530903</span>)QQ(<span class="qq">250444</span>)</li>
+                <li class="li ptb10 pl20 mb10">永久会员无时间和特权限制，一次购买，永久使用</li>
+                <li class="li ptb10 pl20 mb10">支付成功未开通会员:1.重新登录2.超过10分钟请联系客服</li>
             </ul>
             <div class="buyVip_information_payment ptb20">
-                <div class="method ptb10 pl80">
+                <div class="method ptb10 pl80" @click="getPay">
                     <img :src="pay" alt="" class="img">支付宝支付
                 </div>
-                <div class="method ptb10 pl80">
+                <div class="method ptb10 pl80" @click="getWeChat">
                     <img :src="wechat" alt="" class="img">微信支付
                 </div>
             </div>
         </div>
-
     </div>
 </template>
 
@@ -74,6 +73,22 @@
             onGoBack() {
                 this.$router.go(-1);
             },
+            /** 2020-3-22 0022
+             *作者:王青高
+             *功能: {Function} 调起微信支付
+             *参数:
+             */
+            getWeChat() {
+                console.log('调起微信支付');
+            },
+            /** 2020-3-22 0022
+             *作者:王青高
+             *功能: {Function} 调起支付宝支付
+             *参数:
+             */
+            getPay() {
+                console.log('调起支付宝支付');
+            }
         }
     };
 </script>
@@ -165,8 +180,22 @@
             &_ul {
                 .li {
                     @include ellipsis();
+                    position: relative;
                     color: $color_999;
                     font-size: 24px;
+                    .qq,
+                    .tel {
+                        color: $color_cbb488;
+                    }
+                    &:after {
+                        content: '';
+                        position: absolute;
+                        left: 0;
+                        top: 10%;
+                        width: 8px;
+                        height: 80%;
+                        background: $bg_cbb488;
+                    }
                 }
             }
             &_payment {
@@ -177,11 +206,11 @@
                 .method {
                     position: relative;
                     font-size: 36px;
-                    border: 1px solid #cbb488;
+                    border: 1px solid $bg_cbb488;
                     border-radius: 10px;
                     width: 40%;
                     box-sizing: border-box;
-                    color: #cbb488;
+                    color: $bg_cbb488;
                     font-weight: bold;
                     .img {
                         position: absolute;

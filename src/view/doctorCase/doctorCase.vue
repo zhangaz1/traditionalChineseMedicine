@@ -5,7 +5,11 @@
                 :navData="navData"
                 @getCurrent="getCurrent"
                 @onSearch="onSearch"
-        ></publicTitle>
+        >
+            <div slot="publicTitleRight" class="doctorCase_right" @click="onSearch">
+                <van-icon name="search" />
+            </div>
+        </publicTitle>
         <!--  热门  start -->
         <div class="doctorCase_box plr30 mt20">
             <div class="doctorCase_box_menu" v-for="(item, index) of menuData" :key="item.data[index].id + index">
@@ -86,6 +90,14 @@
     .doctorCase {
         &_box {
             background: $bgc-theme;
+        }
+        &_right {
+            width: 100px;
+            height: $size;
+            font-size: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     }
     .title {

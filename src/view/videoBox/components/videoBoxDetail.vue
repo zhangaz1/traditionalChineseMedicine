@@ -22,26 +22,26 @@
             </div>
         </div>
         <div class="videoBoxDetail_content plr30 ptb30">
-            <div class="videoBoxDetail_content_title ptb20 mb10">
+            <div class="videoBoxDetail_content_title ptb20 mb20">
                 <div class="videoBoxDetail_content_title_img mr10">
                     <img src="http://www.51pptmoban.com/d/file/2014/01/24/a21ac1a1034f071c458b05ff431e5d6d.jpg" alt="" class="img">
                 </div>
                 <div class="videoBoxDetail_content_title_txt">选集播放</div>
             </div>
             <ul class="videoBoxDetail_content_obj">
-                <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="videoBoxDetail_content_obj_li ptb20 plr30 mb10">
+                <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="videoBoxDetail_content_obj_li ptb20 plr30 mb20">
                     <span class="num">第1集</span>
                     <span class="txt plr30">• • • 本集叙述详情 • • •</span>
                 </router-link>
-                <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="videoBoxDetail_content_obj_li ptb20 plr30 mb10">
+                <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="videoBoxDetail_content_obj_li ptb20 plr30 mb20">
                     <span class="num">第1集</span>
                     <span class="txt plr30">• • • 本集叙述详情 • • •</span>
                 </router-link>
-                <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="videoBoxDetail_content_obj_li ptb20 plr30 mb10">
+                <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="videoBoxDetail_content_obj_li ptb20 plr30 mb20">
                     <span class="num">第1集</span>
                     <span class="txt plr30">• • • 本集叙述详情 • • •</span>
                 </router-link>
-                <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="videoBoxDetail_content_obj_li ptb20 plr30 mb10">
+                <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="videoBoxDetail_content_obj_li ptb20 plr30 mb20">
                     <span class="num">第1集</span>
                     <span class="txt plr30">• • • 本集叙述详情 • • •</span>
                 </router-link>

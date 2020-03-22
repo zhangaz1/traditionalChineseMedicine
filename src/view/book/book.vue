@@ -1,11 +1,13 @@
 <template>
     <div class="book ptb108">
         <publicTitle
-                class="publicTitle"
                 :navData="navData"
                 @getCurrent="getCurrent"
-                @onSearch="onSearch"
-        ></publicTitle>
+        >
+            <div slot="publicTitleRight" class="book_right" @click="onSearch">
+                <van-icon name="search" />
+            </div>
+        </publicTitle>
         <div class="book_box plr30 mt20">
             <div class="book_box_menu" v-for="(item, index) of menuData" :key="item.data[index].id + index">
                 <div class="title ptb10">{{item.title}}</div>
@@ -32,11 +34,11 @@
             return {
                 navData, // 导航项
                 menuData, // 列表内容
-                current: 0
+                current: 0 // 下标索引
             };
         },
         methods: {
-            /* 2020/3/19
+            /** 2020/3/19
             * 作者：王青高
             * 功能：{Function} @getCurrent 获取当前下标索引，显示相关内容
             * 参数：{}
@@ -45,14 +47,14 @@
                 this.current = index;
                 console.log(this.current);
             },
-            /* 2020/3/19
+            /** 2020/3/19
             * 作者：王青高
             * 功能：{} 弹出搜索
             * 参数：{}
             */
             onSearch() {
                 console.log('点击了搜索');
-            }
+            },
         },
         components: {
             publicTitle
@@ -65,6 +67,14 @@
     .book {
         &_box {
             background: $bgc-theme;
+        }
+        &_right {
+            width: 100px;
+            height: $size;
+            font-size: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     }
     .title {

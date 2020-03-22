@@ -6,7 +6,7 @@
                         title="人身通考"
                         right-text="..."
                         @click-right="onClickRight"
-                        class="mb10"
+                        class="mb20"
                 />
                 <headSearch
                         class="home_search"
@@ -46,7 +46,7 @@
                 <swiper-slide v-for="(image, index) of images" :key="'image' + index"  class="swiper_common_item">
                     <router-link to="/" class="swiper_common_item_link">
                         <div class="item_img">
-                            <img :src="image" class="img mb10"/>
+                            <img :src="image" class="img mb20"/>
                             <img :src="image" alt="" class="icon">
                         </div>
                         <p class="txt">中医四大经典著作之一</p>
@@ -59,7 +59,7 @@
                 <swiper-slide v-for="(image, index) in images" :key="index + index + image"  class="swiper_common_item">
                     <router-link to="/" class="swiper_common_item_link">
                         <div class="item_img">
-                            <img :src="image" class="_img mb10"/>
+                            <img :src="image" class="_img mb20"/>
                             <span class="_txt">小二推拿</span>
                         </div>
                         <p class="txt_title ptb20">小二推拿</p>

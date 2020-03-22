@@ -54,6 +54,26 @@ export default new Router({
             path: '/buyVip',
             name: 'buyVip',
             component: () => import(/* webpackChunkName: 'login' */ '@/view/buyVip/buyVip.vue')
+        },
+        {
+            path: '/footPrint',
+            name: 'footPrint',
+            component: () => import(/* webpackChunkName: 'login' */ '@/view/footPrint/footPrint.vue')
+        },
+        {
+            path: '/learnPlan',
+            name: 'learnPlan',
+            component: () => import(/* webpackChunkName: 'login' */ '@/view/learnPlan/learnPlan.vue')
+        },
+        {
+            path: '/feedBack',
+            name: 'feedBack',
+            component: () => import(/* webpackChunkName: 'login' */ '@/view/feedBack/feedBack.vue')
+        },
+        {
+            path: '/contactUs',
+            name: 'contactUs',
+            component: () => import(/* webpackChunkName: 'login' */ '@/view/contactUs/contactUs.vue')
         }
     ],
     scrollBehavior: () => ({ y: 0 })

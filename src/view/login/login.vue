@@ -69,7 +69,7 @@
             };
         },
         methods: {
-            /* 2020/3/20
+            /** 2020/3/20
             * 作者：王青高
             * 功能：{Function} 返回上一页
             * 参数：{}
@@ -77,7 +77,7 @@
             onGoBack() {
                 this.$router.go(-1);
             },
-            /* 2020/3/20
+            /** 2020/3/20
             * 作者：王青高
             * 功能：{Function} 跳转注册页
             * 参数：{}
@@ -85,7 +85,7 @@
             onGoRegistered() {
                 this.$router.push({path: '/registered'});
             },
-            /* 2020/3/20
+            /** 2020/3/20
             * 作者：王青高
             * 功能：{Function} 表单提交-登陆账号
             * 参数：{}
@@ -93,7 +93,7 @@
             onSubmit() {
                 console.log('登陆提交');
             },
-            /* 2020/3/20
+            /** 2020/3/20
             * 作者：王青高
             * 功能：{} 校验手机号码
             * 参数：{}
@@ -102,7 +102,7 @@
                 console.log('val', val);
                 return /^1(3|4|5|6|7|8|9)\d{9}$/.test(val);
             },
-            /* 2020/3/20
+            /** 2020/3/20
             * 作者：王青高
             * 功能：{}  // 打开协议
             * 参数：{}
@@ -110,14 +110,14 @@
             getAgreement() {
 
             },
-            /* 2020/3/20
+            /** 2020/3/20
             * 作者：王青高
             * 功能：{}
             * 参数：{}
             */
             getRadio() {
-                console.log('this.isRadio', this.isRadio);
-                if (this.isRadio) {
+                console.log('this.checked', this.checked);
+                if (this.checked) {
                     this.checked = false;
                 } else {
                     this.checked = true;

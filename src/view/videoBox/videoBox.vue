@@ -32,21 +32,21 @@
             <ul class="videoBox_content_item">
                 <router-link :to="{path: '/videoBox/components/videoBoxDetail', query: {id: '1'}}" tag="li" class="videoBox_content_item_li mr20">
                     <div class="item_img">
-                        <img src="https://www.zk120.com/media/widgets/banners/2020/03/190805112845859.20200310145039745.jpg" class="_img mb10"/>
+                        <img src="https://www.zk120.com/media/widgets/banners/2020/03/190805112845859.20200310145039745.jpg" class="_img mb20"/>
                         <span class="_txt p8">小二推拿</span>
                     </div>
                     <p class="txt_title ptb20">小二推拿</p>
                 </router-link>
                 <router-link :to="{path: '/videoBox/components/videoBoxDetail', query: {id: '1'}}" tag="li" class="videoBox_content_item_li mr20">
                     <div class="item_img">
-                        <img src="https://www.zk120.com/media/widgets/banners/2020/03/190805112845859.20200310145039745.jpg" class="_img mb10"/>
+                        <img src="https://www.zk120.com/media/widgets/banners/2020/03/190805112845859.20200310145039745.jpg" class="_img mb20"/>
                         <span class="_txt p8">小二推拿</span>
                     </div>
                     <p class="txt_title ptb20">小二推拿</p>
                 </router-link>
                 <router-link :to="{path: '/videoBox/components/videoBoxDetail', query: {id: '1'}}" tag="li" class="videoBox_content_item_li mr20">
                     <div class="item_img">
-                        <img src="https://www.zk120.com/media/widgets/banners/2020/03/190805112845859.20200310145039745.jpg" class="_img mb10"/>
+                        <img src="https://www.zk120.com/media/widgets/banners/2020/03/190805112845859.20200310145039745.jpg" class="_img mb20"/>
                         <span class="_txt p8">小二推拿</span>
                     </div>
                     <p class="txt_title ptb20">小二推拿</p>
@@ -67,7 +67,7 @@
             };
         },
         methods: {
-            /* 2020/3/20
+            /** 2020/3/20
             * 作者：王青高
             * 功能：{}  点击了搜索内容
             * 参数：{}
@@ -75,7 +75,7 @@
             onSearch() {
                 console.log('点击了搜索');
             },
-            /* 2020/3/20
+            /** 2020/3/20
             * 作者：王青高
             * 功能：{} 返回上一页
             * 参数：{}
@@ -83,7 +83,7 @@
             onGoBack() {
                 this.$router.go(-1);
             },
-            /* 2020/3/20
+            /** 2020/3/20
             * 作者：王青高
             * 功能：{} 显示导航菜单
             * 参数：{}
