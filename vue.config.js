@@ -1,3 +1,4 @@
+const CompressionPlugin = require('compression-webpack-plugin');
 module.exports = {
     devServer: {
         // proxy: 'http://localhost:3000'
@@ -34,6 +35,20 @@ module.exports = {
                     })
                 ]
             }
+        }
+    },
+    productionSourceMap: false, // 打包不生成SourceMap
+    configureWebpack: config => { // 开启gzip压缩
+        if (process.env.NODE_ENV === 'production') {
+            return {
+                plugins: [
+                    new CompressionPlugin({
+                        test: /\.js$|\.html$|.\css/, // 匹配文件名
+                        threshold: 5120, // 对超过10k的数据压缩
+                        deleteOriginalAssets: true // 不删除源文件
+                    })
+                ]
+            };
         }
     }
 };

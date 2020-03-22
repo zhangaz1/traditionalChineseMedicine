@@ -183,32 +183,32 @@
             shareBtn(type) {
                 switch(type) {
                     case 'qq':
-                        wx.onMenuShareQQ({
-                            title: '', // 分享标题
-                            desc: '', // 分享描述
-                            link: '', // 分享链接
-                            imgUrl: '', // 分享图标
-                            success: function () {
-                                // 用户确认分享后执行的回调函数
-                            },
-                            cancel: function () {
-                                // 用户取消分享后执行的回调函数
-                            }
-                        });
+                        // wx.onMenuShareQQ({
+                        //     title: '', // 分享标题
+                        //     desc: '', // 分享描述
+                        //     link: '', // 分享链接
+                        //     imgUrl: '', // 分享图标
+                        //     success: function () {
+                        //         // 用户确认分享后执行的回调函数
+                        //     },
+                        //     cancel: function () {
+                        //         // 用户取消分享后执行的回调函数
+                        //     }
+                        // });
                         break;
                     case 'zone':
-                        wx.onMenuShareQZone({
-                            title: 'QQ空间', // 分享标题
-                            desc: 'QQ空间', // 分享描述
-                            link: 'QQ空间', // 分享链接
-                            imgUrl: 'QQ空间', // 分享图标
-                            success: function () {
-                                // 用户确认分享后执行的回调函数
-                            },
-                            cancel: function () {
-                                // 用户取消分享后执行的回调函数
-                            }
-                        });
+                        // wx.onMenuShareQZone({
+                        //     title: 'QQ空间', // 分享标题
+                        //     desc: 'QQ空间', // 分享描述
+                        //     link: 'QQ空间', // 分享链接
+                        //     imgUrl: 'QQ空间', // 分享图标
+                        //     success: function () {
+                        //         // 用户确认分享后执行的回调函数
+                        //     },
+                        //     cancel: function () {
+                        //         // 用户取消分享后执行的回调函数
+                        //     }
+                        // });
                         break;
                 }
             }
