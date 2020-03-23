@@ -1,7 +1,7 @@
 // 封装axios的请求， 返回重新封装的数据格式
 // 对错误的统一处理
 import axios from 'axios';
-import errorHandle from './errorHandle.js';
+// import errorHandle from './errorHandle.js';
 import Cookies from 'js-cookie';
 const CancelToken = axios.CancelToken;
 class HttpRequest {
@@ -48,7 +48,7 @@ class HttpRequest {
             });
             return config;
         }, error => {
-            errorHandle(error);
+            // errorHandle(error);
             // Do something with request error
             return Promise.reject(error);
         });
@@ -81,7 +81,7 @@ class HttpRequest {
     // get请求
     get(url, config) {
         const options = Object.assign({
-            method: 'get',
+            method: 'GET',
             url: url
         }, config);
         console.log('options', options);
@@ -90,7 +90,7 @@ class HttpRequest {
     // post 请求
     post(url, data) {
         return this.request({
-            method: 'post',
+            method: 'POST',
             url: url,
             data: data
         });

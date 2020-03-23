@@ -11,7 +11,6 @@
                 <headSearch
                         class="home_search"
                         @searchVal="searchVal"
-                        @onEmail="onEmail"
                 />
                 <ul class="home_dropDown" v-show="isShow">
                     <li class="home_dropDown_item pl100">

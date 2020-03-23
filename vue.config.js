@@ -1,8 +1,9 @@
 const CompressionPlugin = require('compression-webpack-plugin');
+const webpack = require('webpack');
 module.exports = {
     devServer: {
         // proxy: 'http://localhost:3000'
-        proxy: 'http://localhost:36742' // mockServer
+        proxy: 'http://localhost:8080' // mockServer
     },
     chainWebpack: (config) => {
         config.module
@@ -46,7 +47,12 @@ module.exports = {
                         test: /\.js$|\.html$|.\css/, // 匹配文件名
                         threshold: 5120, // 对超过10k的数据压缩
                         deleteOriginalAssets: true // 不删除源文件
-                    })
+                    }),
+                    // new webpack.ProvidePlugin({
+                    //     $: 'jquery',
+                    //     jQuery: 'jquery',
+                    //     'windows.jQuery': 'jquery'
+                    // })
                 ]
             };
         }

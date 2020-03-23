@@ -18,17 +18,17 @@
             <van-form @submit="onSubmit">
                 <van-field
                         v-model="moblie"
-                        name="validator"
+                        name="moblie"
                         placeholder="手机号"
                         :rules="[{ validator, message: '请输入正确格式的手机号' }]"
                         class="validator"
                         maxlength="11"
                 />
-                <van-field v-model="name" name="昵称" placeholder="昵称" class="validator" :rules="[{ required: true, message: '请填写昵称' }]" />
+                <van-field v-model="name" name="name" placeholder="昵称" class="validator" :rules="[{ required: true, message: '请填写昵称' }]" />
                 <van-field
                         v-model="password"
                         type="password"
-                        name="密码"
+                        name="password"
                         placeholder="密码"
                         :rules="[{ required: true, message: '请填写密码' }]"
                         class="validator"
@@ -45,11 +45,13 @@
                 我已经阅读，并同意《 <span class="agreement" @click="getAgreement">用户协议</span> 》
             </van-checkbox>
         </div>
+        <van-loading size="24px" v-if="loadingTxt">{{loadingTxt}}</van-loading>
     </div>
 </template>
 
 <script>
-    import { Toast, Uploader } from 'vant';
+    // import { reg } from '@/api/login';
+    import Cookies from "js-cookie";
     export default {
         name: 'registered',
         data() {
@@ -59,56 +61,67 @@
                 name: '',
                 checked: true, // 是否勾选协议
                 headImg: [],
-                isTrue: true
+                isTrue: true,
+                loadingTxt: ''
             };
         },
         methods: {
             /** 2020/3/20
-            * 作者：王青高
-            * 功能：{Function} 返回上一页
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{Function} 返回上一页
+             * 参数：{}
+             */
             onGoBack() {
                 this.$router.go(-1);
             },
             /** 2020/3/20
-            * 作者：王青高
-            * 功能：{Function} 跳转注册页
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{Function} 跳转注册页
+             * 参数：{}
+             */
             onGoLogin() {
-                this.$router.push({path: '/login'});
+                this.$router.push('/login');
             },
             /** 2020/3/20
-            * 作者：王青高
-            * 功能：{Function} 表单提交-登陆账号
-            * 参数：{}
-            */
-            onSubmit() {
-                console.log('登陆提交');
+             * 作者：王青高
+             * 功能：{Function} 表单提交-登陆账号
+             * 参数：{}
+             */
+            onSubmit(values) {
+                console.log('登陆提交', values);
+                this.loadingTxt = '正在登录中加载中...';
+                // reg({
+                //     moblie: values.moblie,
+                //     password: values.password,
+                //     name: values.name
+                // }).then(res => {
+                //     if (res.state === '1') {
+                //         this.loadingTxt = '';
+                //         // Cookies.set('token', res.token, { expires: 15 });
+                //     }
+                // });
             },
             /** 2020/3/20
-            * 作者：王青高
-            * 功能：{} 校验手机号码
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{} 校验手机号码
+             * 参数：{}
+             */
             validator(val) {
-                console.log('val', val);
                 return /^1(3|4|5|6|7|8|9)\d{9}$/.test(val);
             },
             /** 2020/3/20
-            * 作者：王青高
-            * 功能：{}  // 打开协议
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{}  // 打开协议
+             * 参数：{}
+             */
             getAgreement() {
 
             },
             /** 2020/3/20
-            * 作者：王青高
-            * 功能：{}
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{}
+             * 参数：{}
+             */
             getChecke() {
                 if (this.checked) {
                     this.checked = false;

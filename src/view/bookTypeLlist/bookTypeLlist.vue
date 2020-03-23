@@ -172,7 +172,7 @@
             &_dropDown {
                 position: absolute;
                 right: 20px;
-                top: 0;
+                top: 100px;
                 background: $bgc-theme;
                 width: 300px;
                 z-index: $dropDown;
