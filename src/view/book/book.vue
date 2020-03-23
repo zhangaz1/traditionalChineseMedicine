@@ -12,13 +12,12 @@
             <div class="book_box_menu" v-for="(item, index) of menuData" :key="item.data[index].id + index">
                 <div class="title ptb10">{{item.title}}</div>
                 <ul class="library_list ptb20">
-                    <router-link
-                            tag="li"
-                            :to="{path: '/', query: {id: item.data[index].id}}"
+                    <li
+                            @click="switchTap(item.title, index, item.data[index].name)"
                             class="library_list_li ptb10 mb30 plr20 mr70"
                             v-for="(list, index) of item.data"
                             :key="'list' + index"
-                    >{{list.name}}</router-link>
+                    >{{list.name}}</li>
                 </ul>
             </div>
         </div>
@@ -55,6 +54,18 @@
             onSearch() {
                 console.log('点击了搜索');
             },
+            /** 2020/3/23
+            * 作者：王青高
+            * 功能：{} 切换搜索或分类页
+            * 参数：{}
+            */
+            switchTap(title, index, name) {
+                if (title === '热门') {
+                    this.$router.push({ path: '/searchResult', query: { id: index, name: name } });
+                } else {
+                    this.$router.push({ path: '/bookTypeLlist', query: { id: index, name: name } });
+                }
+            }
         },
         components: {
             publicTitle

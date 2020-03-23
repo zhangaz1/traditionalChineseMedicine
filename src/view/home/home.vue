@@ -76,7 +76,7 @@
     import publicSwipe from '@/components/publicSwipe/';
     import subMenu from './components/subMenu';
     import copyright from './components/copyright';
-    import { navItem, swiperVideo, swiperBook} from './config';
+    import { navItem, swiperVideo, swiperBook } from './config';
     import { swiper, swiperSlide } from 'vue-awesome-swiper';
     export default {
         name: 'home',
@@ -107,11 +107,8 @@
             searchVal(val) {
                 console.log('搜索内容', val);
             },
-            onEmail() {
-                console.log('点击了邮箱');
-            },
             /** 2020-3-19 0019
-             *作者:青型科技
+             *作者:王青高
              *功能:
              *参数:
              */

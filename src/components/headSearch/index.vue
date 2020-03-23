@@ -17,7 +17,7 @@
         name: 'index',
         data() {
             return {
-                searchVal: '',
+                searchVal: this._searchVal,
                 timer: null
             };
         },
@@ -27,9 +27,18 @@
                 this.timer = setTimeout(() => {
                     this.$emit('searchVal', this.searchVal);
                 }, 500);
-            },
-            onEmail() {
-                this.$emit('onEmail');
+            }
+        },
+        props: {
+            _searchVal: {
+                type: String,
+                default: ''
+            }
+        },
+        watch: {
+            _searchVal(val) {
+                this.searchVal = val;
+                console.log('searchVal', this.searchVal);
             }
         }
     };

@@ -74,6 +74,31 @@ export default new Router({
             path: '/contactUs',
             name: 'contactUs',
             component: () => import(/* webpackChunkName: 'login' */ '@/view/contactUs/contactUs.vue')
+        },
+        {
+            path: '/searchResult',
+            name: 'searchResult',
+            component: () => import(/* webpackChunkName: 'login' */ '@/view/searchResult/searchResult.vue')
+        },
+        {
+            path: '/bookContentFeed',
+            name: 'bookContentFeed',
+            component: () => import(/* webpackChunkName: 'login' */ '@/view/bookContentFeed/bookContentFeed.vue')
+        },
+        {
+            path: '/bookDetail',
+            name: 'bookDetail',
+            component: () => import(/* webpackChunkName: 'login' */ '@/view/bookDetail/bookDetail.vue')
+        },
+        {
+            path: '/myBookBox',
+            name: 'myBookBox',
+            component: () => import(/* webpackChunkName: 'login' */ '@/view/myBookBox/myBookBox.vue')
+        },
+        {
+            path: '/bookTypeLlist',
+            name: 'bookTypeLlist',
+            component: () => import(/* webpackChunkName: 'login' */ '@/view/bookTypeLlist/bookTypeLlist.vue')
         }
     ],
     scrollBehavior: () => ({ y: 0 })

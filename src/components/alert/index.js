@@ -1,7 +1,7 @@
 import AlertComponent from './alert.vue';
 const Alert = {};
 /** 2020-2-18 0018
- *作者:青型科技
+ *作者:王青高
  *功能: 公共弹窗插件实例方法
  *参数:
  */
