@@ -99,6 +99,11 @@ export default new Router({
             path: '/bookTypeLlist',
             name: 'bookTypeLlist',
             component: () => import(/* webpackChunkName: 'login' */ '@/view/bookTypeLlist/bookTypeLlist.vue')
+        },
+        {
+            path: '/videoBox/components/videoBoxTxt',
+            name: 'videoBoxTxt',
+            component: () => import(/* webpackChunkName: 'login' */ '@/view/videoBox/components/videoBoxTxt.vue')
         }
     ],
     scrollBehavior: () => ({ y: 0 })

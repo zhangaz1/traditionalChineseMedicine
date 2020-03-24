@@ -11,7 +11,46 @@
                 <headSearch
                         class="home_search"
                         @searchVal="searchVal"
-                />
+                        @cancel="onCancel"
+                        @focus="_focus"
+                        @_clear="_clear"
+                        :isCancel="isCancel"
+                >
+                    <div slot="searchContent" class="searchContent" v-if="isCancel">
+                        <div v-if="!searchResultData.length" class="hot plr30">
+                            <div class="title ptb20">热搜</div>
+                            <ul class="content ptb20">
+                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                            </ul>
+                        </div>
+                        <div v-if="!searchResultData.length" class="history plr30">
+                            <div class="title ptb20">
+                                搜索历史
+                                <van-icon name="delete" class="title_icon" @click="_delete"/>
+                            </div>
+                            <ul class="content ptb20">
+                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                            </ul>
+                        </div>
+                        <div class="searchResult">
+                            <ul class="ul" v-if="searchResultData.length">
+                                <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/searchResult', query: {name: search}}">{{search}}</router-link>
+                            </ul>
+                        </div>
+                    </div>
+                </headSearch>
                 <ul class="home_dropDown" v-show="isShow">
                     <li class="home_dropDown_item pl100">
                         <van-icon name="browsing-history-o" />
@@ -91,7 +130,9 @@
                     'https://www.zk120.com/media/widgets/banners/2020/03/190222160830508.20200310145039990.jpg',
                     'https://www.zk120.com/media/widgets/banners/2020/03/190222160830508.20200310145039990.jpg'
                 ],
-                isShow: false // 是否显示顶部菜单
+                isShow: false, // 是否显示顶部菜单
+                isCancel: false,
+                searchResultData: [], // 存储搜索结果
             };
         },
         components: {
@@ -105,10 +146,13 @@
         methods: {
             searchVal(val) {
                 console.log('搜索内容', val);
+                if (val) {
+                    this.searchResultData.push(val);
+                }
             },
             /** 2020-3-19 0019
              *作者:王青高
-             *功能:
+             *功能: {}
              *参数:
              */
             onClickRight() {
@@ -116,6 +160,46 @@
                     this.isShow = false;
                 } else {
                     this.isShow = true;
+                }
+            },
+            /** 2020/3/24
+             * 作者：王青高
+             * 功能：{} 点击搜索框取消
+             * 参数：{}
+             */
+            onCancel() {
+                // console.log('取消');
+                if (this.isCancel) {
+                    this.isCancel = false;
+                    this.searchResultData = [];
+                }
+            },
+            /** 2020/3/24
+             * 作者：王青高
+             * 功能：{} 搜索框获取焦点
+             * 参数：{}
+             */
+            _focus() {
+                if (!this.isCancel) {
+                    this.isCancel = true;
+                }
+            },
+            /** 2020/3/24
+             * 作者：王青高
+             * 功能：{} 删除历史
+             * 参数：{}
+             */
+            _delete() {
+                console.log('删除历史');
+            },
+            /** 2020/3/24
+             * 作者：王青高
+             * 功能：{} 点击清除按钮触发
+             * 参数：{}
+             */
+            _clear() {
+                if (this.searchResultData.length) {
+                    this.searchResultData = [];
                 }
             }
         }
@@ -184,7 +268,60 @@
             position: relative;
         }
         &_search {
-
+            position: relative;
+            border-bottom: 1px solid $ccc-color;
+            .searchContent {
+                position: absolute;
+                background: $bgc-theme;
+                width: 100%;
+                left: 0;
+                top: 110px;
+                z-index: $search-z-index;
+                .history,
+                .hot {
+                    .title {
+                        font-size: 28px;
+                        line-height: 28px;
+                        color: $color;
+                        position: relative;
+                        &_icon {
+                            position: absolute;
+                            right: 0;
+                            top: 8px;
+                            font-size: 48px;
+                            color: $coloe_3;
+                        }
+                    }
+                    .content {
+                        display: flex;
+                        align-items: center;
+                        flex-wrap: wrap;
+                        .li {
+                            @include flex-center();
+                            border-radius: 50px;
+                            background: #f3f2ed;
+                        }
+                    }
+                }
+                .searchResult {
+                    .li {
+                        /*height: 100px;*/
+                        /*line-height: 100px;*/
+                        font-size: 36px;
+                        color: $coloe_3;
+                        position: relative;
+                        &:after {
+                            content: '';
+                            position: absolute;
+                            left: 0;
+                            bottom: 0;
+                            width: 100%;
+                            height: 1px;
+                            background: $bg_ddcdaf;
+                        }
+                    }
+                }
+            }
         }
 
         /* banner图 start */
@@ -266,5 +403,10 @@
             }
         }
     }
-
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity .5s;
+    }
+    .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+        opacity: 0;
+    }
 </style>

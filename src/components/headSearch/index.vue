@@ -5,10 +5,15 @@
                 shape="round"
                 class="headSerach_search"
                 background="#fff"
+                :show-action="isCancel"
                 placeholder="输入书名、全文、作者等"
                 maxlength="20 "
                 @input="getSearchVal"
+                @cancel="onCancel"
+                @focus="focus"
+                @clear="_clear"
         />
+        <slot name="searchContent"></slot>
     </div>
 </template>
 
@@ -27,18 +32,40 @@
                 this.timer = setTimeout(() => {
                     this.$emit('searchVal', this.searchVal);
                 }, 500);
+            },
+            onCancel() {
+                this.$emit('cancel');
+            },
+            /** 2020/3/24
+            * 作者：王青高
+            * 功能：{}
+            * 参数：{}
+            */
+            focus() {
+                this.$emit('focus');
+            },
+            /** 2020/3/24
+            * 作者：王青高
+            * 功能：{} 点击清除按钮触发
+            * 参数：{}
+            */
+            _clear() {
+                this.$emit('_clear');
             }
         },
         props: {
             _searchVal: {
                 type: String,
                 default: ''
+            },
+            isCancel: {
+                type: Boolean,
+                default: false // 是否显示右侧取消按钮
             }
         },
         watch: {
             _searchVal(val) {
                 this.searchVal = val;
-                console.log('searchVal', this.searchVal);
             }
         }
     };

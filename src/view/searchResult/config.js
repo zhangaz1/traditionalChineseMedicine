@@ -9,27 +9,27 @@ const swiperNav = {
 const navData = [
     {
         'name': '古籍',
-        'url': '/'
+        component: 'books'
     },
     {
         'name': '医案',
-        'url': '/'
+        component: 'doctorBook'
     },
     {
         'name': '方剂',
-        'url': '/'
+        component: 'prescriptions'
     },
     {
         'name': '问病',
-        'url': '/'
+        component: 'askDisease'
     },
     {
         'name': '百科',
-        'url': '/'
+        component: 'wikipedia'
     },
     {
         'name': '文章',
-        'url': '/'
+        component: 'articleList'
     }
 ];
 export {

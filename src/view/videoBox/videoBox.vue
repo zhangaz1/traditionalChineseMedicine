@@ -3,26 +3,69 @@
         <van-nav-bar :title="title" left-arrow @click-right="onSearch"  @click-left="onGoBack" fixed class="videoBox_title">
             <van-icon name="search" slot="right" />
         </van-nav-bar>
-        <div class="videoBox_nav mt20 mb20 plr30">
-            <ul class="videoBox_nav_ul ptb20" :class="{_move: isMove}">
-                <li class="videoBox_nav_ul_li mlr10 mb60">中医基础</li>
-                <li class="videoBox_nav_ul_li mlr10 mb60">中医基础</li>
-                <li class="videoBox_nav_ul_li mlr10 mb60">中医基础</li>
-                <li class="videoBox_nav_ul_li mlr10 mb60">中医基础</li>
-                <li class="videoBox_nav_ul_li mlr10 mb60">中医基础</li>
-                <li class="videoBox_nav_ul_li mlr10 mb60">中医基础</li>
-                <li class="videoBox_nav_ul_li mlr10 mb60">中医基础</li>
-                <li class="videoBox_nav_ul_li mlr10 mb60">中医基础</li>
-                <li class="videoBox_nav_ul_li mlr10 mb60">中医基础</li>
-                <li class="videoBox_nav_ul_li mlr10 mb60">中医基础</li>
-                <li class="videoBox_nav_ul_li mlr10 mb60">中医基础</li>
-                <li class="videoBox_nav_ul_li mlr10 mb60">中医基础</li>
-                <li class="videoBox_nav_ul_li mlr10 mb60">中医基础</li>
-                <li class="videoBox_nav_ul_li mlr10 mb60">中医基础</li>
-            </ul>
-            <div class="videoBox_nav_mask" :class="{move: isMove}">
-                <van-icon :name="iconName" class="videoBox_nav_mask_icon" @click="_animation" />
+        <headSearch
+                v-if="isSearch"
+                class="videoBox_search"
+                @searchVal="searchVal"
+                @cancel="onCancel"
+                @focus="_focus"
+                @_clear="_clear"
+                :isCancel="isCancel"
+        >
+            <div slot="searchContent" class="searchContent" v-if="isCancel">
+                <div v-if="!searchResultData.length" class="hot plr30">
+                    <div class="title ptb20">热搜</div>
+                    <ul class="content ptb20">
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                    </ul>
+                </div>
+                <div v-if="!searchResultData.length" class="history plr30">
+                    <div class="title ptb20">
+                        搜索历史
+                        <van-icon name="delete" class="title_icon" @click="_delete"/>
+                    </div>
+                    <ul class="content ptb20">
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                    </ul>
+                </div>
+                <div class="searchResult">
+                    <ul class="ul" v-if="searchResultData.length">
+                        <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/searchResult', query: {name: search}}">{{search}}</router-link>
+                    </ul>
+                </div>
             </div>
+        </headSearch>
+        <div class="mask" v-if="isCancel"></div>
+        <div class="videoBox_nav mt20 mb20 plr30">
+            <transition name="slide-fade">
+                <ul class="videoBox_nav_ul ptb20 mb40" :class="{_move: isMove}">
+                    <li class="videoBox_nav_ul_li mlr10 mb20">中医基础</li>
+                    <li class="videoBox_nav_ul_li mlr10 mb20">中医基础</li>
+                    <li class="videoBox_nav_ul_li mlr10 mb20">中医基础</li>
+                    <li class="videoBox_nav_ul_li mlr10 mb20">中医基础</li>
+                    <li class="videoBox_nav_ul_li mlr10 mb20">中医基础</li>
+                    <li class="videoBox_nav_ul_li mlr10 mb20">中医基础</li>
+                    <li class="videoBox_nav_ul_li mlr10 mb20">中医基础</li>
+                    <li class="videoBox_nav_ul_li mlr10 mb20">中医基础</li>
+                    <li class="videoBox_nav_ul_li mlr10 mb20">中医基础</li>
+                    <li class="videoBox_nav_ul_li mlr10 mb20">中医基础</li>
+                    <li class="videoBox_nav_ul_li mlr10 mb20">中医基础</li>
+                    <li class="videoBox_nav_ul_li mlr10 mb20">中医基础</li>
+                </ul>
+            </transition>
+            <span class="videoBox_nav_icon" @click="_animation" :class="{isDeg: isMove}"></span>
         </div>
         <div class="videoBox_content plr30">
             <div class="videoBox_content_title ptb20">
@@ -57,23 +100,35 @@
 </template>
 
 <script>
+    import headSearch from '@/components/headSearch/';
     export default {
         name: 'videoBox',
         data() {
             return {
                 title: '视频',
                 isMove: false,
-                iconName: 'arrow-down'
+                searchResultData: [], // 存储搜索结果
+                isCancel: false,
+                isSearch: false, // 是否显示搜索
             };
         },
+        components: {
+            headSearch
+        },
         methods: {
-            /** 2020/3/20
-            * 作者：王青高
-            * 功能：{}  点击了搜索内容
-            * 参数：{}
-            */
-            onSearch() {
+            /** 2020/3/19
+             * 作者：王青高
+             * 功能：{} 弹出搜索
+             * 参数：{}
+             */
+            onSearch(val) {
                 console.log('点击了搜索');
+                if (!this.isSearch) {
+                    this.isSearch = true;
+                    this.isCancel = true;
+                } else {
+                    this.isSearch = false;
+                }
             },
             /** 2020/3/20
             * 作者：王青高
@@ -91,10 +146,55 @@
             _animation() {
                 if (this.isMove) {
                     this.isMove = false;
-                    this.iconName = 'arrow-down';
                 } else {
                     this.isMove = true;
-                    this.iconName = 'arrow-up';
+                }
+            },
+            searchVal(val) {
+                console.log('搜索内容', val);
+                if (val) {
+                    this.searchResultData.push(val);
+                }
+            },
+            /** 2020/3/24
+             * 作者：王青高
+             * 功能：{} 点击搜索框取消
+             * 参数：{}
+             */
+            onCancel() {
+                // console.log('取消');
+                if (this.isCancel) {
+                    this.isCancel = false;
+                    this.searchResultData = [];
+                    this.isSearch = false;
+                }
+            },
+            /** 2020/3/24
+             * 作者：王青高
+             * 功能：{} 搜索框获取焦点
+             * 参数：{}
+             */
+            _focus() {
+                if (!this.isCancel) {
+                    this.isCancel = true;
+                }
+            },
+            /** 2020/3/24
+             * 作者：王青高
+             * 功能：{} 删除历史
+             * 参数：{}
+             */
+            _delete() {
+                console.log('删除历史');
+            },
+            /** 2020/3/24
+             * 作者：王青高
+             * 功能：{} 点击清除按钮触发
+             * 参数：{}
+             */
+            _clear() {
+                if (this.searchResultData.length) {
+                    this.searchResultData = [];
                 }
             }
         }
@@ -116,41 +216,92 @@
         &_title {
             height: 108px;
         }
-
+        &_search {
+            position: relative;
+            border-bottom: 1px solid $ccc-color;
+            left: 0;
+            top: -108px;
+            z-index: $search-z-index;
+            .searchContent {
+                position: absolute;
+                background: $bgc-theme;
+                width: 100%;
+                height: 110vh;
+                left: 0;
+                top: 110px;
+                z-index: $search-z-index;
+                .history,
+                .hot {
+                    .title {
+                        font-size: 28px;
+                        line-height: 28px;
+                        color: $color;
+                        position: relative;
+                        &_icon {
+                            position: absolute;
+                            right: 0;
+                            top: 8px;
+                            font-size: 48px;
+                            color: $coloe_3;
+                        }
+                    }
+                    .content {
+                        display: flex;
+                        align-items: center;
+                        flex-wrap: wrap;
+                        .li {
+                            @include flex-center();
+                            border-radius: 50px;
+                            background: #f3f2ed;
+                        }
+                    }
+                }
+                .searchResult {
+                    .li {
+                        /*height: 100px;*/
+                        /*line-height: 100px;*/
+                        font-size: 36px;
+                        color: $coloe_3;
+                        position: relative;
+                        &:after {
+                            content: '';
+                            position: absolute;
+                            left: 0;
+                            bottom: 0;
+                            width: 100%;
+                            height: 1px;
+                            background: $bg_ddcdaf;
+                        }
+                    }
+                }
+            }
+        }
         &_nav {
             background: $bgc-theme;
             position: relative;
             overflow: hidden;
-
             &_ul {
-                display: flex;
-                align-items: center;
-                flex-wrap: wrap;
                 height: 60px;
-                transition: height .5s;
-
+                transition: all .5s;
                 &_li {
+                    display: inline-block;
                     font-size: 28px;
                     color: $coloe_3;
                 }
             }
-
-            &_mask {
+            &_icon {
                 position: absolute;
-                background: $bgc-theme;
-                width: 100%;
-                height: 100%;
-                left: 0;
-                top: 50px;
-                transition: top .5s;
-                &_icon {
-                    position: absolute;
-                    left: 50%;
-                    top: 0;
-                    font-size: 48px;
-                    color: $coloe_3;
-                    animation: tb_s .7s ease-in-out infinite;
-                }
+                left: 50%;
+                bottom: 0;
+                font-size: 48px;
+                color: $coloe_3;
+                animation: tb_s .7s ease-in-out infinite;
+                right: 4px;
+                width: 14px;
+                height: 14px;
+                border-top: 4px solid #ccc;
+                border-right: 4px solid #ccc;
+                transform: rotate(135deg);
             }
         }
 
@@ -211,20 +362,29 @@
             }
         }
     }
-    .move {
-        top: 80%;
-    }
     ._move {
-        height: 100%;
+        height: 260px;
+        overflow-y: scroll;
     }
     @keyframes tb_s {
         0% {
             position: absolute;
-            top: 0;
+            bottom: 0;
         }
         100% {
             position: absolute;
-            top: 10px;
+            bottom: 10px;
         }
+    }
+    .mask {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        left: 0;
+        top: 0;
+        background: #fff;
+    }
+    .isDeg {
+        transform: rotate(315deg) !important;
     }
 </style>

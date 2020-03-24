@@ -9,33 +9,42 @@
         />
         <div class="learnPlan_tag plr30 ptb20">
             <ul class="learnPlan_tag_box">
-                <li class="li mb40">
-                    <van-field v-model="text" label="问：" placeholder="请输入问题" label-width="25px" />
-                    <van-field
-                            v-model="message"
-                            rows="2"
-                            autosize
-                            label-width="25px"
-                            label="答:"
-                            type="textarea"
-                            maxlength="200"
-                            placeholder="请输入回答内容"
-                            show-word-limit
-                    />
+                <li class="mb40">
+                    <div class="li mb20">
+                        <van-field v-model="text" label="问：" placeholder="请输入问题" label-width="25px" />
+                        <van-field
+                                v-model="message"
+                                rows="2"
+                                autosize
+                                label-width="25px"
+                                label="答:"
+                                type="textarea"
+                                maxlength="200"
+                                placeholder="请输入回答内容"
+                                show-word-limit
+                        />
+                    </div>
+                    <div class="btn">
+                        <van-button type="default" size="small" plain hairline @click="save">保存</van-button>
+                    </div>
                 </li>
-                <li class="li mb40">
-                    <van-field v-model="text" label="问：" placeholder="请输入问题" label-width="25px" />
-                    <van-field
-                            v-model="message"
-                            rows="2"
-                            autosize
-                            label-width="25px"
-                            label="答:"
-                            type="textarea"
-                            maxlength="200"
-                            placeholder="请输入回答内容"
-                            show-word-limit
-                    />
+            </ul>
+            <ul class="learnPlan_tag_box h600">
+                <li class="mb40">
+                    <div class="li mb20">
+                        <van-field v-model="text" label="问：" placeholder="请输入问题" label-width="25px" />
+                        <van-field
+                                v-model="message"
+                                rows="2"
+                                autosize
+                                label-width="25px"
+                                label="答:"
+                                type="textarea"
+                                maxlength="200"
+                                placeholder="请输入回答内容"
+                                show-word-limit
+                        />
+                    </div>
                 </li>
             </ul>
         </div>
@@ -60,6 +69,14 @@
             onGoBack() {
                 this.$router.go(-1);
             },
+            /** 2020/3/24
+            * 作者：王青高
+            * 功能：{} 保存学习方案
+            * 参数：{}
+            */
+            save() {
+
+            }
         }
     };
 </script>
@@ -83,6 +100,10 @@
             background: $bgColor;
             height: 100vh;
             box-sizing: border-box;
+            .h600 {
+                height: 600px;
+                overflow-y: scroll;
+            }
             &_box {
                 .li {
                     border: 2px solid $bg_cbb488;
@@ -91,6 +112,10 @@
                     .van-cell {
                         background: $bgColor;
                     }
+                }
+                .btn {
+                    width: 100%;
+                    text-align: right;
                 }
             }
         }

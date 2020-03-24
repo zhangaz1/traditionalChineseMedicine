@@ -4,17 +4,61 @@
                 class="publicTitle"
                 :navData="navData"
                 @getCurrent="getCurrent"
-                @onSearch="onSearch"
         >
             <div slot="publicTitleRight" class="doctorCase_right" @click="onSearch">
                 <van-icon name="search" />
             </div>
         </publicTitle>
+        <headSearch
+                v-if="isSearch"
+                class="doctorCase_search"
+                @searchVal="searchVal"
+                @cancel="onCancel"
+                @focus="_focus"
+                @_clear="_clear"
+                :isCancel="isCancel"
+        >
+            <div slot="searchContent" class="searchContent" v-if="isCancel">
+                <div v-if="!searchResultData.length" class="hot plr30">
+                    <div class="title ptb20">热搜</div>
+                    <ul class="content ptb20">
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                    </ul>
+                </div>
+                <div v-if="!searchResultData.length" class="history plr30">
+                    <div class="title ptb20">
+                        搜索历史
+                        <van-icon name="delete" class="title_icon" @click="_delete"/>
+                    </div>
+                    <ul class="content ptb20">
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
+                    </ul>
+                </div>
+                <div class="searchResult">
+                    <ul class="ul" v-if="searchResultData.length">
+                        <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/searchResult', query: {name: search}}">{{search}}</router-link>
+                    </ul>
+                </div>
+            </div>
+        </headSearch>
+        <div class="mask" v-if="isCancel"></div>
         <!--  热门  start -->
         <div class="doctorCase_box plr30 mt20">
             <div class="doctorCase_box_menu" v-for="(item, index) of menuData" :key="item.data[index].id + index">
                 <div class="title ptb10">{{item.title}}</div>
-                <pupblicPanel :listData="item.data" @switchTab="switchTab"/>
+                <pupblicPanel :listData="item.data" @switchTab="switchTap(item.title, index, item.data[index].name)"/>
             </div>
         </div>
         <!--  热门  end -->
@@ -22,7 +66,7 @@
         <div class="doctorCase_box plr30 mt20">
             <div class="doctorCase_box_menu" v-for="(item, index) of menuData" :key="item.data[index].id + index">
                 <div class="title ptb10">{{item.title}}</div>
-                <pupblicPanel :listData="item.data" @switchTab="switchTab"/>
+                <pupblicPanel :listData="item.data" @switchTab="switchTap(item.title, index, item.data[index].name)"/>
             </div>
         </div>
         <!--  科室  end -->
@@ -30,7 +74,7 @@
         <div class="doctorCase_box plr30 mt20">
             <div class="doctorCase_box_menu" v-for="(item, index) of menuData" :key="item.data[index].id + index">
                 <div class="title ptb10">{{item.title}}</div>
-                <pupblicPanel :listData="item.data" @switchTab="switchTab"/>
+                <pupblicPanel :listData="item.data" @switchTab="switchTap(item.title, index, item.data[index].name)"/>
             </div>
         </div>
         <!--  科室分类 end -->
@@ -40,6 +84,7 @@
 <script>
     import publicTitle from '@/components/publicTitle';
     import pupblicPanel from '@/components/publicPanel';
+    import headSearch from '@/components/headSearch/';
     import { navData, menuData } from './config';
     export default {
         name: 'doctorCase',
@@ -48,6 +93,9 @@
                 navData, // 导航项
                 menuData, // 列表内容
                 current: 0,
+                searchResultData: [], // 存储搜索结果
+                isCancel: false,
+                isSearch: false, // 是否显示搜索
             };
         },
         methods: {
@@ -61,26 +109,83 @@
                 console.log(this.current);
             },
             /** 2020/3/19
-            * 作者：王青高
-            * 功能：{} 弹出搜索
-            * 参数：{}
-            */
-            onSearch() {
-                console.log('点击了搜索');
-            },
-            /** 2020-3-19 0019
-             *作者:王青高
-             *功能: {} 获取当前点击的
-             *参数:
+             * 作者：王青高
+             * 功能：{} 弹出搜索
+             * 参数：{}
              */
-            switchTab(data) {
-                console.log('data', data);
-                this.$router.push({path: '/doctorCase/components/doctorDetail', query: { id: 1}});
-            }
+            onSearch(val) {
+                console.log('点击了搜索');
+                if (!this.isSearch) {
+                    this.isSearch = true;
+                    this.isCancel = true;
+                } else {
+                    this.isSearch = false;
+                }
+            },
+            /** 2020/3/23
+             * 作者：王青高
+             * 功能：{} 切换搜索或分类页
+             * 参数：{}
+             */
+            switchTap(title, index, name) {
+                if (title === '热门') {
+                    this.$router.push({ path: '/searchResult', query: { id: index, name: name } });
+                } else {
+                    this.$router.push({ path: '/bookTypeLlist', query: { id: index, name: name } });
+                }
+            },
+            /** 2020/3/24
+             * 作者：王青高
+             * 功能：{} 点击搜索框取消
+             * 参数：{}
+             */
+            onCancel() {
+                // console.log('取消');
+                if (this.isCancel) {
+                    this.isCancel = false;
+                    this.searchResultData = [];
+                    this.isSearch = false;
+                }
+            },
+            /** 2020/3/24
+             * 作者：王青高
+             * 功能：{} 搜索框获取焦点
+             * 参数：{}
+             */
+            _focus() {
+                if (!this.isCancel) {
+                    this.isCancel = true;
+                }
+            },
+            /** 2020/3/24
+             * 作者：王青高
+             * 功能：{} 删除历史
+             * 参数：{}
+             */
+            _delete() {
+                console.log('删除历史');
+            },
+            /** 2020/3/24
+             * 作者：王青高
+             * 功能：{} 点击清除按钮触发
+             * 参数：{}
+             */
+            _clear() {
+                if (this.searchResultData.length) {
+                    this.searchResultData = [];
+                }
+            },
+            searchVal(val) {
+                console.log('搜索内容', val);
+                if (val) {
+                    this.searchResultData.push(val);
+                }
+            },
         },
         components: {
             publicTitle,
-            pupblicPanel
+            pupblicPanel,
+            headSearch
         }
     };
 </script>
@@ -98,6 +203,66 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+        &_search {
+            position: relative;
+            border-bottom: 1px solid $ccc-color;
+            left: 0;
+            top: -108px;
+            z-index: $search-z-index;
+            .searchContent {
+                position: absolute;
+                background: $bgc-theme;
+                width: 100%;
+                height: 110vh;
+                left: 0;
+                top: 110px;
+                z-index: $search-z-index;
+                .history,
+                .hot {
+                    .title {
+                        font-size: 28px;
+                        line-height: 28px;
+                        color: $color;
+                        position: relative;
+                        &_icon {
+                            position: absolute;
+                            right: 0;
+                            top: 8px;
+                            font-size: 48px;
+                            color: $coloe_3;
+                        }
+                    }
+                    .content {
+                        display: flex;
+                        align-items: center;
+                        flex-wrap: wrap;
+                        .li {
+                            @include flex-center();
+                            border-radius: 50px;
+                            background: #f3f2ed;
+                        }
+                    }
+                }
+                .searchResult {
+                    .li {
+                        /*height: 100px;*/
+                        /*line-height: 100px;*/
+                        font-size: 36px;
+                        color: $coloe_3;
+                        position: relative;
+                        &:after {
+                            content: '';
+                            position: absolute;
+                            left: 0;
+                            bottom: 0;
+                            width: 100%;
+                            height: 1px;
+                            background: $bg_ddcdaf;
+                        }
+                    }
+                }
+            }
         }
     }
     .title {
@@ -121,5 +286,12 @@
             }
         }
     }
-
+    .mask {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        left: 0;
+        top: 0;
+        background: #fff;
+    }
 </style>

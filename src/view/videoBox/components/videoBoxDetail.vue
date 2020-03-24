@@ -76,7 +76,7 @@
             * 参数：{}
             */
             _play() {
-
+                this.$router.push({ path: '/videoBox/components/videoBoxTxt', query: { id: 2 } });
             },
             /* 2020/3/20
             * 作者：王青高
