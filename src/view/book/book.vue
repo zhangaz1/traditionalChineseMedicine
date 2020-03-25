@@ -5,9 +5,9 @@
                 @getCurrent="getCurrent"
         >
             <div
-                 slot="publicTitleRight"
-                 class="book_right"
-                 @click="onSearch">
+                    slot="publicTitleRight"
+                    class="book_right"
+                    @click="onSearch">
                 <van-icon name="search" />
             </div>
         </publicTitle>
@@ -21,33 +21,33 @@
                 :isCancel="isCancel"
         >
             <div slot="searchContent" class="searchContent" v-if="isCancel">
-                <div v-if="!searchResultData.length" class="hot plr30">
-                    <div class="title ptb20">热搜</div>
-                    <ul class="content ptb20">
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                    </ul>
-                </div>
-                <div v-if="!searchResultData.length" class="history plr30">
-                    <div class="title ptb20">
-                        搜索历史
-                        <van-icon name="delete" class="title_icon" @click="_delete"/>
-                    </div>
-                    <ul class="content ptb20">
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                    </ul>
-                </div>
+<!--                <div v-if="!searchResultData.length" class="hot plr30">-->
+<!--                    <div class="title ptb20">热搜</div>-->
+<!--                    <ul class="content ptb20">-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                    </ul>-->
+<!--                </div>-->
+<!--                <div v-if="!searchResultData.length" class="history plr30">-->
+<!--                    <div class="title ptb20">-->
+<!--                        搜索历史-->
+<!--                        <van-icon name="delete" class="title_icon" @click="_delete"/>-->
+<!--                    </div>-->
+<!--                    <ul class="content ptb20">-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                    </ul>-->
+<!--                </div>-->
                 <div class="searchResult">
                     <ul class="ul" v-if="searchResultData.length">
                         <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/searchResult', query: {name: search}}">{{search}}</router-link>
@@ -58,23 +58,16 @@
         <div class="mask" v-if="isCancel"></div>
         <!--  热门  start -->
         <div class="book_box plr30 mt20" v-if="hotData">
-            <div class="book_box_menu" v-for="(item, index) of hotData" :key="item.data[index].id + index">
-                <div class="title ptb10">{{item.title}}</div>
-                <pupblicPanel :listData="item.data" @switchTab="switchTap(item.title, index, item.data[index].name)"/>
+            <div class="book_box_menu">
+                <div class="title ptb10">热门</div>
+                <pupblicPanel :listData="hotData" @switchTab="switchTap"/>
             </div>
         </div>
         <!--  热门  end -->
         <div class="book_box plr30 mt20" v-if="menuData.typelist">
             <div class="book_box_menu" v-for="(item, index) of menuData.typelist" :key="'item' + index" >
                 <div class="title ptb10">{{item.title}}</div>
-                <ul class="library_list ptb20">
-                    <li
-                            @click="switchTap(item.title, list)"
-                            class="library_list_li ptb10 mb30 plr20 mr70"
-                            v-for="(list, index) of item.list"
-                            :key="'list' + index"
-                    >{{list.title}}</li>
-                </ul>
+                <pupblicPanel :listData="item.list" @switchTab="switchTap"/>
             </div>
         </div>
     </div>
@@ -102,41 +95,41 @@
         },
         mounted() {
             /** 2020/3/25
-            * 作者：王青高
-            * 功能：{} 获取所有分类列表
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{} 获取所有分类列表
+             * 参数：{}
+             */
             getAllBook().then(res => {
                 if (res.state === '1') {
                     this.menuData = res.data;
                 }
             });
             /** 2020/3/25
-            * 作者：王青高
-            * 功能：{} 获取热门分类
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{} 获取热门分类
+             * 参数：{}
+             */
             getHotBook().then(res => {
-               if (res.state === '1') {
-                   this.hotData = res.data;
-               }
+                if (res.state === '1') {
+                    this.hotData = res.data;
+                }
             });
         },
         methods: {
             /** 2020/3/19
-            * 作者：王青高
-            * 功能：{Function} @getCurrent 获取当前下标索引，显示相关内容
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{Function} @getCurrent 获取当前下标索引，显示相关内容
+             * 参数：{}
+             */
             getCurrent(index) {
                 this.current = index;
                 console.log(this.current);
             },
             /** 2020/3/19
-            * 作者：王青高
-            * 功能：{} 弹出搜索
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{} 弹出搜索
+             * 参数：{}
+             */
             onSearch(val) {
                 console.log('点击了搜索');
                 if (!this.isSearch) {
@@ -147,17 +140,18 @@
                 }
             },
             /** 2020/3/23
-            * 作者：王青高
-            * 功能：{} 切换搜索或分类页
-            * 参数：{}
-            */
-            switchTap(title, list) {
-                // if (title === '热门') {
-                //     this.$router.push({ path: '/searchResult', query: { id: index, name: name } });
-                // } else {
-                    this.$router.push({ path: '/bookTypeLlist', query: { title: title, list: list } });
-                // }
+             * 作者：王青高
+             * 功能：{} 切换搜索或分类页
+             * 参数：{}
+             */
+            switchTap(data) {
+                this.$router.push({ path: '/bookTypeLlist', query: { id: data.id, title: data.title } });
             },
+            /** 2020-3-25 0025
+             *作者:王青高
+             *功能: 发起搜索
+             *参数:
+             */
             searchVal(val) {
                 console.log('搜索内容', val);
                 if (val) {
@@ -170,11 +164,7 @@
              *参数:
              */
             onClickRight() {
-                if (this.isShow) {
-                    this.isShow = false;
-                } else {
-                    this.isShow = true;
-                }
+                this.$router.push('/footprint');
             },
             /** 2020/3/24
              * 作者：王青高
@@ -208,10 +198,10 @@
                 console.log('删除历史');
             },
             /** 2020/3/24
-            * 作者：王青高
-            * 功能：{} 点击清除按钮触发
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{} 点击清除按钮触发
+             * 参数：{}
+             */
             _clear() {
                 if (this.searchResultData.length) {
                     this.searchResultData = [];

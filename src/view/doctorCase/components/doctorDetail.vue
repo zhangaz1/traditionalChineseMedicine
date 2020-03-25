@@ -1,8 +1,8 @@
 <template>
-    <div class="doctorDetail ptb108 plr30 ">
+    <div class="doctorDetail ptb108 plr30" v-if="article">
         <van-nav-bar
             :fixed="true"
-            title="耳聋耳鸣"
+            :title="article.title"
             left-arrow
             @click-left="onClickLeft"
             class="doctorDetail_nav"
@@ -13,11 +13,11 @@
                 <span class="txt">医案 - </span>
                 <span class="txt">分类 - </span>
                 <span class="txt">内科 - </span>
-                <span class="txt">耳聋耳鸣</span>
+                <span class="txt">{{article.title}}</span>
             </div>
             <div class="doctorDetail_box_content">
-                <h2 class="title ptb20">世界，您好！</h2>
-                <p class="content ptb10">欢迎使用hello,world。欢迎使用hello,world。欢迎使用hello,world。欢迎使用hello,world。欢迎使用hello,world。</p>
+                <h2 class="title ptb20">{{article.description}}</h2>
+                <p class="content ptb10" v-html="article.content"></p>
                 <p class="content ptb10">欢迎使用hello,world。欢迎使用hello,world。欢迎使用hello,world。欢迎使用hello,world。欢迎使用hello,world。</p>
             </div>
             <div class="doctorDetail_box_share ptb30 mtb100">
@@ -37,6 +37,8 @@
 
 <script>
     import Share from 'vue-social-share';
+    import { getDoctorArticleDetail, addToCollectionInfo } from '@/api/content';
+    import { Toast } from 'vant';
     export default {
         name: 'doctorDetail',
         data() {
@@ -48,11 +50,12 @@
                     title: '世界，您好！', // 标题，默认读取 document.title 或者 <meta name="title" content="share.js" />
                     description: 'dsadsadsadsadsadsadsadsadasdsadwqeqwefvzdvxcv', // 描述, 默认读取head标签：<meta name="description" content="PHP弱类型的实现原理分析" />
                     image: 'https://www.zk120.com/zixun/wp-content/uploads/2018/07/p.zk120.net_.cn_2018-07-05_17-59-10.png', // 图片, 默认取网页中第一个img标签
-                    sites: ['wechat', 'qq','qzone','weibo'], // 启用的站点 , 'douban'
+                    sites: ['wechat', 'qq', 'qzone', 'weibo'], // 启用的站点 , 'douban'
                     disabled: [], // 禁用的站点
                     wechatQrcodeTitle: '微信扫一扫：分享', // 微信二维码提示文字
                     wechatQrcodeHelper: '<p>微信里点“发现”，扫一下</p><p>二维码便可将本文分享至朋友圈。</p>'
-                } // 分享配置
+                }, // 分享配置
+                article: null, // 存储文章详情
             };
         },
         components: {
@@ -68,15 +71,38 @@
              *参数: 切换收藏图标
              */
             collection() {
-                if (this.icon === 'like') {
-                    this.icon = 'like-o';
-                } else {
-                    this.icon = 'like';
-                }
+                let id = this.article.id;
+                addToCollectionInfo({ id }).then(res => {
+                    if (res.state === '1') {
+                        if (res.msg === '取消收藏成功!') {
+                            this.icon = 'like-o';
+                        } else {
+                            this.icon = 'like';
+                        }
+                        Toast(res.msg);
+                    }
+                });
+            },
+            /** 2020-3-26 0026
+             *作者:王青高
+             *功能: 获取文章详情信息
+             *参数: {id} 文章id
+             */
+            getDoctorArticleDetail(id) {
+                getDoctorArticleDetail({ id }).then(res => {
+                    let result = res.data;
+                    if (res.state === '1') {
+                        this.article = result.info;
+                        // this.$set(this.article, ) = result.info;
+                        this.$set(this.share_config, 'title', this.article.title);
+                        this.$set(this.share_config, 'description', this.article.description);
+                    };
+                });
             }
         },
         created() {
-
+            let obj = this.$route.query;
+            this.getDoctorArticleDetail(obj.id);
         }
     };
 </script>

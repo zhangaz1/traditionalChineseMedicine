@@ -17,33 +17,33 @@
                         :isCancel="isCancel"
                 >
                     <div slot="searchContent" class="searchContent" v-if="isCancel">
-                        <div v-if="!searchResultData.length" class="hot plr30">
-                            <div class="title ptb20">热搜</div>
-                            <ul class="content ptb20">
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                            </ul>
-                        </div>
-                        <div v-if="!searchResultData.length" class="history plr30">
-                            <div class="title ptb20">
-                                搜索历史
-                                <van-icon name="delete" class="title_icon" @click="_delete"/>
-                            </div>
-                            <ul class="content ptb20">
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                            </ul>
-                        </div>
+<!--                        <div v-if="!searchResultData.length" class="hot plr30">-->
+<!--                            <div class="title ptb20">热搜</div>-->
+<!--                            <ul class="content ptb20">-->
+<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                            </ul>-->
+<!--                        </div>-->
+<!--                        <div v-if="!searchResultData.length" class="history plr30">-->
+<!--                            <div class="title ptb20">-->
+<!--                                搜索历史-->
+<!--                                <van-icon name="delete" class="title_icon" @click="_delete"/>-->
+<!--                            </div>-->
+<!--                            <ul class="content ptb20">-->
+<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                            </ul>-->
+<!--                        </div>-->
                         <div class="searchResult">
                             <ul class="ul" v-if="searchResultData.length">
                                 <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/searchResult', query: {name: search}}">{{search}}</router-link>
@@ -51,31 +51,32 @@
                         </div>
                     </div>
                 </headSearch>
-                <ul class="home_dropDown" v-show="isShow">
-                    <li class="home_dropDown_item pl100">
-                        <van-icon name="browsing-history-o" />
-                        <span class="txt">我的足迹</span>
-                    </li>
-                    <li class="home_dropDown_item pl100">
-                        <van-icon name="star-o" />
-                        <span class="txt">我的收藏</span>
-                    </li>
-                    <li class="home_dropDown_item pl100">
-                        <van-icon name="share" />
-                        <span class="txt ">分享好友</span>
-                    </li>
-                </ul>
+<!--                <ul class="home_dropDown" v-show="isShow">-->
+<!--                    <li class="home_dropDown_item pl100">-->
+<!--                        <van-icon name="browsing-history-o" />-->
+<!--                        <span class="txt">我的足迹</span>-->
+<!--                    </li>-->
+<!--                    <li class="home_dropDown_item pl100">-->
+<!--                        <van-icon name="star-o" />-->
+<!--                        <span class="txt">我的收藏</span>-->
+<!--                    </li>-->
+<!--                    <li class="home_dropDown_item pl100">-->
+<!--                        <van-icon name="share" />-->
+<!--                        <span class="txt ">分享好友</span>-->
+<!--                    </li>-->
+<!--                </ul>-->
             </div>
         </van-sticky>
         <publicSwipe heightVal="200">
-            <van-swipe-item v-for="(image, index) in images" :key="index + 'image'"  class="home_swiper_item" slot="swiperItem">
-                <img :src="image" class="img"/>
+            <van-swipe-item v-for="(image, index) of bannerData" :key="index + 'image'"  class="home_swiper_item" slot="swiperItem">
+<!--                <img :src="image.img" class="img"/>-->
+                <img src="https://www.zk120.com/media/widgets/banners/2020/03/190805112845859.20200310145039745.jpg" class="img"/>
             </van-swipe-item>
         </publicSwipe>
         <subMenu class="plr30 bg_f" title="医案推荐榜" toRouter="/doctorCase">
             <ul class="home_nav ptb20" slot="content">
-                <router-link :to="nav.url" class="home_nav_li mb20" v-for="(nav, index) of navData" :key="'nav' + index">
-                    <p class="txt ptb10 plr20">{{nav.txt}}</p>
+                <router-link tag="li" :to="{path:'/doctorTypeList', query: {param: nav}}" class="home_nav_li mb20 mr20" v-for="(nav, index) of doctorData" :key="'nav' + index">
+                    <p class="txt ptb10 plr20">{{nav.title}}</p>
                 </router-link>
             </ul>
         </subMenu>
@@ -213,13 +214,13 @@
     import publicSwipe from '@/components/publicSwipe/';
     import subMenu from './components/subMenu';
     import copyright from './components/copyright';
-    import { navItem, swiperVideo, swiperBook } from './config';
+    import { swiperVideo, swiperBook } from './config';
     import { swiper, swiperSlide } from 'vue-awesome-swiper';
+    import { getHomeInfo } from '@/api/content';
     export default {
         name: 'home',
         data() {
             return {
-                navData: navItem,
                 swiperVideo,
                 swiperBook,
                 images: [
@@ -232,6 +233,8 @@
                 isShow: false, // 是否显示顶部菜单
                 isCancel: false,
                 searchResultData: [], // 存储搜索结果
+                doctorData: [], // 医案推荐榜
+                bannerData: [], // banner图
             };
         },
         components: {
@@ -242,24 +245,35 @@
             swiperSlide,
             copyright
         },
+        mounted() {
+            this.getHomeInfo();
+        },
         methods: {
+            /** 2020-3-25 0025
+             *作者:王青高
+             *功能: 获取首页信息
+             *参数:
+             */
+            getHomeInfo() {
+                getHomeInfo().then(res => {
+                    if (res.state === '1') {
+                        this.doctorData = res.data.yalist;
+                        this.bannerData = res.data.banners;
+                    }
+                });
+            },
             searchVal(val) {
-                console.log('搜索内容', val);
                 if (val) {
                     this.searchResultData.push(val);
                 }
             },
             /** 2020-3-19 0019
              *作者:王青高
-             *功能: {}
+             *功能: {} 跳转 我的足迹/收藏
              *参数:
              */
             onClickRight() {
-                if (this.isShow) {
-                    this.isShow = false;
-                } else {
-                    this.isShow = true;
-                }
+                this.$router.push('/footprint');
             },
             /** 2020/3/24
              * 作者：王青高
@@ -267,7 +281,6 @@
              * 参数：{}
              */
             onCancel() {
-                // console.log('取消');
                 if (this.isCancel) {
                     this.isCancel = false;
                     this.searchResultData = [];
@@ -434,10 +447,9 @@
         &_nav {
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-around;
             align-items: center;
             &_li {
-                width: 20%;
+                width: auto;
                 border: 1px solid $color;
                 background: #fefff9;
                 border-radius: 60px;

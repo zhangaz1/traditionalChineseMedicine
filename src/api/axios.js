@@ -35,10 +35,6 @@ class HttpRequest {
     interceptors(instance) {
         // 发起请求的拦截器
         instance.interceptors.request.use(config => {
-            // 判断是否存在token，如果存在的话，则每个http header都加上token
-            // if (Cookies.get('token') !== undefined) {
-            //     config.headers.token = Cookies.get('token');
-            // }
             // Do something before request is sent
             let key = config.url + '&' + config.method;
             this.removePending(key, true);

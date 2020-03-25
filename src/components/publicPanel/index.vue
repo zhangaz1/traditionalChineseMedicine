@@ -4,7 +4,7 @@
                 class="library_list_li ptb10 mb30 plr20 mr30"
                 v-for="(list, index) of listData"
                 :key="'list' + index"
-                :class="{_active: currentColor === index}"
+                :class="{_active: currentColor === index && isActive}"
                 @click="switchTab(list, index)"
         >{{list.title}}</li>
     </ul>
@@ -19,15 +19,15 @@
             };
         },
         props: {
-            listData: {
+            listData: { // 数据
                 type: [Array, Object],
                 default() {
                     return [];
                 }
             },
-            notJump: {
+            isActive: { // 是否显示焦点
                 type: Boolean,
-                defalut: false
+                default: true
             }
         },
         methods: {
@@ -38,7 +38,7 @@
              */
             switchTab(data, index) {
                 this.currentColor = index;
-                this.$emit('switchTab', data, this.notJump);
+                this.$emit('switchTab', data);
             }
         }
     };

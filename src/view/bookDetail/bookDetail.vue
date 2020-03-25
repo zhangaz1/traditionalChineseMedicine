@@ -1,6 +1,6 @@
 <template>
     <div>
-
+        小说详情
     </div>
 </template>
 
@@ -23,8 +23,6 @@
 
         }
     };
-
-
 </script>
 
 <style lang="scss" scoped>

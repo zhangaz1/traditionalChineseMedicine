@@ -30,7 +30,8 @@
             </div>
         </van-sticky>
         <div class="bookTypeList_item plr30">
-            <div class="tips ptb20">共有{{isNum}}条结果</div>
+            <div class="tips ptb20" >共有{{isNum}}条结果</div>
+            <div class="title ptb20">{{title}}</div>
             <div class="content pl160 ptb20">
                 <router-link tag="div" :to="{path: '/bookContentFeed', query: {id: '1'}}" class="content_img sprite-book-cover0">
                     <div class="content_img_free"></div>
@@ -82,30 +83,42 @@
 </template>
 
 <script>
-    // import { navData } from './config';
     import headSearch from '@/components/headSearch/';
+    import { getBookList } from '@/api/content';
     export default {
         name: 'bookTypeList',
         data() {
             return {
-                isShow: false, // 默认不显示菜单
                 current: 0, // 当前下标
-                title: '', // 共一条结果
+                title: '', // 标题
                 searchResultData: [],
                 isCancel: false,
                 isSearch: false, // 是否显示搜索
                 isNum: 0,
                 isDefaultVal: '', // 默认搜索关键字
+                isJump: false
             };
         },
         created() {
             let params = this.$route.query;
             this.isDefaultVal = params.title;
+            this.title = params.title;
+            this.getBookList(params.id);
         },
         components: {
             headSearch
         },
         methods: {
+            /** 2020-3-25 0025
+             *作者:王青高
+             *功能: 获取指定书籍
+             *参数:
+             */
+            getBookList(id) {
+                getBookList(id).then(res => {
+                    console.log('res', res);
+                });
+            },
             /** 2020/3/20
              * 作者：王青高
              * 功能：{Function} 返回上一页
@@ -120,11 +133,7 @@
              *参数:
              */
             onClickRight() {
-                if(this.isShow) {
-                    this.isShow = false;
-                } else {
-                    this.isShow = true;
-                }
+                this.$router.push('/footprint');
             },
             /** 2020/3/19
              * 作者：王青高
@@ -132,14 +141,18 @@
              * 参数：{} index 当前索引
              */
             getCurrent(index) {
-                console.log(this.current);
                 this.current = index;
             },
+            /** 2020-3-25 0025
+             *作者:王青高
+             *功能: 发起搜索
+             *参数:
+             */
             searchVal(val) {
                 console.log('搜索内容', val);
-                // if (val) {
-                //     this.searchResultData.push(val);
-                // }
+                if (val) {
+                    this.searchResultData.push(val);
+                }
             },
             /** 2020/3/24
              * 作者：王青高
@@ -346,6 +359,9 @@
         &_item {
             background: $bgc-theme;
             position: relative;
+            .title {
+                color: $color;
+            }
             .tips {
                 position: relative;
                 width: 100%;

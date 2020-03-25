@@ -58,7 +58,7 @@
         <div class="doctorCase_box plr30 mt20">
             <div class="doctorCase_box_menu">
                 <div class="title ptb10">热门</div>
-                <pupblicPanel :listData="hotData" @switchTab="switchTap"/>
+                <pupblicPanel :listData="hotData" @switchTab="switchTap" :isActive="false"/>
             </div>
         </div>
         <!--  热门  end -->
@@ -66,17 +66,17 @@
         <div class="doctorCase_box plr30 mt20">
             <div class="doctorCase_box_menu">
                 <div class="title ptb10">科室</div>
-                <pupblicPanel :listData="allData" @switchTab="switchTap" :notJump="true"/>
+                <pupblicPanel :listData="allData" @switchTab="selectType"/>
             </div>
         </div>
         <!--  科室  end -->
         <!--  科室分类  start -->
-<!--        <div class="doctorCase_box plr30 mt20">-->
-<!--            <div class="doctorCase_box_menu">-->
-<!--                <div class="title ptb10">{{item.title}}</div>-->
-<!--                <pupblicPanel :listData="item.data" @switchTab="switchTap()"/>-->
-<!--            </div>-->
-<!--        </div>-->
+        <div class="doctorCase_box plr30 mt20">
+            <div class="doctorCase_box_menu" v-for="(item, index) of childrenData" :key="'item' + index">
+                <div class="title ptb10">{{item.title}}</div>
+                <pupblicPanel :listData="item.list" @switchTab="switchTap" :isActive="false"/>
+            </div>
+        </div>
         <!--  科室分类 end -->
     </div>
 </template>
@@ -86,7 +86,7 @@
     import pupblicPanel from '@/components/publicPanel';
     import headSearch from '@/components/headSearch/';
     import { navData, menuData } from './config';
-    import { getAllDoctor, getHotDoctor, getChildrenDoctor } from '@/api/content';
+    import { getChildrenDoctor, getIndexData } from '@/api/content';
     export default {
         name: 'doctorCase',
         data() {
@@ -103,34 +103,21 @@
             };
         },
         mounted() {
-            this.getHotDoctor();
-            this.getAllDoctor();
+            this.getIndexData();
         },
         methods: {
-            /** 2020/3/25
-            * 作者：王青高
-            * 功能：{} 获取热门医案分类
-            * 参数：{}
-            */
-            getHotDoctor() {
-                getHotDoctor().then(res => {
+            /** 2020-3-25 0025
+             *作者:王青高
+             *功能: 获取医案首页信息
+             *参数:
+             */
+            getIndexData() {
+                getIndexData().then(res => {
                     let result = res.data;
                     if (res.state === '1') {
-                        this.hotData = result.list;
-                    }
-                });
-            },
-            /** 2020/3/25
-            * 作者：王青高
-            * 功能：{} 获取所有分类
-            * 参数：{}
-            */
-            getAllDoctor() {
-                getAllDoctor().then(res => {
-                    let result = res.data;
-                    if (res.state === '1') {
-                        this.allData = result.list;
-                        this.getChildrenDoctor(this.allData[0].id);
+                        this.hotData = result.hotTypes;
+                        this.allData = result.parentTypes;
+                        this.childrenData = result.subTypes;
                     }
                 });
             },
@@ -140,16 +127,20 @@
             * 参数：{}
             */
             getChildrenDoctor(pid) {
-                getChildrenDoctor({
-                    pid
-                }).then(res => {
+                getChildrenDoctor({ pid }).then(res => {
                     let result = res.data;
                     if (res.state === '1') {
-                        // this.allData = result.list;
-                        this.childrenData = result.list;
-                        console.log('getChildrenDoctor', result.list);
+                        this.childrenData = result;
                     }
                 });
+            },
+            /** 2020-3-25 0025
+             *作者: 点击科室获取对应分类
+             *功能:
+             *参数:
+             */
+            selectType(data) {
+                this.getChildrenDoctor(data.id);
             },
             /** 2020/3/19
             * 作者：王青高
@@ -158,7 +149,6 @@
             */
             getCurrent(index) {
                 this.current = index;
-                console.log(this.current);
             },
             /** 2020/3/19
              * 作者：王青高
@@ -179,12 +169,8 @@
              * 功能：{} 切换搜索或分类页
              * 参数：{}
              */
-            switchTap(data, isJump) {
-                if (isJump) {
-                    this.getChildrenDoctor(data.id);
-                } else {
-                    this.$router.push({ path: '/doctorTypeList', query: { param: data } });
-                }
+            switchTap(data) {
+                this.$router.push({ path: '/doctorTypeList', query: { id: data.id, title: data.title } });
             },
             /** 2020/3/24
              * 作者：王青高

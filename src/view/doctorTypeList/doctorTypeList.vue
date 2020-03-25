@@ -17,55 +17,131 @@
                         @focus="_focus"
                         @_clear="_clear"
                         :isCancel="isCancel"
+                        :_searchVal="isDefaultVal"
                 >
-                    <div slot="searchContent" class="searchContent" v-if="isCancel">
-                        <div class="searchResult">
-                            <ul class="ul" v-if="searchResultData.length">
-                                <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/searchResult', query: {name: search}}">{{search}}</router-link>
-                            </ul>
-                        </div>
-                    </div>
+<!--                    <div slot="searchContent" class="searchContent" v-if="isCancel">-->
+<!--                        <div class="searchResult">-->
+<!--                            <ul class="ul" v-if="searchResultData.length">-->
+<!--                                <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/searchResult', query: {name: search}}">{{search}}</router-link>-->
+<!--                            </ul>-->
+<!--                        </div>-->
+<!--                    </div>-->
                 </headSearch>
             </div>
         </van-sticky>
-        <div class="mask" v-if="isCancel"></div>
+<!--        <div class="mask" v-if="isCancel"></div>-->
         <div class="doctorTyeList_item">
-            <div class="tips ptb20 plr30">找到 5 条结果</div>
-            <div class="plr30 ptb20 content">
-                <div class="title ptb10">鼻渊 副鼻窦炎 | 程莘农</div>
-                <div class="desc ptb10"><span class="desc_t">【证候表现】</span>经常鼻流黄涕十余年。</div>
-                <div class="provenance ptb10"><span class="provenance_t">【出处】</span>《世中联名老中医典型医案》</div>
+            <div class="tips ptb20 plr30">找到 {{searchResultData.length ? searchResultData.length : 0}} 条结果</div>
+            <div v-if="searchResultData.length">
+                <div class="plr30 ptb20 content" v-for="(item, index) of searchResultData" :key="'item' + index" @click="switchDetail(item.id)">
+                    <div class="title ptb10">{{item.title}} 副鼻窦炎 | 程莘农</div>
+                    <div class="desc ptb10"><span class="desc_t">【证候表现】</span>经常鼻流黄涕十余年。</div>
+                    <div class="provenance ptb10"><span class="provenance_t">【出处】</span>《世中联名老中医典型医案》</div>
+                </div>
             </div>
-            <div class="plr30 ptb20 content">
-                <div class="title ptb10">鼻渊 副鼻窦炎 | 程莘农</div>
-                <div class="desc ptb10"><span class="desc_t">【证候表现】</span>经常鼻流黄涕十余年。</div>
-                <div class="provenance ptb10"><span class="provenance_t">【出处】</span>《世中联名老中医典型医案》</div>
-            </div>
+<!--            <div class="plr30 ptb20 content">-->
+<!--                <div class="title ptb10">鼻渊 副鼻窦炎 | 程莘农</div>-->
+<!--                <div class="desc ptb10"><span class="desc_t">【证候表现】</span>经常鼻流黄涕十余年。</div>-->
+<!--                <div class="provenance ptb10"><span class="provenance_t">【出处】</span>《世中联名老中医典型医案》</div>-->
+<!--            </div>-->
         </div>
+        <load-more :loadingType="loadingType" :contentText="contentText"/>
     </div>
 </template>
 
 <script>
     import headSearch from '@/components/headSearch/';
+    import { getDoctorSearch, getDoctorArticle } from '@/api/content';
+    import loadMore from '@/components/loadMore/loadMore.vue';
     export default {
         name: 'doctorTypeList',
         data() {
             return {
                 isShow: false, // 默认不显示菜单
                 current: 0, // 当前下标
-                searchValue: '', // 搜索关键字
-                searchResultData: [], // 存储搜索结果
-                isCancel: false
+                isCancel: false,
+                isDefaultVal: '', // 默认关键字
+                searchOption: {
+                    pageSize: 10,
+                    page: 1,
+                    searchtype: 2
+                },
+                searchResultData: [], // 显示搜索结果数据
+                loadingType: 0,
+                contentText: {
+                    contentdown: '上拉显示更多',
+                    contentrefresh: '正在加载...',
+                    contentnomore: '没有更多数据了'
+                },
             };
         },
         components: {
-            headSearch
+            headSearch,
+            loadMore
         },
         created() {
             let obj = this.$route.query;
-            this.searchValue = obj.name;
+            this.isDefaultVal = obj.title;
+            this.getDoctorArticle(obj.id);
         },
         methods: {
+            /** 2020-3-26 0026
+             *作者:王青高
+             *功能: 搜索框搜索
+             *参数:
+             */
+            getDoctorSearch(val) {
+                this.loadingType = 1;
+                getDoctorSearch({
+                    pagesize: this.searchOption.pageSize,
+                    page: this.searchOption.page,
+                    keyword: val,
+                    searchtype: this.searchOption.searchtype
+                }).then(res => {
+                    let result = res.data;
+                    if (res.state === '1') {
+                        this.searchResultData = result.list;
+                        if (this.searchResultData.length < 10) this.loadingType = 2;
+                    }
+                });
+            },
+            /** 2020-3-26 0026
+             *作者: 王青高
+             *功能: 获取医案文章列表
+             *参数:
+             */
+            getDoctorArticle(id) {
+                this.loadingType = 1;
+                getDoctorArticle({
+                    pagesize: this.searchOption.pageSize,
+                    page: this.searchOption.page,
+                    channelid: id
+                }).then(res => {
+                    let result = res.data;
+                    if (res.state === '1') {
+                        this.searchResultData = result.list;
+                        if (this.searchResultData.length < 10) this.loadingType = 2;
+                    }
+                });
+            },
+            /** 2020-3-26 0026
+             *作者:王青高
+             *功能: 跳转详情
+             *参数:
+             */
+            switchDetail(articleId) {
+                this.$router.push({ path: '/doctorCase/components/doctorDetail', query: { id: articleId } });
+            },
+            /** 2020-3-26 0026
+             *作者:青型科技
+             *功能:
+             *参数:
+             */
+            searchVal(val) {
+                if (val) {
+                    this.getDoctorSearch(val);
+                }
+            },
             /** 2020/3/20
              * 作者：王青高
              * 功能：{Function} 返回上一页
@@ -80,23 +156,15 @@
              *参数:
              */
             onClickRight() {
-                if (this.isShow) {
-                    this.isShow = false;
-                } else {
-                    this.isShow = true;
-                }
+                this.$router.push('/footPrint');
             },
-            // searchVal(val) {
-            //     this.searchValue = val;
-            // },
             /** 2020/3/19
              * 作者：王青高
              * 功能：{} getCurrent 获取当前焦点，并向父组件传送
              * 参数：{} index 当前索引
              */
-            getCurrent(index, component) {
+            getCurrent(index) {
                 this.current = index;
-                // this.componentName = component;
             },
             /** 2020/3/24
              * 作者：王青高
@@ -136,12 +204,6 @@
                 if (this.searchResultData.length) {
                     this.searchResultData = [];
                 }
-            },
-            searchVal(val) {
-                if (val) {
-                    this.searchResultData.push(val);
-                    this.searchValue = val;
-                }
             }
         }
     };
@@ -179,7 +241,6 @@
                 position: absolute;
                 background: $bgc-theme;
                 width: 100%;
-                height: 110vh;
                 left: 0;
                 top: 110px;
                 z-index: $search-z-index;
