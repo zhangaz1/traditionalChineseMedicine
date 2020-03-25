@@ -56,16 +56,24 @@
             </div>
         </headSearch>
         <div class="mask" v-if="isCancel"></div>
-        <div class="book_box plr30 mt20">
-            <div class="book_box_menu" v-for="(item, index) of menuData" :key="item.data[index].id + index">
+        <!--  热门  start -->
+        <div class="book_box plr30 mt20" v-if="hotData">
+            <div class="book_box_menu" v-for="(item, index) of hotData" :key="item.data[index].id + index">
+                <div class="title ptb10">{{item.title}}</div>
+                <pupblicPanel :listData="item.data" @switchTab="switchTap(item.title, index, item.data[index].name)"/>
+            </div>
+        </div>
+        <!--  热门  end -->
+        <div class="book_box plr30 mt20" v-if="menuData.typelist">
+            <div class="book_box_menu" v-for="(item, index) of menuData.typelist" :key="'item' + index" >
                 <div class="title ptb10">{{item.title}}</div>
                 <ul class="library_list ptb20">
                     <li
-                            @click="switchTap(item.title, index, item.data[index].name)"
+                            @click="switchTap(item.title, list)"
                             class="library_list_li ptb10 mb30 plr20 mr70"
-                            v-for="(list, index) of item.data"
+                            v-for="(list, index) of item.list"
                             :key="'list' + index"
-                    >{{list.name}}</li>
+                    >{{list.title}}</li>
                 </ul>
             </div>
         </div>
@@ -75,18 +83,44 @@
 <script>
     import publicTitle from '@/components/publicTitle';
     import headSearch from '@/components/headSearch/';
-    import { navData, menuData } from './config';
+    import pupblicPanel from '@/components/publicPanel';
+    import { getAllBook, getHotBook } from '@/api/content';
+    import { navData } from './config';
     export default {
         name: 'book',
         data() {
             return {
                 navData, // 导航项
-                menuData, // 列表内容
+                menuData: [], // 列表内容
+                hotData: [], // 热门分类
                 current: 0, // 下标索引
                 searchResultData: [], // 存储搜索结果
                 isCancel: false,
                 isSearch: false, // 是否显示搜索
+                isNum: 0
             };
+        },
+        mounted() {
+            /** 2020/3/25
+            * 作者：王青高
+            * 功能：{} 获取所有分类列表
+            * 参数：{}
+            */
+            getAllBook().then(res => {
+                if (res.state === '1') {
+                    this.menuData = res.data;
+                }
+            });
+            /** 2020/3/25
+            * 作者：王青高
+            * 功能：{} 获取热门分类
+            * 参数：{}
+            */
+            getHotBook().then(res => {
+               if (res.state === '1') {
+                   this.hotData = res.data;
+               }
+            });
         },
         methods: {
             /** 2020/3/19
@@ -117,12 +151,12 @@
             * 功能：{} 切换搜索或分类页
             * 参数：{}
             */
-            switchTap(title, index, name) {
-                if (title === '热门') {
-                    this.$router.push({ path: '/searchResult', query: { id: index, name: name } });
-                } else {
-                    this.$router.push({ path: '/bookTypeLlist', query: { id: index, name: name } });
-                }
+            switchTap(title, list) {
+                // if (title === '热门') {
+                //     this.$router.push({ path: '/searchResult', query: { id: index, name: name } });
+                // } else {
+                    this.$router.push({ path: '/bookTypeLlist', query: { title: title, list: list } });
+                // }
             },
             searchVal(val) {
                 console.log('搜索内容', val);
@@ -186,7 +220,8 @@
         },
         components: {
             publicTitle,
-            headSearch
+            headSearch,
+            pupblicPanel
         }
     };
 </script>

@@ -17,13 +17,13 @@ import '../node_modules/vue-video-player/src/custom-theme.css';
 import VideoPlayer from 'vue-video-player';
 // import $ from 'jquery';
 
-import { Icon, Search, Swipe, SwipeItem, Lazyload, sticky, Tab, Tabs, Dialog, NavBar, Form, Field, Button, Checkbox, CheckboxGroup, Toast, Uploader, RadioGroup, Radio, ActionSheet, Loading } from 'vant';
+import { Icon, Search, Swipe, Overlay, SwipeItem, Lazyload, sticky, Tab, Tabs, Dialog, NavBar, Form, Field, Button, Checkbox, CheckboxGroup, Toast, Uploader, RadioGroup, Radio, ActionSheet, Loading } from 'vant';
 Vue.use(VueAwesomeSwiper);
 Vue.config.productionTip = false;
 Vue.use(Alert);
 Vue.use(VideoPlayer);
 // Vue.use($);
-Vue.use(Icon).use(Search).use(Swipe).use(SwipeItem).use(Lazyload).use(sticky).use(Tabs).use(Tab).use(Dialog).use(NavBar).use(Form).use(Field).use(Button).use(Checkbox).use(CheckboxGroup).use(Toast).use(Uploader).use(RadioGroup).use(Radio).use(ActionSheet).use(Loading);
+Vue.use(Icon).use(Search).use(Swipe).use(SwipeItem).use(Lazyload).use(sticky).use(Tabs).use(Tab).use(Dialog).use(NavBar).use(Form).use(Field).use(Button).use(Checkbox).use(CheckboxGroup).use(Toast).use(Uploader).use(RadioGroup).use(Radio).use(ActionSheet).use(Loading).use(Overlay);
 
 new Vue({
   router,

@@ -142,9 +142,6 @@
                     this.isShow = true;
                 }
             },
-            // searchVal(val) {
-            //     this.searchValue = val;
-            // },
             /** 2020/3/19
              * 作者：王青高
              * 功能：{} getCurrent 获取当前焦点，并向父组件传送
@@ -198,6 +195,7 @@
                     this.searchResultData.push(val);
                     this.searchValue = val;
                 }
+
             }
         }
     };

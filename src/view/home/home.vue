@@ -81,14 +81,113 @@
         </subMenu>
         <subMenu class="plr30 bg_f" title="书籍推荐榜" toRouter="/book">
             <swiper class="swiper_common" :options="swiperBook" slot="content">
-                <swiper-slide v-for="(image, index) of images" :key="'image' + index"  class="swiper_common_item">
-                    <router-link to="/" class="swiper_common_item_link">
-                        <div class="item_img">
-                            <img :src="image" class="img mb20"/>
-                            <img :src="image" alt="" class="icon">
+                <swiper-slide  class="swiper_common_item">
+                    <router-link tag="div" :to="{path: '/bookContentFeed', query: {id: '1'}}" class="content_img sprite-book-cover0">
+                        <div class="content_img_free"></div>
+                        <div class="content_img_txt">
+                            <div class="title">
+                                <span class="name">景岳全书</span>一
+                            </div>
                         </div>
-                        <p class="txt">中医四大经典著作之一</p>
+                        <ul class="content_img_line">
+                            <li class="li"></li>
+                            <li class="li"></li>
+                            <li class="li"></li>
+                            <li class="li"></li>
+                            <li class="li"></li>
+                        </ul>
                     </router-link>
+                    <p class="content_img_title pl10">中医四大经典著作之一。</p>
+                </swiper-slide>
+                <swiper-slide  class="swiper_common_item">
+                    <router-link tag="div" :to="{path: '/bookContentFeed', query: {id: '1'}}" class="content_img sprite-book-cover0">
+                        <div class="content_img_free"></div>
+                        <div class="content_img_txt">
+                            <div class="title">
+                                <span class="name">景岳全书</span>一
+                            </div>
+                        </div>
+                        <ul class="content_img_line">
+                            <li class="li"></li>
+                            <li class="li"></li>
+                            <li class="li"></li>
+                            <li class="li"></li>
+                            <li class="li"></li>
+                        </ul>
+                    </router-link>
+                    <p class="content_img_title pl10">中医四大经典著作之一。</p>
+                </swiper-slide>
+                <swiper-slide  class="swiper_common_item">
+                    <router-link tag="div" :to="{path: '/bookContentFeed', query: {id: '1'}}" class="content_img sprite-book-cover0">
+                        <div class="content_img_free"></div>
+                        <div class="content_img_txt">
+                            <div class="title">
+                                <span class="name">景岳全书</span>一
+                            </div>
+                        </div>
+                        <ul class="content_img_line">
+                            <li class="li"></li>
+                            <li class="li"></li>
+                            <li class="li"></li>
+                            <li class="li"></li>
+                            <li class="li"></li>
+                        </ul>
+                    </router-link>
+                    <p class="content_img_title pl10">中医四大经典著作之一。</p>
+                </swiper-slide>
+                <swiper-slide  class="swiper_common_item">
+                    <router-link tag="div" :to="{path: '/bookContentFeed', query: {id: '1'}}" class="content_img sprite-book-cover0">
+                        <div class="content_img_free"></div>
+                        <div class="content_img_txt">
+                            <div class="title">
+                                <span class="name">景岳全书</span>一
+                            </div>
+                        </div>
+                        <ul class="content_img_line">
+                            <li class="li"></li>
+                            <li class="li"></li>
+                            <li class="li"></li>
+                            <li class="li"></li>
+                            <li class="li"></li>
+                        </ul>
+                    </router-link>
+                    <p class="content_img_title pl10">中医四大经典著作之一。</p>
+                </swiper-slide>
+                <swiper-slide  class="swiper_common_item">
+                    <router-link tag="div" :to="{path: '/bookContentFeed', query: {id: '1'}}" class="content_img sprite-book-cover0">
+                        <div class="content_img_free"></div>
+                        <div class="content_img_txt">
+                            <div class="title">
+                                <span class="name">景岳全书</span>一
+                            </div>
+                        </div>
+                        <ul class="content_img_line">
+                            <li class="li"></li>
+                            <li class="li"></li>
+                            <li class="li"></li>
+                            <li class="li"></li>
+                            <li class="li"></li>
+                        </ul>
+                    </router-link>
+                    <p class="content_img_title pl10">中医四大经典著作之一。</p>
+                </swiper-slide>
+                <swiper-slide  class="swiper_common_item">
+                    <router-link tag="div" :to="{path: '/bookContentFeed', query: {id: '1'}}" class="content_img sprite-book-cover0">
+                        <div class="content_img_free"></div>
+                        <div class="content_img_txt">
+                            <div class="title">
+                                <span class="name">景岳全书</span>一
+                            </div>
+                        </div>
+                        <ul class="content_img_line">
+                            <li class="li"></li>
+                            <li class="li"></li>
+                            <li class="li"></li>
+                            <li class="li"></li>
+                            <li class="li"></li>
+                        </ul>
+                    </router-link>
+                    <p class="content_img_title pl10">中医四大经典著作之一。</p>
                 </swiper-slide>
             </swiper>
         </subMenu>
@@ -351,8 +450,89 @@
             }
         }
         .swiper_common {
-            height: 320px;
+            height: 280px;
             &_item {
+                .content_img {
+                    position: absolute;
+                    left: 10px;
+                    top: 20px;
+                    width: 150px;
+                    height: 200px;
+                    &_free {
+                        display: block;
+                        width: 28px;
+                        height: 28px;
+                        background: url(../../assets/img/free_icon.png) center center no-repeat;
+                        background-size: 28px 28px;
+                        background: none\9;
+                        position: absolute;
+                        right: 8px;
+                        top: -8px;
+                        z-index: 1;
+                        border: 1px solid transparent;
+                        box-sizing: border-box;
+                    }
+                    &_txt {
+                        position: absolute;
+                        left: 10px;
+                        top: 20px;
+                        max-width: 190px;
+                        min-height: 110px;
+                        max-height: 166px;
+                        padding: 4px;
+                        background-color: #fffbf5;
+                        writing-mode: vertical-rl;
+                        direction: rtl;
+                        .title {
+                            width: 100%;
+                            cursor: pointer;
+                            padding: 6px 0;
+                            font-size: 28px;
+                            text-align: center;
+                            color: $coloe_3;
+                            writing-mode: vertical-rl;
+                            writing-mode: tb-rl;
+                            direction: rtl;
+                            border: 1px solid $color_999;
+                            .name {
+                                color: $coloe_3;
+                            }
+                        }
+                    }
+                    &_line {
+                        width: 24px;
+                        height: 100%;
+                        list-style-type: none;
+                        box-sizing: border-box;
+                        border-left: 1px solid #fffbf5;
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        .li {
+                            border-bottom: 1px solid #eee;
+                            width: 100%;
+                            height: 25%;
+                            box-sizing: border-box;
+                            &:first-child,
+                            &:last-child {
+                                height: 12.5%;
+                            }
+                            &:last-child {
+                                border-bottom: 0;
+                            }
+
+                        }
+                    }
+                }
+                .content_img_title {
+                    @include multiline-ellipsis(2);
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    font-size: 24px;
+                    color: $color_666;
+                    width: 100%;
+                }
                 &_link {
                     display: flex;
                     flex-direction: column;
@@ -408,5 +588,20 @@
     }
     .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
         opacity: 0;
+    }
+    .sprite-book-cover0 {
+        background-color: #405370;
+    }
+    .sprite-book-cover1 {
+        background-color: #6898a7;
+    }
+    .sprite-book-cover2 {
+        background-color: #746174;
+    }
+    .sprite-book-cover3 {
+        background-color: #a98463;
+    }
+    .sprite-book-cover4 {
+        background-color: #b25d43;
     }
 </style>

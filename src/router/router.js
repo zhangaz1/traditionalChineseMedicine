@@ -104,7 +104,12 @@ export default new Router({
             path: '/videoBox/components/videoBoxTxt',
             name: 'videoBoxTxt',
             component: () => import(/* webpackChunkName: 'login' */ '@/view/videoBox/components/videoBoxTxt.vue')
-        }
+        },
+        {
+            path: '/doctorTypeList',
+            name: 'doctorTypeList',
+            component: () => import(/* webpackChunkName: 'login' */ '@/view/doctorTypeList/doctorTypeList.vue')
+        },
     ],
     scrollBehavior: () => ({ y: 0 })
 });

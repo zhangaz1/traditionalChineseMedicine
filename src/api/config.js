@@ -1,7 +1,7 @@
 export default {
     baseUrl: {
         // dev: 'http://localhost:3000',
-        dev: 'http://localhost:8080', // mockServer
-        pro: 'http://192.168.27.131:12005' // 上线服务器地址
+        dev: 'http://47.103.217.238:9002', // mockServer
+        pro: 'http://47.103.217.238:9002' // 上线服务器地址
     }
-}
+};

@@ -17,14 +17,14 @@
         <div class="plr30 mtb50">
             <van-form @submit="onSubmit">
                 <van-field
-                        v-model="moblie"
-                        name="moblie"
+                        v-model="phone"
+                        name="phone"
                         placeholder="手机号"
                         :rules="[{ validator, message: '请输入正确格式的手机号' }]"
                         class="validator"
                         maxlength="11"
                 />
-                <van-field v-model="name" name="name" placeholder="昵称" class="validator" :rules="[{ required: true, message: '请填写昵称' }]" />
+                <van-field v-model="nickname" name="nickname" placeholder="昵称" class="validator" :rules="[{ required: true, message: '请填写昵称' }]" />
                 <van-field
                         v-model="password"
                         type="password"
@@ -45,24 +45,26 @@
                 我已经阅读，并同意《 <span class="agreement" @click="getAgreement">用户协议</span> 》
             </van-checkbox>
         </div>
-        <van-loading size="24px" v-if="loadingTxt">{{loadingTxt}}</van-loading>
     </div>
 </template>
 
 <script>
-    // import { reg } from '@/api/login';
-    import Cookies from "js-cookie";
+    // import { reg, upHeadImg } from '@/api/login';
+    // import Cookies from "js-cookie";
+    import axios from 'axios';
+    import qs from 'qs';
+    import { Toast } from 'vant';
     export default {
         name: 'registered',
         data() {
             return {
-                moblie: '',
+                phone: '',
                 password: '',
-                name: '',
+                nickname: '',
                 checked: true, // 是否勾选协议
                 headImg: [],
                 isTrue: true,
-                loadingTxt: ''
+                headImgUrl: '', // 存储图片地址.
             };
         },
         methods: {
@@ -88,18 +90,50 @@
              * 参数：{}
              */
             onSubmit(values) {
-                console.log('登陆提交', values);
-                this.loadingTxt = '正在登录中加载中...';
+                // 注册手机
                 // reg({
-                //     moblie: values.moblie,
+                //     phone: values.phone,
                 //     password: values.password,
-                //     name: values.name
+                //     nickname: values.nickname,
+                //     headimgurl: this.headImgUrl
                 // }).then(res => {
-                //     if (res.state === '1') {
-                //         this.loadingTxt = '';
-                //         // Cookies.set('token', res.token, { expires: 15 });
-                //     }
+                //     console.log(res);
                 // });
+                const tips1 = Toast('正在登录中...');
+                axios.post('/login/registByPhone', qs.stringify({
+                    phone: values.phone,
+                    password: values.password,
+                    nickname: values.nickname,
+                    headimgurl: this.headImgUrl
+                })).then(res => {
+                    let data = res.data;
+                    console.log('res', res);
+                    if (res.data.state === '1') {
+                        console.log(data.data.user);
+                        tips1.clear();
+                        this.login(values);
+                    } else {
+                        Toast('注册失败！ 请重新注册!');
+                    }
+                });
+            },
+            login(userInfo) {
+                axios.post('/login/normallogin', qs.stringify({
+                    phone: userInfo.phone,
+                    password: userInfo.password
+                })).then(res => {
+                    let data = res.data;
+                    if (res.data.state === '1') {
+                        try {
+                            localStorage.setItem('user', data.data.user);
+                        } catch (err) {
+                            console.log('err', err);
+                        }
+                        this.$router.push('/me');
+                    } else {
+                        Toast('登录失败！');
+                    }
+                });
             },
             /** 2020/3/20
              * 作者：王青高
@@ -135,22 +169,32 @@
              *参数:
              */
             beforeRead(file) {
-                console.log('上传之前', file);
-                if (file.type !== 'image/jpeg') {
-                    Toast('请上传 jpg 格式图片');
+                if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
+                    Toast('请上传 jpg、png 格式图片');
                     return false;
                 }
                 return true;
             },
             /** 2020-3-21 0021
              *作者:王青高
-             *功能:
+             *功能: 头像上传
              *参数:
              */
             afterRead(file) {
                 // 此时可以自行将文件上传至服务器
-                console.log('上传之后', file);
-                this.isTrue = false;
+                let param = new FormData(); // 创建form对象
+                param.append('file', file.file);
+                let config = {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                };
+                axios.post('/imgupload/upfile', param, config).then(res => {
+                    if (res.data.state === '1') {
+                        Toast('上传成功');
+                        this.isTrue = false;
+                    } else {
+                        Toast('上传失败');
+                    }
+                });
             },
             /** 2020-3-21 0021
              *作者: 王青高
@@ -254,5 +298,15 @@
     }
     .isOpacity{
         opacity: 0;
+    }
+    .wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+    }
+    .van-loading__text {
+        color: #fff;
     }
 </style>

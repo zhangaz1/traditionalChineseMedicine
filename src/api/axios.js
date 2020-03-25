@@ -1,8 +1,9 @@
 // 封装axios的请求， 返回重新封装的数据格式
 // 对错误的统一处理
 import axios from 'axios';
+import qs from 'qs';
 // import errorHandle from './errorHandle.js';
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
 const CancelToken = axios.CancelToken;
 class HttpRequest {
     constructor(baseUrl) {
@@ -35,9 +36,9 @@ class HttpRequest {
         // 发起请求的拦截器
         instance.interceptors.request.use(config => {
             // 判断是否存在token，如果存在的话，则每个http header都加上token
-            if (Cookies.get('token') !== undefined) {
-                config.headers.token = Cookies.get('token');
-            }
+            // if (Cookies.get('token') !== undefined) {
+            //     config.headers.token = Cookies.get('token');
+            // }
             // Do something before request is sent
             let key = config.url + '&' + config.method;
             this.removePending(key, true);
@@ -84,7 +85,6 @@ class HttpRequest {
             method: 'GET',
             url: url
         }, config);
-        console.log('options', options);
         return this.request(options);
     }
     // post 请求

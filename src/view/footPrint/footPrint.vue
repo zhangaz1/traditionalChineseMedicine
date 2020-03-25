@@ -3,7 +3,6 @@
         <publicTitle
                 :navData="navData"
                 @getCurrent="getCurrent"
-                @onSearch="onSearch"
         >
             <div slot="publicTitleRight" class="footPrint_right plr20" @click="_delete">清空</div>
         </publicTitle>
@@ -36,12 +35,19 @@
 <script>
     import publicTitle from '@/components/publicTitle';
     import { navData } from './config';
+    import { getFoot, clearFoot } from '@/api/content';
+    import axios from 'axios';
+    import qs from 'qs';
+    import { Toast } from 'vant';
     export default {
         name: 'footPrint',
         data() {
             return {
                 navData, // 导航项
-                current: 0 // 下标索引
+                current: 0, // 下标索引
+                pagesize: 15,
+                page: 1,
+                footList: [], // 存储足迹或收藏内容
             };
         },
         methods: {
@@ -52,7 +58,20 @@
              */
             getCurrent(index) {
                 this.current = index;
-                console.log('切换', this.current);
+                getFoot({
+                    pagesize: this.pagesize,
+                    page: this.page,
+                    type: index
+                }).then(res => {
+                    console.log('res', res);
+                });
+                axios.get('/footprint/getFoot', qs.stringify({
+                    pagesize: this.pagesize,
+                    page: this.page,
+                    type: index
+                })).then(res => {
+                    console.log('res', res);
+                });
             },
             /** 2020/3/19
              * 作者：王青高
@@ -68,7 +87,12 @@
              *参数:
              */
             _delete() {
-                console.log('清空列表内容');
+                clearFoot({ type: this.current }).then(res => {
+                    if (res.state === '1') {
+                        this.footList = [];
+                        Toast('清除成功');
+                    }
+                });
             }
         },
         components: {

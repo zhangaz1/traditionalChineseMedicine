@@ -15,8 +15,8 @@
         <div class="plr30 mtb50">
             <van-form @submit="onSubmit">
                 <van-field
-                        v-model="moblie"
-                        name="validator"
+                        v-model="phone"
+                        name="phone"
                         placeholder="手机号"
                         :rules="[{ validator, message: '请输入正确格式的手机号' }]"
                         class="validator"
@@ -27,7 +27,7 @@
                 <van-field
                         v-model="password"
                         type="password"
-                        name="密码"
+                        name="password"
                         placeholder="密码"
                         :rules="[{ required: true, message: '请填写密码' }]"
                         class="validator"
@@ -59,11 +59,15 @@
 </template>
 
 <script>
+    import axios from 'axios';
+    import qs from 'qs';
+    import { Toast } from 'vant';
+
     export default {
         name: 'login',
         data() {
             return {
-                moblie: '',
+                phone: '',
                 password: '',
                 checked: true // 是否勾选协议
             };
@@ -90,8 +94,26 @@
             * 功能：{Function} 表单提交-登陆账号
             * 参数：{}
             */
-            onSubmit() {
-                console.log('登陆提交');
+            onSubmit(values) {
+                console.log('登陆提交', values);
+                axios.post('/login/normallogin', qs.stringify({
+                    phone: values.phone,
+                    password: values.password
+                })).then(res => {
+                    let data = res.data;
+                    if (res.data.state === '1') {
+                        try {
+                            localStorage.setItem('user', data.data.user);
+                        } catch (err) {
+                            console.log('err', err);
+                        }
+                        this.$router.push('/me');
+                    } else {
+                        Toast('登录失败！');
+                        this.phone = '';
+                        this.password = '';
+                    }
+                });
             },
             /** 2020/3/20
             * 作者：王青高
@@ -99,7 +121,6 @@
             * 参数：{}
             */
             validator(val) {
-                console.log('val', val);
                 return /^1(3|4|5|6|7|8|9)\d{9}$/.test(val);
             },
             /** 2020/3/20
@@ -116,7 +137,6 @@
             * 参数：{}
             */
             getRadio() {
-                console.log('this.checked', this.checked);
                 if (this.checked) {
                     this.checked = false;
                 } else {
@@ -146,7 +166,7 @@
     }
     .van-button--info {
         background: $bgColor;
-        border: 1px solid $bgColor;
+        border: 1px solid $color;
         color: $color;
     }
     .login {

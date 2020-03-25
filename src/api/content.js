@@ -9,21 +9,44 @@ import qs from 'qs';
 const getList = options => {
     return axios.get('/public/list?' + qs.stringify(options));
 };
-// 获取温馨提醒接口
-const getTips = () => {
-    return axios.get('/public/tips');
+
+// 获取收藏和足迹接口
+const getFoot = options => {
+    return axios.get('/footprint/getFoot?' + qs.stringify(options));
 };
-// 获取本周热议
-const getTop = () => {
-    return axios.get('/public/topWeek');
+
+// 清除收藏或足迹接口
+const clearFoot = options => {
+    return axios.get('footprint/clearFoot?' + qs.stringify(options));
 };
-// 获取友情链接接口
-const getLinks = () => {
-    return axios.get('/public/links');
+
+// 获取书库所有分类
+const getAllBook = () => {
+    return axios.get('/shuku/getAllTypes');
+};
+// 获取书库热门分类
+const getHotBook = () => {
+    return axios.get('/shuku/getHotType');
+};
+// 获取医案热门分类
+const getHotDoctor = () => {
+    return axios.get('/yian/getHotType');
+};
+// 获取医案分类
+const getAllDoctor = () => {
+    return axios.get('/yian/getParentType');
+};
+// 获取医案二级分类
+const getChildrenDoctor = pid => {
+    return axios.get('/yian/getSubTypeByPid?' + qs.stringify(pid));
 };
 export {
     getList,
-    getTips,
-    getLinks,
-    getTop
+    getFoot,
+    clearFoot,
+    getAllBook,
+    getHotBook,
+    getHotDoctor,
+    getAllDoctor,
+    getChildrenDoctor
 };

@@ -1,5 +1,5 @@
 import axios from './request';
-
+import qs from 'qs';
 /** 2020-2-15 0015
  *作者:王青高
  *功能: 图形验证码
@@ -43,9 +43,18 @@ const login = loginInfo => {
  *参数: {regInfo: 用户注册信息}
  */
 const reg = regInfo => {
-    return axios.post('/login/reg', {
-        ...regInfo
-    });
+    return axios.post('/login/registByPhone', regInfo);
+    // return axios.post('/login/registByPhone', regInfo);
 };
-
-export { getCode, forget, login, reg };
+/** 2020/3/25
+* 作者：王青高
+* 功能：{} 上传头像
+* 参数：{}
+*/
+// 上传头像
+const upHeadImg = file => {
+  return axios.post('/imgupload/upfile', {
+      ...file
+  });
+};
+export { getCode, forget, login, reg, upHeadImg };

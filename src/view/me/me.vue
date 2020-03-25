@@ -6,7 +6,7 @@
             <span class="me_title_tips">登录后可获取签到等功能</span>
         </div>
         <div class="me_login mb20 ptb10" @click="openUser" v-else>
-            <div class="me_login_name">某某某</div>
+            <div class="me_login_name">{{userInfo.nickname}}</div>
             <div class="me_login_money">
                 <img :src="moneyImg" alt="" class="img">
                 <span class="money ml20">金币：500</span>
@@ -40,6 +40,10 @@
             <li class="me_vip_li ptb20 plr30" @click="share">
                 <van-icon name="share" class="icon"/>
                 <span class="txt pl80">分享好友</span>
+            </li>
+            <li class="me_vip_li ptb20 plr30" @click="quit">
+                <van-icon name="exchange" class="icon"/>
+                <span class="txt pl80">退出登录</span>
             </li>
         </ul>
         <van-action-sheet v-model="shareMenu" title="选择要分享的平台" class="me_share" :round="false">
@@ -88,21 +92,32 @@
 <script>
     import { menuConfig, swiperShare } from './config';
     import { swiper, swiperSlide } from 'vue-awesome-swiper';
+    import Cookies from "js-cookie";
     export default {
         name: 'me',
         data() {
             return {
                 headImg: require('../../assets/img/userHead.png'),
-                moneyImg: require('../../assets/img/userHead.png'),
+                moneyImg: require('../../assets/img/money.png'),
                 swiperShare,
                 menuConfig,
                 isLogin: false, // 是否登录
                 shareMenu: false, // 是否显示分享好友
+                userInfo: ''
             };
         },
         components: {
             swiper,
             swiperSlide
+        },
+        created() {
+            // 检测是否用户登录
+            if (Cookies.get('shuan120token')) {
+                this.userInfo = JSON.parse(localStorage.getItem('user'));
+                if (this.userInfo) {
+                    this.isLogin = true;
+                }
+            }
         },
         methods: {
             /** 2020/3/20
@@ -169,11 +184,20 @@
              *参数:
              */
             share() {
-                if(this.shareMenu) {
+                if (this.shareMenu) {
                     this.shareMenu = false;
                 } else {
                     this.shareMenu = true;
                 }
+            },
+            /** 2020/3/25
+            * 作者：王青高
+            * 功能：{} 退出登录
+            * 参数：{}
+            */
+            quit() {
+                localStorage.removeItem('user');
+                this.$router.push('/login');
             },
             /** 2020-3-22 0022
              *作者: 分享按钮
@@ -309,6 +333,7 @@
                     width: 30px;
                     height: 30px;
                     border-radius: 50%;
+                    padding-bottom: 10px;
                 }
                 .money {
                     color: $color_666;

@@ -1,12 +1,12 @@
 <template>
     <ul class="library_list ptb20">
         <li
-                class="library_list_li ptb10 mb30 plr20 mr70"
+                class="library_list_li ptb10 mb30 plr20 mr30"
                 v-for="(list, index) of listData"
                 :key="'list' + index"
                 :class="{_active: currentColor === index}"
                 @click="switchTab(list, index)"
-        >{{list.name}}</li>
+        >{{list.title}}</li>
     </ul>
 </template>
 
@@ -24,6 +24,10 @@
                 default() {
                     return [];
                 }
+            },
+            notJump: {
+                type: Boolean,
+                defalut: false
             }
         },
         methods: {
@@ -34,7 +38,7 @@
              */
             switchTab(data, index) {
                 this.currentColor = index;
-                this.$emit('switchTab', data);
+                this.$emit('switchTab', data, this.notJump);
             }
         }
     };
@@ -53,7 +57,7 @@
         justify-content: flex-start;
         align-items: center;
         &_li {
-            width: 20%;
+            min-width: 20%;
             border: 1px solid $color;
             background: #fefff9;
             border-radius: 60px;

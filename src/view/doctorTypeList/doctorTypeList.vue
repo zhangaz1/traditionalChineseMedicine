@@ -1,23 +1,22 @@
 <template>
-    <div class="bookTypeList pb100">
+    <div class="doctorTyeList pb100">
         <van-sticky>
-            <div class="bookTypeList_sticky">
+            <div class="doctorTyeList_sticky">
                 <van-nav-bar
-                        title="古籍"
+                        title="医案"
                         right-text="..."
                         left-arrow
                         @click-left="onGoBack"
                         @click-right="onClickRight"
-                        class="bookTypeList_title"
+                        class="doctorTyeList_title"
                 />
                 <headSearch
-                        class="bookTypeList_search"
+                        class="doctorTyeList_search"
                         @searchVal="searchVal"
                         @cancel="onCancel"
                         @focus="_focus"
                         @_clear="_clear"
                         :isCancel="isCancel"
-                        :_searchVal="isDefaultVal"
                 >
                     <div slot="searchContent" class="searchContent" v-if="isCancel">
                         <div class="searchResult">
@@ -29,81 +28,42 @@
                 </headSearch>
             </div>
         </van-sticky>
-        <div class="bookTypeList_item plr30">
-            <div class="tips ptb20">共有{{isNum}}条结果</div>
-            <div class="content pl160 ptb20">
-                <router-link tag="div" :to="{path: '/bookContentFeed', query: {id: '1'}}" class="content_img sprite-book-cover0">
-                    <div class="content_img_free"></div>
-                    <div class="content_img_txt">
-                        <div class="title">
-                            <span class="name">景岳全书</span>一
-                        </div>
-                    </div>
-                    <ul class="content_img_line">
-                        <li class="li"></li>
-                        <li class="li"></li>
-                        <li class="li"></li>
-                        <li class="li"></li>
-                        <li class="li"></li>
-                    </ul>
-                </router-link>
-                <router-link tag="div" :to="{path: '/bookDetail', query: {id: '1'}}" class="content_txt pl20">
-                    <div class="title mb20">景岳全书(一)</div>
-                    <p class="author mb10">明·张景岳</p>
-                    <p class="description">首创方药八阵法的医学全书。</p>
-                    <button class="resultsBtns">阅读</button>
-                </router-link>
+        <div class="mask" v-if="isCancel"></div>
+        <div class="doctorTyeList_item">
+            <div class="tips ptb20 plr30">找到 5 条结果</div>
+            <div class="plr30 ptb20 content">
+                <div class="title ptb10">鼻渊 副鼻窦炎 | 程莘农</div>
+                <div class="desc ptb10"><span class="desc_t">【证候表现】</span>经常鼻流黄涕十余年。</div>
+                <div class="provenance ptb10"><span class="provenance_t">【出处】</span>《世中联名老中医典型医案》</div>
             </div>
-            <div class="content pl160 ptb20">
-                <div class="content_img sprite-book-cover1">
-                    <div class="content_img_free"></div>
-                    <div class="content_img_txt">
-                        <div class="title">
-                            <span class="name">景岳全书</span>一
-                        </div>
-                    </div>
-                    <ul class="content_img_line">
-                        <li class="li"></li>
-                        <li class="li"></li>
-                        <li class="li"></li>
-                        <li class="li"></li>
-                        <li class="li"></li>
-                    </ul>
-                </div>
-                <div class="content_txt pl20">
-                    <div class="title mb20">景岳全书(一)</div>
-                    <p class="author mb10">明·张景岳</p>
-                    <p class="description">首创方药八阵法的医学全书。</p>
-                    <button class="resultsBtns">阅读</button>
-                </div>
+            <div class="plr30 ptb20 content">
+                <div class="title ptb10">鼻渊 副鼻窦炎 | 程莘农</div>
+                <div class="desc ptb10"><span class="desc_t">【证候表现】</span>经常鼻流黄涕十余年。</div>
+                <div class="provenance ptb10"><span class="provenance_t">【出处】</span>《世中联名老中医典型医案》</div>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-    // import { navData } from './config';
     import headSearch from '@/components/headSearch/';
     export default {
-        name: 'bookTypeList',
+        name: 'doctorTypeList',
         data() {
             return {
                 isShow: false, // 默认不显示菜单
                 current: 0, // 当前下标
-                title: '', // 共一条结果
-                searchResultData: [],
-                isCancel: false,
-                isSearch: false, // 是否显示搜索
-                isNum: 0,
-                isDefaultVal: '', // 默认搜索关键字
+                searchValue: '', // 搜索关键字
+                searchResultData: [], // 存储搜索结果
+                isCancel: false
             };
-        },
-        created() {
-            let params = this.$route.query;
-            this.isDefaultVal = params.title;
         },
         components: {
             headSearch
+        },
+        created() {
+            let obj = this.$route.query;
+            this.searchValue = obj.name;
         },
         methods: {
             /** 2020/3/20
@@ -120,26 +80,23 @@
              *参数:
              */
             onClickRight() {
-                if(this.isShow) {
+                if (this.isShow) {
                     this.isShow = false;
                 } else {
                     this.isShow = true;
                 }
             },
+            // searchVal(val) {
+            //     this.searchValue = val;
+            // },
             /** 2020/3/19
              * 作者：王青高
              * 功能：{} getCurrent 获取当前焦点，并向父组件传送
              * 参数：{} index 当前索引
              */
-            getCurrent(index) {
-                console.log(this.current);
+            getCurrent(index, component) {
                 this.current = index;
-            },
-            searchVal(val) {
-                console.log('搜索内容', val);
-                // if (val) {
-                //     this.searchResultData.push(val);
-                // }
+                // this.componentName = component;
             },
             /** 2020/3/24
              * 作者：王青高
@@ -147,11 +104,9 @@
              * 参数：{}
              */
             onCancel() {
-                // console.log('取消');
                 if (this.isCancel) {
                     this.isCancel = false;
                     this.searchResultData = [];
-                    this.isSearch = false;
                 }
             },
             /** 2020/3/24
@@ -182,20 +137,12 @@
                     this.searchResultData = [];
                 }
             },
-            /** 2020/3/19
-             * 作者：王青高
-             * 功能：{} 弹出搜索
-             * 参数：{}
-             */
-            onSearch(val) {
-                console.log('点击了搜索');
-                if (!this.isSearch) {
-                    this.isSearch = true;
-                    this.isCancel = true;
-                } else {
-                    this.isSearch = false;
+            searchVal(val) {
+                if (val) {
+                    this.searchResultData.push(val);
+                    this.searchValue = val;
                 }
-            },
+            }
         }
     };
 </script>
@@ -218,22 +165,12 @@
     .van-nav-bar__title {
         color: $color;
     }
-    .bookTypeList {
+    .doctorTyeList {
         position: relative;
+        background: $bgc-theme;
         &_sticky {
             background: #f3f2eb;
             position: relative;
-            &_nav {
-                display: flex;
-                justify-content: space-around;
-                align-items: center;
-                height: 80px;
-                background: $bgc-theme;
-                .li {
-                    font-size: 28px;
-                    color: $coloe_3;
-                }
-            }
         }
         &_search {
             position: relative;
@@ -290,70 +227,16 @@
                 }
             }
         }
-        &_title {
-            height: 108px;
-            &_dropDown {
-                position: absolute;
-                right: 20px;
-                top: 100px;
-                background: $bgc-theme;
-                width: 300px;
-                z-index: $dropDown;
-                box-shadow: 0 -2px 16px 2px rgba(102,102,102,0.2);
-                border-radius: 12px;
-                &::after {
-                    content: "";
-                    position: absolute;
-                    right: 10px;
-                    top: -20px;
-                    border-color: $bgc-theme transparent;
-                    border-width: 0 28px 20px 28px;
-                    border-style: solid;
-                    width: 0;
-                    height: 0;
-                }
-                &_item {
-                    height: 100px;
-                    line-height: 100px;
-                    position: relative;
-                    .van-icon {
-                        position: absolute;
-                        left: 30px;
-                        top: 30px;
-                        font-size: 48px;
-                    }
-                    .txt {
-                        display: block;
-                        font-size: 28px;
-                        color: $coloe_3;
-                        text-align: left;
-                        border-bottom: 1px solid #f2f2f2;
-                    }
-                }
-            }
-        }
-        &_nav {
-            height: 80px;
-            background: $bgc-theme;
-            .swiper {
-                height: 100%;
-                &_item {
-                    @include flex-center();
-                    height: 100%;
-                }
-            }
-        }
         &_item {
             background: $bgc-theme;
             position: relative;
             .tips {
                 position: relative;
-                width: 100%;
                 text-align: center;
                 &:after {
                     content: '';
                     position: absolute;
-                    left: 0%;
+                    left: 5%;
                     top: 50%;
                     border: 1px dotted $ccc-color;
                     width: 30%;
@@ -361,7 +244,7 @@
                 &:before {
                     content: '';
                     position: absolute;
-                    right: 0%;
+                    right: 5%;
                     top: 50%;
                     border: 1px dotted $ccc-color;
                     width: 30%;
@@ -462,21 +345,11 @@
                         line-height: 44px;
                         color: $color_666;
                     }
-                    .resultsBtns {
-                        position: absolute;
-                        bottom: 0;
-                        right: 0;
-                        color: $color;
-                        display: block;
-                        line-height: 68px;
-                        height: 68px;
-                        width: 216px;
-                        border: 1px solid $color;
-                        background: $bgc-theme;
+                    .digest {
+                        @include multiline-ellipsis(2);
                         font-size: 28px;
-                        border-radius: 10px;
-                        text-align: center;
-                        box-sizing: border-box;
+                        color: $coloe_3;
+                        line-height: 1.5;
                     }
                 }
             }
@@ -493,20 +366,5 @@
         width: 50%;
         background: $color;
         height: 6px;
-    }
-    .sprite-book-cover0 {
-        background-color: #405370;
-    }
-    .sprite-book-cover1 {
-        background-color: #6898a7;
-    }
-    .sprite-book-cover2 {
-        background-color: #746174;
-    }
-    .sprite-book-cover3 {
-        background-color: #a98463;
-    }
-    .sprite-book-cover4 {
-        background-color: #b25d43;
     }
 </style>

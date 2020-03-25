@@ -1,13 +1,13 @@
 const navData = [
-    {
-        txt: '常见病'
-    },
+    // {
+    //     txt: '常见病'
+    // },
     {
         txt: '分类'
     },
-    {
-        txt: '名家'
-    }
+    // {
+    //     txt: '名家'
+    // }
 ];
 const menuData = [{
         title: '热门',

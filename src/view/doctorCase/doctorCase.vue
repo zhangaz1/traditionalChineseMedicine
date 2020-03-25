@@ -19,33 +19,33 @@
                 :isCancel="isCancel"
         >
             <div slot="searchContent" class="searchContent" v-if="isCancel">
-                <div v-if="!searchResultData.length" class="hot plr30">
-                    <div class="title ptb20">热搜</div>
-                    <ul class="content ptb20">
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                    </ul>
-                </div>
-                <div v-if="!searchResultData.length" class="history plr30">
-                    <div class="title ptb20">
-                        搜索历史
-                        <van-icon name="delete" class="title_icon" @click="_delete"/>
-                    </div>
-                    <ul class="content ptb20">
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                    </ul>
-                </div>
+<!--                <div v-if="!searchResultData.length" class="hot plr30">-->
+<!--                    <div class="title ptb20">热搜</div>-->
+<!--                    <ul class="content ptb20">-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                    </ul>-->
+<!--                </div>-->
+<!--                <div v-if="!searchResultData.length" class="history plr30">-->
+<!--                    <div class="title ptb20">-->
+<!--                        搜索历史-->
+<!--                        <van-icon name="delete" class="title_icon" @click="_delete"/>-->
+<!--                    </div>-->
+<!--                    <ul class="content ptb20">-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+<!--                    </ul>-->
+<!--                </div>-->
                 <div class="searchResult">
                     <ul class="ul" v-if="searchResultData.length">
                         <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/searchResult', query: {name: search}}">{{search}}</router-link>
@@ -56,27 +56,27 @@
         <div class="mask" v-if="isCancel"></div>
         <!--  热门  start -->
         <div class="doctorCase_box plr30 mt20">
-            <div class="doctorCase_box_menu" v-for="(item, index) of menuData" :key="item.data[index].id + index">
-                <div class="title ptb10">{{item.title}}</div>
-                <pupblicPanel :listData="item.data" @switchTab="switchTap(item.title, index, item.data[index].name)"/>
+            <div class="doctorCase_box_menu">
+                <div class="title ptb10">热门</div>
+                <pupblicPanel :listData="hotData" @switchTab="switchTap"/>
             </div>
         </div>
         <!--  热门  end -->
         <!--  科室  start -->
         <div class="doctorCase_box plr30 mt20">
-            <div class="doctorCase_box_menu" v-for="(item, index) of menuData" :key="item.data[index].id + index">
-                <div class="title ptb10">{{item.title}}</div>
-                <pupblicPanel :listData="item.data" @switchTab="switchTap(item.title, index, item.data[index].name)"/>
+            <div class="doctorCase_box_menu">
+                <div class="title ptb10">科室</div>
+                <pupblicPanel :listData="allData" @switchTab="switchTap" :notJump="true"/>
             </div>
         </div>
         <!--  科室  end -->
         <!--  科室分类  start -->
-        <div class="doctorCase_box plr30 mt20">
-            <div class="doctorCase_box_menu" v-for="(item, index) of menuData" :key="item.data[index].id + index">
-                <div class="title ptb10">{{item.title}}</div>
-                <pupblicPanel :listData="item.data" @switchTab="switchTap(item.title, index, item.data[index].name)"/>
-            </div>
-        </div>
+<!--        <div class="doctorCase_box plr30 mt20">-->
+<!--            <div class="doctorCase_box_menu">-->
+<!--                <div class="title ptb10">{{item.title}}</div>-->
+<!--                <pupblicPanel :listData="item.data" @switchTab="switchTap()"/>-->
+<!--            </div>-->
+<!--        </div>-->
         <!--  科室分类 end -->
     </div>
 </template>
@@ -86,6 +86,7 @@
     import pupblicPanel from '@/components/publicPanel';
     import headSearch from '@/components/headSearch/';
     import { navData, menuData } from './config';
+    import { getAllDoctor, getHotDoctor, getChildrenDoctor } from '@/api/content';
     export default {
         name: 'doctorCase',
         data() {
@@ -96,9 +97,60 @@
                 searchResultData: [], // 存储搜索结果
                 isCancel: false,
                 isSearch: false, // 是否显示搜索
+                hotData: [], // 热门分类
+                allData: [], // 所有分类
+                childrenData: [], // 二级分类
             };
         },
+        mounted() {
+            this.getHotDoctor();
+            this.getAllDoctor();
+        },
         methods: {
+            /** 2020/3/25
+            * 作者：王青高
+            * 功能：{} 获取热门医案分类
+            * 参数：{}
+            */
+            getHotDoctor() {
+                getHotDoctor().then(res => {
+                    let result = res.data;
+                    if (res.state === '1') {
+                        this.hotData = result.list;
+                    }
+                });
+            },
+            /** 2020/3/25
+            * 作者：王青高
+            * 功能：{} 获取所有分类
+            * 参数：{}
+            */
+            getAllDoctor() {
+                getAllDoctor().then(res => {
+                    let result = res.data;
+                    if (res.state === '1') {
+                        this.allData = result.list;
+                        this.getChildrenDoctor(this.allData[0].id);
+                    }
+                });
+            },
+            /** 2020/3/25
+            * 作者：王青高
+            * 功能：{} 获取二级分类
+            * 参数：{}
+            */
+            getChildrenDoctor(pid) {
+                getChildrenDoctor({
+                    pid
+                }).then(res => {
+                    let result = res.data;
+                    if (res.state === '1') {
+                        // this.allData = result.list;
+                        this.childrenData = result.list;
+                        console.log('getChildrenDoctor', result.list);
+                    }
+                });
+            },
             /** 2020/3/19
             * 作者：王青高
             * 功能：{Function} @getCurrent 获取当前下标索引，显示相关内容
@@ -127,11 +179,11 @@
              * 功能：{} 切换搜索或分类页
              * 参数：{}
              */
-            switchTap(title, index, name) {
-                if (title === '热门') {
-                    this.$router.push({ path: '/searchResult', query: { id: index, name: name } });
+            switchTap(data, isJump) {
+                if (isJump) {
+                    this.getChildrenDoctor(data.id);
                 } else {
-                    this.$router.push({ path: '/bookTypeLlist', query: { id: index, name: name } });
+                    this.$router.push({ path: '/doctorTypeList', query: { param: data } });
                 }
             },
             /** 2020/3/24
@@ -193,6 +245,7 @@
 <style lang="scss" scoped>
     @import "~@/assets/css/_mixins";
     .doctorCase {
+        background: $bgc-theme;
         &_box {
             background: $bgc-theme;
         }
