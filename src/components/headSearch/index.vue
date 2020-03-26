@@ -6,7 +6,7 @@
                 class="headSerach_search"
                 background="#fff"
                 :show-action="isCancel"
-                placeholder="请输入书名"
+                placeholder="请输搜索关键字"
                 maxlength="20 "
                 @input="getSearchVal"
                 @cancel="onCancel"

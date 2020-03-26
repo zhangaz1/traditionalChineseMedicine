@@ -38,8 +38,9 @@
 
 <script>
     import headSearch from '@/components/headSearch/';
-    import { getDoctorSearch, getDoctorArticle } from '@/api/content';
+    import { getSearch, getDoctorArticle } from '@/api/content';
     import loadMore from '@/components/loadMore/loadMore.vue';
+    import { EventBus } from "@/utils/event-bus";
     export default {
         name: 'doctorTypeList',
         data() {
@@ -71,15 +72,18 @@
             this.isDefaultVal = obj.title;
             this.getDoctorArticle(obj.id);
         },
+        mounted() {
+            EventBus.$emit("isDisplay", { data: false });
+        },
         methods: {
             /** 2020-3-26 0026
              *作者:王青高
              *功能: 搜索框搜索
              *参数:
              */
-            getDoctorSearch(val) {
+            getSearch(val) {
                 this.loadingType = 1;
-                getDoctorSearch({
+                getSearch({
                     pagesize: this.searchOption.pageSize,
                     page: this.searchOption.page,
                     keyword: val,
@@ -126,7 +130,7 @@
              */
             searchVal(val) {
                 if (val) {
-                    this.getDoctorSearch(val);
+                    this.getSearch(val);
                 }
             },
             /** 2020/3/20
@@ -217,6 +221,7 @@
     .doctorTyeList {
         position: relative;
         background: $bgc-theme;
+        height: 92.5vh;
         &_sticky {
             background: #f3f2eb;
             position: relative;

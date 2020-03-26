@@ -7,7 +7,7 @@
         >
             <div slot="publicTitleRight" class="footPrint_right plr20" @click="_delete">清空</div>
         </publicTitle>
-        <ul class="footPrint_box plr30" v-if="footList.length">
+        <ul class="footPrint_box plr30" v-if="footList.length" @scroll="handleScroll($event)">
             <li class="footPrint_box_li pl100" v-for="(item, index) of footList" :key="'item' + index" @click="toRouter(item)">
                 <img :src="require('../../assets/img/footPrint.png')" alt="" class="img">
                 <div class="right ptb10">
@@ -15,10 +15,12 @@
                     <div class="right_txt ptb10"><span class="right_txt_one">{{item.createtime}}</span></div>
                 </div>
             </li>
+            <li>
+                <load-more :loadingType="loadingType" :contentText="contentText"/>
+            </li>
         </ul>
         <div v-else-if="type === 1" class="footPrint_tips ptb40">暂无浏览</div>
         <div v-else-if="type === 2" class="footPrint_tips ptb40">暂无收藏</div>
-        <load-more :loadingType="loadingType" :contentText="contentText"/>
     </div>
 </template>
 
@@ -28,7 +30,7 @@
     import { navData } from './config';
     import { getFoot, clearFoot } from '@/api/content';
     import { Toast } from 'vant';
-    import { eventScroll } from '@/utils/addEventScroll';
+    import { EventBus } from "@/utils/event-bus";
     export default {
         name: 'footPrint',
         data() {
@@ -50,29 +52,39 @@
         },
         created() {
             localStorage.setItem('isDisplay', 'false');
-            eventScroll().then(res => {
-                if (res) {
-                    this.page = (this.page + 1);
-                    this.getCurrent(this.current);
-                }
-            });
         },
         mounted() {
             this.getCurrent(0);
+            EventBus.$emit("isDisplay", { data: false });
         },
         methods: {
+            /** 2020/3/26
+             * 作者：王青高
+             * 功能：{} 监听滚动条
+             * 参数：{}
+             */
+            handleScroll(event) {
+                let scrollTop = event.target.scrollTop;
+                let clientHeight = event.target.clientHeight;
+                let scrollHeight = event.target.scrollHeight;
+                console.log('scrollTop', scrollTop, 'windowHeight', clientHeight, 'scrollHeight', scrollHeight);
+                if (scrollTop + clientHeight >= (scrollHeight - 10)) {
+                    this.page++;
+                    this.getCurrent(this.current);
+                }
+            },
             /** 2020/3/19
              * 作者：王青高
              * 功能：{Function} @getCurrent 获取当前下标索引，显示相关内容
              * 参数：{}
              */
             getCurrent(index) {
+                this.type = (index + 1);
+                this.current = index;
                 if (this.footList.length >= this.totalcount) {
                     this.loadingType = 2;
                     return;
                 }
-                this.current = index;
-                this.type = (index + 1);
                 this.loadingType = 1;
                 getFoot({
                     pagesize: this.pagesize,
@@ -93,6 +105,11 @@
              *参数:
              */
             _delete() {
+                if (!this.footList.length) {
+                    if (this.type === 1) Toast('目前没有足迹');
+                    if (this.type === 2) Toast('目前没有收藏');
+                    return;
+                }
                 clearFoot({ type: this.type }).then(res => {
                     if (res.state === '1') {
                         this.footList = [];
@@ -119,6 +136,8 @@
 <style lang="scss" scoped>
     @import "~@/assets/css/_mixins";
     .footPrint {
+        height: 85vh;
+        background: $bgc-theme;
         &_right {
             font-size: 24px;
             color: $coloe_3;

@@ -86,7 +86,8 @@
     import pupblicPanel from '@/components/publicPanel';
     import headSearch from '@/components/headSearch/';
     import { navData, menuData } from './config';
-    import { getChildrenDoctor, getIndexData, getDoctorSearch } from '@/api/content';
+    import { EventBus } from "@/utils/event-bus";
+    import { getChildrenDoctor, getIndexData, getSearch } from '@/api/content';
     export default {
         name: 'doctorCase',
         data() {
@@ -104,11 +105,12 @@
                     pageSize: 10,
                     page: 1,
                     searchtype: 2
-                },
+                }
             };
         },
         mounted() {
             this.getIndexData();
+            EventBus.$emit("isDisplay", { data: true });
         },
         methods: {
             /** 2020-3-25 0025
@@ -161,7 +163,6 @@
              * 参数：{}
              */
             onSearch(val) {
-                console.log('点击了搜索');
                 if (!this.isSearch) {
                     this.isSearch = true;
                     this.isCancel = true;
@@ -219,7 +220,7 @@
                 }
             },
             searchVal(val) {
-                getDoctorSearch({
+                getSearch({
                     pagesize: this.searchOption.pageSize,
                     page: this.searchOption.page,
                     keyword: val,

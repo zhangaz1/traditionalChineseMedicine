@@ -33,8 +33,8 @@ const getBookList = id => {
 const getIndexData = () => {
     return axios.get('/yian/getIndexData');
 };
-// 获取医案分页搜索
-const getDoctorSearch = options => {
+// 获取分页搜索
+const getSearch = options => {
     return axios.get('search/searchInfoByKeyWords?' + qs.stringify(options));
 };
 // 获取医案文章列表
@@ -66,8 +66,8 @@ const addFeedBack = content => {
     return axios.get('/learn/addFeedBack?' + qs.stringify(content));
 };
 // 根据分类获取视频列表
-const getVediolistByChannel = id => {
-    return axios.get('/vedio/getVediolistByChannel?' + qs.stringify(id));
+const getVediolistByChannel = options => {
+    return axios.get('/vedio/getVediolistByChannel?' + qs.stringify(options));
 };
 // 点击视频获取内容和目录
 const getVedioList = id => {
@@ -86,7 +86,7 @@ export {
     getHomeInfo,
     getBookList,
     getIndexData,
-    getDoctorSearch,
+    getSearch,
     getDoctorArticle,
     getDoctorArticleDetail,
     addToCollectionInfo,

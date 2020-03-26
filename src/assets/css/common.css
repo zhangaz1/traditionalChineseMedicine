@@ -68,6 +68,10 @@
     margin-left: 10px;
     margin-right: 10px;
 }
+.mlr20 {
+    margin-left: 20px;
+    margin-right: 20px;
+}
 .mb60 {
     margin-bottom: 60px;
 }
@@ -122,4 +126,7 @@
 }
 .pr10 {
     padding-right: 10px;
+}
+.pt120 {
+    padding-top: 120px;
 }

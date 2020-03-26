@@ -5,6 +5,7 @@
 </template>
 
 <script>
+    import { EventBus } from "@/utils/event-bus";
     export default {
         name: 'bookDetail',
         data() {
@@ -17,7 +18,7 @@
             };
         },
         mounted() {
-
+            EventBus.$emit("isDisplay", { data: false });
         },
         methods: {
 

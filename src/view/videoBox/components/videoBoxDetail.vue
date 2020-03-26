@@ -34,15 +34,13 @@
                     <span class="txt plr30">• • • {{video.title}} • • •</span>
                 </router-link>
             </ul>
-<!--            <div class="arrow_next">-->
-<!--                <van-icon name="arrow-down" class="arrow_next_icon" @click="page_next"/>-->
-<!--            </div>-->
         </div>
     </div>
 </template>
 
 <script>
     import { getVedioList, addToCollectionInfo } from '@/api/content';
+    import { EventBus } from "@/utils/event-bus";
     import { Toast } from 'vant';
     export default {
         name: 'videoBoxDetail',
@@ -61,6 +59,7 @@
             } else {
                 this.$router.push('/videoBox');
             }
+            EventBus.$emit("isDisplay", { data: false });
         },
         methods: {
             /** 2020/3/26
@@ -75,6 +74,11 @@
                         this.vediolist = result.vediolist;
                         this.vedio = result.vedio;
                         this.title = this.vedio.title;
+                    } else {
+                        Toast('数据获取失败，请刷新重试!');
+                        setTimeout(() => {
+                            this.$router.push('/videoBox');
+                        }, 3000);
                     }
                 });
             },

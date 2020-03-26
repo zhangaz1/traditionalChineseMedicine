@@ -43,6 +43,7 @@
 
 <script>
     import { getLearnPlan, addLearnPlan } from '@/api/content';
+    import { EventBus } from "@/utils/event-bus";
     import { Toast } from 'vant';
     export default {
         name: 'learnPlan',
@@ -55,6 +56,7 @@
         },
         mounted() {
             this.getLearnPlan();
+            EventBus.$emit("isDisplay", { data: false });
         },
         methods: {
             /** 2020/3/22

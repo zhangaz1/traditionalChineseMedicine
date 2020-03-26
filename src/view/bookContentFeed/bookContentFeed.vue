@@ -10,29 +10,29 @@
                         class="bookContentFeed_title"
                 >
                     <template #right>
-                        <van-icon name="search" class="mr20" @click="onSearch"/>
+<!--                        <van-icon name="search" class="mr20" @click="onSearch"/>-->
                         <van-icon name="ellipsis" @click="onClickRight"/>
                     </template>
                 </van-nav-bar>
-                <ul class="bookContentFeed_sticky_nav mtb10">
-                    <router-link tag="li" to="/" class="li">推荐</router-link>
-                    <router-link tag="li" to="/doctorCase" class="li">古典分类</router-link>
-                    <router-link tag="li" to="/myBookBox" class="li">我的书架</router-link>
-                </ul>
-                <ul class="bookContentFeed_title_dropDown" v-show="isShow">
-                    <li class="bookContentFeed_title_dropDown_item pl100">
-                        <van-icon name="browsing-history-o" />
-                        <span class="txt">我的足迹</span>
-                    </li>
-                    <li class="bookContentFeed_title_dropDown_item pl100">
-                        <van-icon name="star-o" />
-                        <span class="txt">我的收藏</span>
-                    </li>
-                    <li class="bookContentFeed_title_dropDown_item pl100">
-                        <van-icon name="share" />
-                        <span class="txt ">分享好友</span>
-                    </li>
-                </ul>
+<!--                <ul class="bookContentFeed_sticky_nav mtb10">-->
+<!--                    <router-link tag="li" to="/" class="li">推荐</router-link>-->
+<!--                    <router-link tag="li" to="/doctorCase" class="li">古典分类</router-link>-->
+<!--                    <router-link tag="li" to="/myBookBox" class="li">我的书架</router-link>-->
+<!--                </ul>-->
+<!--                <ul class="bookContentFeed_title_dropDown" v-show="isShow">-->
+<!--                    <li class="bookContentFeed_title_dropDown_item pl100">-->
+<!--                        <van-icon name="browsing-history-o" />-->
+<!--                        <span class="txt">我的足迹</span>-->
+<!--                    </li>-->
+<!--                    <li class="bookContentFeed_title_dropDown_item pl100">-->
+<!--                        <van-icon name="star-o" />-->
+<!--                        <span class="txt">我的收藏</span>-->
+<!--                    </li>-->
+<!--                    <li class="bookContentFeed_title_dropDown_item pl100">-->
+<!--                        <van-icon name="share" />-->
+<!--                        <span class="txt ">分享好友</span>-->
+<!--                    </li>-->
+<!--                </ul>-->
             </div>
         </van-sticky>
         <div class="bookContentFeed_book">
@@ -72,18 +72,18 @@
             </div>
             <div class="directory plr30 ptb40 mb20" v-else-if="current === 1">
                 <ul class="_one">
-                    <router-link :to="{path: '/', query: {id: 1}}" class="_one_li pl20 ptb20">素问
+                    <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="_one_li pl20 ptb20">素问
                         <ul class="_two">
-                            <router-link :to="{path: '/', query: {id: 1}}" class="_two_li pl20 ptb20">重广补注黄帝内经素问•序</router-link>
-                            <router-link :to="{path: '/', query: {id: 1}}" class="_two_li pl20 ptb20">重广补注黄帝内经素问•序</router-link>
-                            <router-link :to="{path: '/', query: {id: 1}}" class="_two_li pl20 ptb20">目录</router-link>
-                            <router-link :to="{path: '/', query: {id: 1}}" class="_two_li pl20 ptb20">卷第一
+                            <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="_two_li pl20 ptb20">重广补注黄帝内经素问•序</router-link>
+                            <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="_two_li pl20 ptb20">重广补注黄帝内经素问•序</router-link>
+                            <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="_two_li pl20 ptb20">目录</router-link>
+                            <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="_two_li pl20 ptb20">卷第一
                                 <ul class="_three">
-                                    <router-link :to="{path: '/', query: {id: 1}}" class="_three_li pl20 ptb20">上古天真论篇第一</router-link>
-                                    <router-link :to="{path: '/', query: {id: 1}}" class="_three_li pl20 ptb20">上古天真论篇第一</router-link>
-                                    <router-link :to="{path: '/', query: {id: 1}}" class="_three_li pl20 ptb20">上古天真论篇第一</router-link>
-                                    <router-link :to="{path: '/', query: {id: 1}}" class="_three_li pl20 ptb20">上古天真论篇第一</router-link>
-                                    <router-link :to="{path: '/', query: {id: 1}}" class="_three_li pl20 ptb20">上古天真论篇第一</router-link>
+                                    <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="_three_li pl20 ptb20">上古天真论篇第一</router-link>
+                                    <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="_three_li pl20 ptb20">上古天真论篇第一</router-link>
+                                    <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="_three_li pl20 ptb20">上古天真论篇第一</router-link>
+                                    <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="_three_li pl20 ptb20">上古天真论篇第一</router-link>
+                                    <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="_three_li pl20 ptb20">上古天真论篇第一</router-link>
                                 </ul>
                             </router-link>
                         </ul>
@@ -194,75 +194,75 @@
                     </swiper-slide>
                 </swiper>
             </subMenu>
-            <subMenu class="plr30 bg_f" title="与素问相关的方剂" toRouter="/searchResult">
-                <ul class="group-content" slot="content">
-                    <li class="li mr20 mb20">
-                        <div class="border-wapper">
-                            <div class="border">
-                                <span class="txt">兰草汤</span>
-                                <div class="b_c_l"><span class="b_b_l"></span> <span class="b_i_l"></span></div>
-                                <div class="b_c_r"><span class="b_b_r"></span> <span class="b_i_r"></span></div>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="li mr20 mb20">
-                        <div class="border-wapper">
-                            <div class="border">
-                                <span class="txt">兰草汤</span>
-                                <div class="b_c_l"><span class="b_b_l"></span> <span class="b_i_l"></span></div>
-                                <div class="b_c_r"><span class="b_b_r"></span> <span class="b_i_r"></span></div>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="li mr20 mb20">
-                        <div class="border-wapper">
-                            <div class="border">
-                                <span class="txt">兰草汤</span>
-                                <div class="b_c_l"><span class="b_b_l"></span> <span class="b_i_l"></span></div>
-                                <div class="b_c_r"><span class="b_b_r"></span> <span class="b_i_r"></span></div>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="li mr20 mb20">
-                        <div class="border-wapper">
-                            <div class="border">
-                                <span class="txt">兰草汤</span>
-                                <div class="b_c_l"><span class="b_b_l"></span> <span class="b_i_l"></span></div>
-                                <div class="b_c_r"><span class="b_b_r"></span> <span class="b_i_r"></span></div>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="li mr20 mb20">
-                        <div class="border-wapper">
-                            <div class="border">
-                                <span class="txt">兰草汤</span>
-                                <div class="b_c_l"><span class="b_b_l"></span> <span class="b_i_l"></span></div>
-                                <div class="b_c_r"><span class="b_b_r"></span> <span class="b_i_r"></span></div>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="li mr20 mb20">
-                        <div class="border-wapper">
-                            <div class="border">
-                                <span class="txt">兰草汤</span>
-                                <div class="b_c_l"><span class="b_b_l"></span> <span class="b_i_l"></span></div>
-                                <div class="b_c_r"><span class="b_b_r"></span> <span class="b_i_r"></span></div>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </subMenu>
+<!--            <subMenu class="plr30 bg_f" title="与素问相关的方剂" toRouter="/searchResult">-->
+<!--                <ul class="group-content" slot="content">-->
+<!--                    <li class="li mr20 mb20">-->
+<!--                        <div class="border-wapper">-->
+<!--                            <div class="border">-->
+<!--                                <span class="txt">兰草汤</span>-->
+<!--                                <div class="b_c_l"><span class="b_b_l"></span> <span class="b_i_l"></span></div>-->
+<!--                                <div class="b_c_r"><span class="b_b_r"></span> <span class="b_i_r"></span></div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </li>-->
+<!--                    <li class="li mr20 mb20">-->
+<!--                        <div class="border-wapper">-->
+<!--                            <div class="border">-->
+<!--                                <span class="txt">兰草汤</span>-->
+<!--                                <div class="b_c_l"><span class="b_b_l"></span> <span class="b_i_l"></span></div>-->
+<!--                                <div class="b_c_r"><span class="b_b_r"></span> <span class="b_i_r"></span></div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </li>-->
+<!--                    <li class="li mr20 mb20">-->
+<!--                        <div class="border-wapper">-->
+<!--                            <div class="border">-->
+<!--                                <span class="txt">兰草汤</span>-->
+<!--                                <div class="b_c_l"><span class="b_b_l"></span> <span class="b_i_l"></span></div>-->
+<!--                                <div class="b_c_r"><span class="b_b_r"></span> <span class="b_i_r"></span></div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </li>-->
+<!--                    <li class="li mr20 mb20">-->
+<!--                        <div class="border-wapper">-->
+<!--                            <div class="border">-->
+<!--                                <span class="txt">兰草汤</span>-->
+<!--                                <div class="b_c_l"><span class="b_b_l"></span> <span class="b_i_l"></span></div>-->
+<!--                                <div class="b_c_r"><span class="b_b_r"></span> <span class="b_i_r"></span></div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </li>-->
+<!--                    <li class="li mr20 mb20">-->
+<!--                        <div class="border-wapper">-->
+<!--                            <div class="border">-->
+<!--                                <span class="txt">兰草汤</span>-->
+<!--                                <div class="b_c_l"><span class="b_b_l"></span> <span class="b_i_l"></span></div>-->
+<!--                                <div class="b_c_r"><span class="b_b_r"></span> <span class="b_i_r"></span></div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </li>-->
+<!--                    <li class="li mr20 mb20">-->
+<!--                        <div class="border-wapper">-->
+<!--                            <div class="border">-->
+<!--                                <span class="txt">兰草汤</span>-->
+<!--                                <div class="b_c_l"><span class="b_b_l"></span> <span class="b_i_l"></span></div>-->
+<!--                                <div class="b_c_r"><span class="b_b_r"></span> <span class="b_i_r"></span></div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </subMenu>-->
         </div>
-        <ul class="footerFix">
-            <router-link to="/" class="footerFix_link">
-                <span class="footerFix_link_add mr20"></span>
-                <span class="footerFix_link_bookshelf">加入书架</span>
-            </router-link>
-            <router-link to="/" class="footerFix_link">
-                <span class="footerFix_link_read mr20"></span>
-                <span class="footerFix_link_bookshelf">阅读</span>
-            </router-link>
-        </ul>
+<!--        <ul class="footerFix">-->
+<!--            <router-link to="/" class="footerFix_link">-->
+<!--                <span class="footerFix_link_add mr20"></span>-->
+<!--                <span class="footerFix_link_bookshelf">加入书架</span>-->
+<!--            </router-link>-->
+<!--            <router-link to="/" class="footerFix_link">-->
+<!--                <span class="footerFix_link_read mr20"></span>-->
+<!--                <span class="footerFix_link_bookshelf">阅读</span>-->
+<!--            </router-link>-->
+<!--        </ul>-->
     </div>
 </template>
 
@@ -270,6 +270,7 @@
     import subMenu from './components/subMenu';
     import { swiper, swiperSlide } from 'vue-awesome-swiper';
     import { bookContentFeedConfig } from './config';
+    import { EventBus } from "@/utils/event-bus";
     export default {
         name: 'bookContentFeed',
         data() {
@@ -294,6 +295,9 @@
             swiper,
             swiperSlide
         },
+        mounted() {
+            EventBus.$emit("isDisplay", { data: false });
+        },
         methods: {
             /** 2020/3/20
              * 作者：王青高
@@ -309,11 +313,7 @@
              *参数:
              */
             onClickRight() {
-                if (this.isShow) {
-                    this.isShow = false;
-                } else {
-                    this.isShow = true;
-                }
+                this.$router.push('/footPrint');
             },
             /** 2020/3/19
              * 作者：王青高
@@ -544,7 +544,7 @@
                 line-height: 2;
                 text-indent: 50px;
                 height: 200px;
-                transition: all 1s;
+                transition: height 1s;
                 overflow: hidden;
                 &_p {
                     overflow: hidden;

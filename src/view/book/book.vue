@@ -50,7 +50,7 @@
 <!--                </div>-->
                 <div class="searchResult">
                     <ul class="ul" v-if="searchResultData.length">
-                        <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/searchResult', query: {name: search}}">{{search}}</router-link>
+                        <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/bookContentFeed', query: { id: search.id, title: search.title}}">{{search.title}}</router-link>
                     </ul>
                 </div>
             </div>
@@ -60,14 +60,14 @@
         <div class="book_box plr30 mt20" v-if="hotData">
             <div class="book_box_menu">
                 <div class="title ptb10">热门</div>
-                <pupblicPanel :listData="hotData" @switchTab="switchTap"/>
+                <pupblicPanel :listData="hotData" @switchTab="switchTap" :isActive="false"/>
             </div>
         </div>
         <!--  热门  end -->
         <div class="book_box plr30 mt20" v-if="menuData.typelist">
             <div class="book_box_menu" v-for="(item, index) of menuData.typelist" :key="'item' + index" >
                 <div class="title ptb10">{{item.title}}</div>
-                <pupblicPanel :listData="item.list" @switchTab="switchTap"/>
+                <pupblicPanel :listData="item.list" @switchTab="switchTap" :isActive="false"/>
             </div>
         </div>
     </div>
@@ -77,7 +77,8 @@
     import publicTitle from '@/components/publicTitle';
     import headSearch from '@/components/headSearch/';
     import pupblicPanel from '@/components/publicPanel';
-    import { getAllBook, getHotBook } from '@/api/content';
+    import { EventBus } from "@/utils/event-bus";
+    import { getAllBook, getHotBook, getSearch } from '@/api/content';
     import { navData } from './config';
     export default {
         name: 'book',
@@ -90,7 +91,12 @@
                 searchResultData: [], // 存储搜索结果
                 isCancel: false,
                 isSearch: false, // 是否显示搜索
-                isNum: 0
+                isNum: 0,
+                searchOption: {
+                    pageSize: 10,
+                    page: 1,
+                    searchtype: 2
+                }
             };
         },
         mounted() {
@@ -111,9 +117,10 @@
              */
             getHotBook().then(res => {
                 if (res.state === '1') {
-                    this.hotData = res.data;
+                    this.hotData = res.data.list;
                 }
             });
+            EventBus.$emit("isDisplay", { data: true });
         },
         methods: {
             /** 2020/3/19
@@ -123,7 +130,6 @@
              */
             getCurrent(index) {
                 this.current = index;
-                console.log(this.current);
             },
             /** 2020/3/19
              * 作者：王青高
@@ -131,7 +137,6 @@
              * 参数：{}
              */
             onSearch(val) {
-                console.log('点击了搜索');
                 if (!this.isSearch) {
                     this.isSearch = true;
                     this.isCancel = true;
@@ -153,10 +158,17 @@
              *参数:
              */
             searchVal(val) {
-                console.log('搜索内容', val);
-                if (val) {
-                    this.searchResultData.push(val);
-                }
+                getSearch({
+                    pagesize: this.searchOption.pageSize,
+                    page: this.searchOption.page,
+                    keyword: val,
+                    searchtype: this.searchOption.searchtype
+                }).then(res => {
+                    let result = res.data;
+                    if (res.state === '1') {
+                        this.searchResultData = result.list;
+                    }
+                });
             },
             /** 2020-3-19 0019
              *作者:王青高
@@ -219,6 +231,7 @@
 <style lang="scss" scoped>
     @import "~@/assets/css/_mixins";
     .book {
+        background: $bgc-theme;
         &_box {
             background: $bgc-theme;
         }

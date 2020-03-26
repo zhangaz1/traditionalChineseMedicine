@@ -1,5 +1,5 @@
 <template>
-    <div class="buyVip ptb108">
+    <div class="buyVip pt120">
         <van-nav-bar
                 title="VIP会员"
                 left-arrow
@@ -54,6 +54,7 @@
 </template>
 
 <script>
+    import { EventBus } from "@/utils/event-bus";
     export default {
         name: 'buyVip',
         data() {
@@ -89,6 +90,9 @@
             getPay() {
                 console.log('调起支付宝支付');
             }
+        },
+        mounted() {
+            EventBus.$emit("isDisplay", { data: false });
         }
     };
 </script>

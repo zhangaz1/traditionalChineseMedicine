@@ -111,6 +111,11 @@ export default new Router({
             name: 'doctorTypeList',
             component: () => import(/* webpackChunkName: 'login' */ '@/view/doctorTypeList/doctorTypeList.vue')
         },
+        {
+            path: '/forget',
+            name: 'forget',
+            component: () => import(/* webpackChunkName: 'login' */ '@/view/forget/forget.vue')
+        }
     ],
     scrollBehavior: () => ({ y: 0 })
 });

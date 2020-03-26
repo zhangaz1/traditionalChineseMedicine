@@ -15,8 +15,9 @@
             <div slot="searchContent" class="searchContent" v-if="isCancel">
                 <div class="searchResult">
                     <ul class="ul" v-if="searchResultData.length">
-                        <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/searchResult', query: {name: search}}">{{search}}</router-link>
+                        <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/videoBox/components/videoBoxDetail', query: {id: search.id}}">{{search.title}}</router-link>
                     </ul>
+                    <div v-else class="searchResult_normal ptb20">暂无相关内容</div>
                 </div>
             </div>
         </headSearch>
@@ -24,7 +25,7 @@
         <div class="videoBox_nav mt20 mb20 plr30">
             <transition name="slide-fade">
                 <ul class="videoBox_nav_ul ptb20 mb40" :class="{_move: isMove}">
-                    <li class="videoBox_nav_ul_li mlr10 mb20" v-for="(item, index) of parentTypes" :class="{active: current === index}" :key="'item' + index" @click="switchTap(item, index)">{{item.title}}</li>
+                    <li class="videoBox_nav_ul_li mlr10 mb20" v-for="(item, index) of parentTypes" :class="{active: current === index}" :key="'item' + index" @click="switchTap(item, index, true)">{{item.title}}</li>
                 </ul>
             </transition>
             <span class="videoBox_nav_icon" @click="_animation" :class="{isDeg: isMove}"></span>
@@ -34,24 +35,28 @@
                 <div class="videoBox_content_video">视频内容</div>
                 <div class="videoBox_content_num">共有{{totalcount}}部</div>
             </div>
-            <ul class="videoBox_content_item">
-                <router-link v-for="(video, index) of videoData" :key="'video' + index" :to="{path: '/videoBox/components/videoBoxDetail', query: {id: video.id}}" tag="li" class="videoBox_content_item_li mr20">
+            <ul class="videoBox_content_item ptb10" @scroll="handleScroll($event)">
+                <router-link v-for="(video, index) of videoData"  :key="'video' + index" :to="{path: '/videoBox/components/videoBoxDetail', query: {id: video.id}}" tag="li" class="videoBox_content_item_li mr20">
                     <div class="item_img">
                         <img :src="video.cover" class="_img mb20"/>
                         <span class="_txt p8">{{video.title}}</span>
                     </div>
                     <p class="txt_title ptb20">{{video.title}}</p>
                 </router-link>
+                <li>
+                    <load-more :loadingType="loadingType" :contentText="contentText"/>
+                </li>
             </ul>
+
         </div>
-        <load-more :loadingType="loadingType" :contentText="contentText"/>
     </div>
 </template>
 
 <script>
     import headSearch from '@/components/headSearch/';
-    import { getVideoData, getVediolistByChannel } from '@/api/content';
+    import { getVideoData, getVediolistByChannel, getSearch } from '@/api/content';
     import loadMore from '@/components/loadMore/loadMore.vue';
+    import { EventBus } from "@/utils/event-bus";
     export default {
         name: 'videoBox',
         data() {
@@ -63,13 +68,18 @@
                 isSearch: false, // 是否显示搜索
                 videoData: [], // 视频数据
                 parentTypes: [], // 视频分类
-                totalcount: '', // 视频总数
+                totalcount: 0, // 视频总数
                 current: 0, // 当前下标
                 loadingType: 0,
                 contentText: {
                     contentdown: '上拉显示更多',
                     contentrefresh: '正在加载...',
                     contentnomore: '没有更多数据了'
+                },
+                pageOption: {
+                    channelid: '',
+                    pagesize: 10,
+                    page: 1
                 }
             };
         },
@@ -79,10 +89,7 @@
         },
         mounted() {
             this.getVideoData();
-            this.handleScroll();
-        },
-        created() {
-
+            EventBus.$emit("isDisplay", { data: true });
         },
         methods: {
             /** 2020/3/26
@@ -90,20 +97,15 @@
             * 功能：{} 监听滚动条
             * 参数：{}
             */
-            handleScroll() {
-                window.onscroll = function () {
-                    // 变量scrollTop是滚动条滚动时，距离顶部的距离
-                    var scrollTop =
-                        document.documentElement.scrollTop || document.body.scrollTop; // 变量windowHeight是可视区的高度
-                    var windowHeight =
-                        document.documentElement.clientHeight || document.body.clientHeight; // 变量scrollHeight是滚动条的总高度
-                    var scrollHeight =
-                        document.documentElement.scrollHeight || document.body.scrollHeight; // 滚动条到底部的条件
-                    if (scrollTop + windowHeight === scrollHeight) {
-                        console.log('scrollTop', scrollTop, 'windowHeight', windowHeight, 'scrollHeight', scrollHeight);
-
-                    };
-                };
+            handleScroll(event) {
+                let scrollTop = event.target.scrollTop;
+                let clientHeight = event.target.clientHeight;
+                let scrollHeight = event.target.scrollHeight;
+                console.log('scrollTop', scrollTop, 'windowHeight', clientHeight, 'scrollHeight', scrollHeight);
+                if (scrollTop + clientHeight >= (scrollHeight - 10)) {
+                    this.pageOption.page++;
+                    this.switchTap();
+                }
             },
             /** 2020/3/26
             * 作者：王青高
@@ -115,8 +117,10 @@
                     let result = res.data;
                     if (res.state === '1') {
                         this.videoData = result.vedios;
+                        this.pageOption.channelid = result.parentTypes[0].id; // 初始化当前列表id;
                         this.parentTypes = result.parentTypes;
                         this.totalcount = result.totalcount;
+                        this.isLoadType(this.videoData);
                     }
                 });
             },
@@ -126,7 +130,6 @@
              * 参数：{}
              */
             onSearch(val) {
-                console.log('点击了搜索');
                 if (!this.isSearch) {
                     this.isSearch = true;
                     this.isCancel = true;
@@ -154,11 +157,26 @@
                     this.isMove = true;
                 }
             },
+            /** 2020-3-26 0026
+             *作者:王青高
+             *功能: 搜索框搜索
+             *参数:
+             */
+            getSearch(val) {
+                getSearch({
+                    pagesize: this.pageOption.pagesize,
+                    page: this.pageOption.page,
+                    keyword: val,
+                    searchtype: 2
+                }).then(res => {
+                    let result = res.data;
+                    if (res.state === '1') {
+                        this.searchResultData = result.list;
+                    }
+                });
+            },
             searchVal(val) {
-                console.log('搜索内容', val);
-                if (val) {
-                    this.searchResultData.push(val);
-                }
+                this.getSearch(val);
             },
             /** 2020/3/24
              * 作者：王青高
@@ -205,15 +223,38 @@
             * 功能：{} 切换分类
             * 参数：{}
             */
-            switchTap(obj, index) {
-                this.current = index;
-                getVediolistByChannel(obj.id).then(res => {
+            switchTap(obj, index, bol) {
+                this.loadingType = 1;
+                if (bol) {
+                    this.videoData = [];
+                    this.pageOption.page = 1;
+                }
+                if (obj) this.pageOption.channelid = obj.id;
+                if (index >= 0) this.current = index;
+                if (this.videoData.length >= this.totalcount && this.totalcount !== 0) {
+                    this.loadingType = 2;
+                    return;
+                }
+                getVediolistByChannel(this.pageOption).then(res => {
                     let result = res.data;
                     if (res.state === '1') {
-                        this.videoData = result.list;
+                        this.videoData = this.videoData.concat(result.list);
                         this.totalcount = result.totalcount;
+                        this.isLoadType(this.videoData);
                     }
                 });
+            },
+            /** 2020-3-26 0026
+             *作者:王青高
+             *功能: 判断数据是否小于10
+             *参数:
+             */
+            isLoadType(arr) {
+                if (arr.length < 10) {
+                    this.loadingType = 2;
+                } else {
+                    this.loadingType = 0;
+                }
             }
         }
     };
@@ -289,6 +330,9 @@
                             background: $bg_ddcdaf;
                         }
                     }
+                    &_normal {
+                        text-align: center;
+                    }
                 }
             }
         }
@@ -330,10 +374,12 @@
                 height: 50px;
             }
             &_item {
+                overflow-y: scroll;
+                height: 70vh;
                 &_li {
                     position: relative;
                     width: 31%;
-                    height: 100%;
+                    height: 300px;
                     display: inline-block;
                     &:nth-child(3n) {
                         margin-right: 0;

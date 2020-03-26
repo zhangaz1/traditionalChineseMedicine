@@ -38,6 +38,7 @@
 <script>
 
     import { getDoctorArticleDetail, addToCollectionInfo } from '@/api/content';
+    import { EventBus } from "@/utils/event-bus";
     import { Toast } from 'vant';
     import vshare from 'vshare';
     export default {
@@ -46,7 +47,7 @@
             return {
                 icon: 'like-o',
                 vshareConfig: {
-                    shareList: ['qzone', 'tsina', 'tqq', 'renren', 'weixin', 'more'],
+                    shareList: ['qzone', 'tsina', 'sqq', 'tieba', 'weixin', 'more'],
                     common: {
                         bdText: '',
                         bdDesc: '',
@@ -61,8 +62,11 @@
                         viewSize: 64
                     }
                 },
-                article: null, // 存储文章详情
+                article: null // 存储文章详情
             };
+        },
+        beforeCreate(to, from , next) {
+            window._bd_share_main = '';
         },
         components: {
             vshare
@@ -109,6 +113,9 @@
         created() {
             let obj = this.$route.query;
             this.getDoctorArticleDetail(obj.id);
+        },
+        mounted() {
+            EventBus.$emit("isDisplay", { data: false });
         }
     };
 </script>

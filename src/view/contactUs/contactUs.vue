@@ -19,6 +19,7 @@
 
 <script>
     import QRCode from 'qrcodejs2';
+    import { EventBus } from "@/utils/event-bus";
     export default {
         name: 'contactUs',
         data() {
@@ -33,6 +34,7 @@
             this.$nextTick (function () {
                 this.qrcode();
             });
+            EventBus.$emit("isDisplay", { data: false });
         },
         methods: {
             /** 2020/3/22

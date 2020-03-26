@@ -27,7 +27,7 @@
             <li class="me_vip_li ptb20 plr30" @click="footprint">
                 <van-icon name="browsing-history-o" class="icon"/>
                 <span class="txt pl80">我的足迹</span>
-                <span class="footprint mr20">美尼尔综合症</span>
+<!--                <span class="footprint mr20">美尼尔综合症</span>-->
             </li>
         </ul>
         <ul class="me_vip mb20">
@@ -96,6 +96,7 @@
     import { menuConfig, swiperShare } from './config';
     import Cookies from "js-cookie";
     import vshare from 'vshare';
+    import { EventBus } from "@/utils/event-bus";
     export default {
         name: 'me',
         data() {
@@ -108,20 +109,16 @@
                 shareMenu: false, // 是否显示分享好友
                 userInfo: '',
                 vshareConfig: {
-                    shareList: ['qzone', 'tsina', 'tqq', 'renren', 'weixin', 'more'],
+                    shareList: ['qzone', 'tsina', 'sqq', 'tieba', 'weixin', 'more'],
                     common: {
                         bdText: '',
-                        bdDesc: '你号',
+                        bdDesc: '',
                         bdUrl: window.location.hostname,
                         bdPic: 'https://www.zk120.com/zixun/wp-content/uploads/2018/07/p.zk120.net_.cn_2018-07-05_17-59-10.png',
                     },
                     share: [{
                         bdSize: 32
                     }],
-                    image: {
-                        viewType: 'collection',
-                        viewSize: 64
-                    }
                 }
             };
         },
@@ -137,6 +134,9 @@
                     this.isLogin = true;
                 }
             }
+        },
+        beforeCreate(to, from , next) {
+            window._bd_share_main = '';
         },
         methods: {
             /** 2020/3/20
@@ -255,7 +255,10 @@
                         break;
                 }
             }
-        }
+        },
+        mounted() {
+            EventBus.$emit("isDisplay", { data: true });
+        },
     };
 </script>
 

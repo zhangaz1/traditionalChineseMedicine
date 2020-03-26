@@ -1,41 +1,44 @@
 <template>
     <div class="registered pt120">
         <van-nav-bar
-                title="注册"
-                right-text="登录"
+                title="忘记密码"
+                right-text="注册"
                 left-arrow
                 @click-left="onGoBack"
-                @click-right="onGoLogin"
+                @click-right="onRegistered"
                 fixed
                 class="registered_title"
         />
-        <div class="registered_head ptb20">
-            <van-uploader :max-count="1" :class="{isOpacity: isTrue}" @delete="_delete" :before-read="beforeRead" :after-read="afterRead" v-model="headImg" class="registered_head_upLoadImg"/>
-            <div class="registered_head_box"></div>
-            <div class="registered_head_txt">添加头像</div>
-        </div>
         <div class="plr30 mtb50">
             <van-form @submit="onSubmit">
                 <van-field
                         v-model="phone"
                         name="phone"
-                        placeholder="手机号"
+                        placeholder="原有手机号"
                         :rules="[{ validator, message: '请输入正确格式的手机号' }]"
                         class="validator"
                         maxlength="11"
                 />
-                <van-field v-model="nickname" name="nickname" placeholder="昵称" class="validator" :rules="[{ required: true, message: '请填写昵称' }]" />
+<!--                <van-field v-model="nickname" name="nickname" placeholder="昵称" class="validator" :rules="[{ required: true, message: '请填写昵称' }]" />-->
                 <van-field
                         v-model="password"
                         type="password"
                         name="password"
+                        placeholder="新密码"
+                        :rules="[{ required: true, message: '请填写新密码' }]"
+                        class="validator"
+                />
+                <van-field
+                        v-model="repassword"
+                        type="password"
+                        name="repassword"
                         placeholder="密码"
-                        :rules="[{ required: true, message: '请填写密码' }]"
+                        :rules="[{ validator: isPass, message: '确认密码和新密码不一致！' }]"
                         class="validator"
                 />
                 <div style="margin: 16px;">
                     <van-button round block type="info" native-type="submit">
-                        注册并登陆
+                        提 交
                     </van-button>
                 </div>
             </van-form>
@@ -67,6 +70,7 @@
             return {
                 phone: '',
                 password: '',
+                repassword: '',
                 nickname: '',
                 checked: true, // 是否勾选协议
                 headImg: [],
@@ -76,6 +80,14 @@
             };
         },
         methods: {
+            /** 2020-3-27 0027
+             *作者:王青高
+             *功能:
+             *参数:
+             */
+            isPass(value, rule) {
+                if (this.password !== value) return false;
+            },
             /** 2020/3/20
              * 作者：王青高
              * 功能：{Function} 返回上一页
@@ -89,24 +101,15 @@
              * 功能：{Function} 跳转注册页
              * 参数：{}
              */
-            onGoLogin() {
-                this.$router.push('/login');
+            onRegistered() {
+                this.$router.push('/registered');
             },
             /** 2020/3/20
              * 作者：王青高
-             * 功能：{Function} 表单提交-登陆账号
+             * 功能：{Function} 表单提交-修改密码
              * 参数：{}
              */
             onSubmit(values) {
-                // 注册手机
-                // reg({
-                //     phone: values.phone,
-                //     password: values.password,
-                //     nickname: values.nickname,
-                //     headimgurl: this.headImgUrl
-                // }).then(res => {
-                //     console.log(res);
-                // });
                 const tips1 = Toast('正在登录中...');
                 axios.post('/login/registByPhone', qs.stringify({
                     phone: values.phone,
@@ -346,9 +349,6 @@
         height: 100%;
         background: rgba(3, 3, 3, .2);
         z-index: 9;
-        display: flex;
-        align-items: flex-end;
-        justify-content: center;
         .van-icon-close {
             font-size: 100px;
         }

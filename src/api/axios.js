@@ -2,7 +2,7 @@
 // 对错误的统一处理
 import axios from 'axios';
 import qs from 'qs';
-// import errorHandle from './errorHandle.js';
+import { EventBus } from "@/utils/event-bus";
 // import Cookies from 'js-cookie';
 const CancelToken = axios.CancelToken;
 class HttpRequest {
@@ -43,17 +43,20 @@ class HttpRequest {
                 this.pending[key] = c;
                 // console.log('c', c, 'this.pending[key]', this.pending[key])
             });
+            EventBus.$emit("loadingShow", { data: true });
             return config;
         }, error => {
             // errorHandle(error);
+            EventBus.$emit("loadingShow", { data: false });
+            alert('客户端请求失败！code:' + error);
             // Do something with request error
             return Promise.reject(error);
         });
         // 响应请求的拦截器
         instance.interceptors.response.use(res => {
+            EventBus.$emit("loadingShow", { data: false });
             // Any status code that lie within the range of 2xx cause this function to trigger
             // Do something with response data
-            // console.log('res is:' + JSON.stringify(res))
             let key = res.config.url + '&' + res.config.method;
             this.removePending(key);
             if (res.status === 200) {
@@ -64,7 +67,8 @@ class HttpRequest {
         }, error => {
             // Any status codes that falls outside the range of 2xx cause this function to trigger
             // Do something with response error
-            // errorHandle(error)
+            EventBus.$emit("loadingShow", { data: false });
+            alert('服务端请求失败！code:' + error);
             return Promise.reject(error);
         });
     }
@@ -73,7 +77,7 @@ class HttpRequest {
         const instance = axios.create();
         const newOptions = Object.assign(this.getInsideConfig(), options);
         this.interceptors(instance);
-        return instance.request(newOptions);// 就等价于 instance.request(config)，这里可以省略掉request
+        return instance.request(newOptions); // 就等价于 instance.request(config)，这里可以省略掉request
     }
     // get请求
     get(url, config) {

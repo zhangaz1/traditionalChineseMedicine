@@ -32,6 +32,7 @@
 <script>
     import { addFeedBack } from '@/api/content';
     import { Toast } from 'vant';
+    import { EventBus } from "@/utils/event-bus";
     export default {
         name: 'feedBack',
         data() {
@@ -61,6 +62,9 @@
                     }
                 });
             }
+        },
+        mounted() {
+            EventBus.$emit("isDisplay", { data: false });
         }
     };
 </script>

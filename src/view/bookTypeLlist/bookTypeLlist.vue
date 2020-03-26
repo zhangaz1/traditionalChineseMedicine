@@ -19,13 +19,13 @@
                         :isCancel="isCancel"
                         :_searchVal="isDefaultVal"
                 >
-                    <div slot="searchContent" class="searchContent" v-if="isCancel">
-                        <div class="searchResult">
-                            <ul class="ul" v-if="searchResultData.length">
-                                <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/searchResult', query: {name: search}}">{{search}}</router-link>
-                            </ul>
-                        </div>
-                    </div>
+<!--                    <div slot="searchContent" class="searchContent" v-if="isCancel">-->
+<!--                        <div class="searchResult">-->
+<!--                            <ul class="ul" v-if="searchResultData.length">-->
+<!--                                <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/videoBox/components/videoBoxDetail', query: {id: search.id}}">{{search.title}}</router-link>-->
+<!--                            </ul>-->
+<!--                        </div>-->
+<!--                    </div>-->
                 </headSearch>
             </div>
         </van-sticky>
@@ -84,19 +84,25 @@
 
 <script>
     import headSearch from '@/components/headSearch/';
-    import { getBookList } from '@/api/content';
+    import { getBookList, getSearch } from '@/api/content';
+    import { EventBus } from "@/utils/event-bus";
     export default {
         name: 'bookTypeList',
         data() {
             return {
                 current: 0, // 当前下标
                 title: '', // 标题
-                searchResultData: [],
+                searchResultData: [], // 存储搜索或跳转数据
                 isCancel: false,
                 isSearch: false, // 是否显示搜索
                 isNum: 0,
                 isDefaultVal: '', // 默认搜索关键字
-                isJump: false
+                isJump: false,
+                pageOption: {
+                    channelid: '',
+                    pagesize: 10,
+                    page: 1
+                }
             };
         },
         created() {
@@ -105,17 +111,38 @@
             this.title = params.title;
             this.getBookList(params.id);
         },
+        mounted() {
+            EventBus.$emit("isDisplay", { data: false });
+        },
         components: {
             headSearch
         },
         methods: {
+            /** 2020-3-26 0026
+             *作者:王青高
+             *功能: 搜索框搜索
+             *参数:
+             */
+            getSearch(val) {
+                getSearch({
+                    pagesize: this.pageOption.pagesize,
+                    page: this.pageOption.page,
+                    keyword: val,
+                    searchtype: 1
+                }).then(res => {
+                    let result = res.data;
+                    if (res.state === '1') {
+                        this.searchResultData = result.list;
+                    }
+                });
+            },
             /** 2020-3-25 0025
              *作者:王青高
              *功能: 获取指定书籍
              *参数:
              */
             getBookList(id) {
-                getBookList(id).then(res => {
+                getBookList({ id }).then(res => {
                     console.log('res', res);
                 });
             },
@@ -149,10 +176,7 @@
              *参数:
              */
             searchVal(val) {
-                console.log('搜索内容', val);
-                if (val) {
-                    this.searchResultData.push(val);
-                }
+                this.getSearch(val);
             },
             /** 2020/3/24
              * 作者：王青高
@@ -255,7 +279,6 @@
                 position: absolute;
                 background: $bgc-theme;
                 width: 100%;
-                height: 110vh;
                 left: 0;
                 top: 110px;
                 z-index: $search-z-index;

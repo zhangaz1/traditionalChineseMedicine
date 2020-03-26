@@ -68,19 +68,19 @@
             </div>
         </van-sticky>
         <publicSwipe heightVal="200">
-            <van-swipe-item v-for="(image, index) of bannerData" :key="index + 'image'"  class="home_swiper_item" slot="swiperItem">
-<!--                <img :src="image.img" class="img"/>-->
+            <van-swipe-item v-for="(banner, index) of bannerData" :key="index + 'image'"  class="home_swiper_item" slot="swiperItem">
+<!--                <img :src="'http://47.103.217.238:9002' + banner.img" class="img"/>-->
                 <img src="https://www.zk120.com/media/widgets/banners/2020/03/190805112845859.20200310145039745.jpg" class="img"/>
             </van-swipe-item>
         </publicSwipe>
-        <subMenu class="plr30 bg_f" title="医案推荐榜" toRouter="/doctorCase">
+        <subMenu class="plr30 bg_f ptb10" title="医案推荐榜" toRouter="/doctorCase">
             <ul class="home_nav ptb20" slot="content">
                 <router-link tag="li" :to="{path:'/doctorTypeList', query: {param: nav}}" class="home_nav_li mb20 mr20" v-for="(nav, index) of doctorData" :key="'nav' + index">
                     <p class="txt ptb10 plr20">{{nav.title}}</p>
                 </router-link>
             </ul>
         </subMenu>
-        <subMenu class="plr30 bg_f" title="书籍推荐榜" toRouter="/book">
+        <subMenu class="plr30 bg_f ptb10" title="书籍推荐榜" toRouter="/book">
             <swiper class="swiper_common" :options="swiperBook" slot="content">
                 <swiper-slide  class="swiper_common_item">
                     <router-link tag="div" :to="{path: '/bookContentFeed', query: {id: '1'}}" class="content_img sprite-book-cover0">
@@ -192,15 +192,16 @@
                 </swiper-slide>
             </swiper>
         </subMenu>
-        <subMenu class="plr30 bg_f" title="视频推荐榜" toRouter="/videoBox">
+        <subMenu class="plr30 bg_f ptb10" title="视频推荐榜" toRouter="/videoBox">
             <swiper class="swiper_common" :options="swiperVideo" slot="content">
-                <swiper-slide v-for="(image, index) in images" :key="index + index + image"  class="swiper_common_item">
-                    <router-link to="/" class="swiper_common_item_link">
+                <swiper-slide v-for="(video, index) in videoData" :key="index  + 'videoData'"  class="swiper_common_item">
+                    <router-link :to="{path: '/videoBox/components/videoBoxDetail', query: {id: video.id}}" class="swiper_common_item_link">
                         <div class="item_img">
-                            <img :src="image" class="_img mb20"/>
-                            <span class="_txt">小二推拿</span>
+                            <img src="http://www.rkswzx.cn/routing/userimg/20180426/20180426164140_427.jpg" class="_img mb20"/>
+                            <!-- <img :src="video.img" class="_img mb20"/> -->
+                            <span class="_txt">{{video.title}}</span>
                         </div>
-                        <p class="txt_title ptb20">小二推拿</p>
+                        <p class="txt_title ptb20">{{video.title}}</p>
                     </router-link>
                 </swiper-slide>
             </swiper>
@@ -217,6 +218,7 @@
     import { swiperVideo, swiperBook } from './config';
     import { swiper, swiperSlide } from 'vue-awesome-swiper';
     import { getHomeInfo } from '@/api/content';
+    import { EventBus } from "@/utils/event-bus";
     export default {
         name: 'home',
         data() {
@@ -235,6 +237,7 @@
                 searchResultData: [], // 存储搜索结果
                 doctorData: [], // 医案推荐榜
                 bannerData: [], // banner图
+                videoData: [], // 视频推荐榜
             };
         },
         components: {
@@ -247,6 +250,7 @@
         },
         mounted() {
             this.getHomeInfo();
+            EventBus.$emit("isDisplay", { data: true });
         },
         methods: {
             /** 2020-3-25 0025
@@ -257,8 +261,10 @@
             getHomeInfo() {
                 getHomeInfo().then(res => {
                     if (res.state === '1') {
-                        this.doctorData = res.data.yalist;
-                        this.bannerData = res.data.banners;
+                        let result = res.data;
+                        this.doctorData = result.yalist;
+                        this.bannerData = result.banners;
+                        this.videoData = result.vediolist;
                     }
                 });
             },
@@ -573,6 +579,7 @@
                     .item_img {
                         position: relative;
                         flex-grow: 1;
+                        height: 240px;
                         ._img {
                             width: 100%;
                             height: 100%;
