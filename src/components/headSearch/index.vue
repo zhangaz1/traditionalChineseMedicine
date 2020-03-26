@@ -6,7 +6,7 @@
                 class="headSerach_search"
                 background="#fff"
                 :show-action="isCancel"
-                placeholder="输入书名、全文、作者等"
+                placeholder="请输入书名"
                 maxlength="20 "
                 @input="getSearchVal"
                 @cancel="onCancel"

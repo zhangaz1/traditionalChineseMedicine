@@ -28,7 +28,7 @@
                 <div class="share ptb30">
                     <!-- 分享按钮 -->
                     分享：
-                    <share :config="share_config"></share>
+                    <vshare :vshareConfig="vshareConfig"/>
                 </div>
             </div>
         </div>
@@ -36,30 +36,36 @@
 </template>
 
 <script>
-    import Share from 'vue-social-share';
+
     import { getDoctorArticleDetail, addToCollectionInfo } from '@/api/content';
     import { Toast } from 'vant';
+    import vshare from 'vshare';
     export default {
         name: 'doctorDetail',
         data() {
             return {
                 icon: 'like-o',
-                share_config: {
-                    url: window.location.href,
-                    // source: '', // 来源（QQ空间会用到）, 默认读取head标签：<meta name="site" content="http://overtrue" />
-                    title: '世界，您好！', // 标题，默认读取 document.title 或者 <meta name="title" content="share.js" />
-                    description: 'dsadsadsadsadsadsadsadsadasdsadwqeqwefvzdvxcv', // 描述, 默认读取head标签：<meta name="description" content="PHP弱类型的实现原理分析" />
-                    image: 'https://www.zk120.com/zixun/wp-content/uploads/2018/07/p.zk120.net_.cn_2018-07-05_17-59-10.png', // 图片, 默认取网页中第一个img标签
-                    sites: ['wechat', 'qq', 'qzone', 'weibo'], // 启用的站点 , 'douban'
-                    disabled: [], // 禁用的站点
-                    wechatQrcodeTitle: '微信扫一扫：分享', // 微信二维码提示文字
-                    wechatQrcodeHelper: '<p>微信里点“发现”，扫一下</p><p>二维码便可将本文分享至朋友圈。</p>'
-                }, // 分享配置
+                vshareConfig: {
+                    shareList: ['qzone', 'tsina', 'tqq', 'renren', 'weixin', 'more'],
+                    common: {
+                        bdText: '',
+                        bdDesc: '',
+                        bdUrl: window.location.href,
+                        bdPic: 'https://www.zk120.com/zixun/wp-content/uploads/2018/07/p.zk120.net_.cn_2018-07-05_17-59-10.png',
+                    },
+                    share: [{
+                        bdSize: 32
+                    }],
+                    image: {
+                        viewType: 'collection',
+                        viewSize: 64
+                    }
+                },
                 article: null, // 存储文章详情
             };
         },
         components: {
-            Share
+            vshare
         },
         methods: {
             onClickLeft() {
@@ -94,8 +100,8 @@
                     if (res.state === '1') {
                         this.article = result.info;
                         // this.$set(this.article, ) = result.info;
-                        this.$set(this.share_config, 'title', this.article.title);
-                        this.$set(this.share_config, 'description', this.article.description);
+                        this.$set(this.vshareConfig.common, 'bdText', this.article.title);
+                        this.$set(this.vshareConfig.common, 'bdDesc', this.article.description);
                     };
                 });
             }

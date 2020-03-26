@@ -49,6 +49,34 @@ const getDoctorArticleDetail = id => {
 const addToCollectionInfo = id => {
     return axios.get('/yian/addToCollectionInfo?' + qs.stringify(id));
 };
+// 获取视频初始化信息
+const getVideoData = () => {
+    return axios.get('/vedio/getIndexData');
+};
+// 获取学习方案
+const getLearnPlan = () => {
+    return axios.get('/learn/getLearnPlan');
+};
+// 添加学习方案
+const addLearnPlan = options => {
+    return axios.get('/learn/addLearnPlan?' + qs.stringify(options));
+};
+// 提交反馈建议
+const addFeedBack = content => {
+    return axios.get('/learn/addFeedBack?' + qs.stringify(content));
+};
+// 根据分类获取视频列表
+const getVediolistByChannel = id => {
+    return axios.get('/vedio/getVediolistByChannel?' + qs.stringify(id));
+};
+// 点击视频获取内容和目录
+const getVedioList = id => {
+    return axios.get('/vedio/getVedioList?' + qs.stringify(id));
+};
+// 获取视频播放内容
+const getVedioContent = id => {
+    return axios.get('/vedio/getVedioContent?' + qs.stringify(id));
+};
 export {
     getFoot,
     clearFoot,
@@ -61,5 +89,12 @@ export {
     getDoctorSearch,
     getDoctorArticle,
     getDoctorArticleDetail,
-    addToCollectionInfo
+    addToCollectionInfo,
+    getLearnPlan,
+    addLearnPlan,
+    addFeedBack,
+    getVideoData,
+    getVediolistByChannel,
+    getVedioList,
+    getVedioContent
 };

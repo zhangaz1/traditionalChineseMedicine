@@ -19,17 +19,9 @@
                         :isCancel="isCancel"
                         :_searchVal="isDefaultVal"
                 >
-<!--                    <div slot="searchContent" class="searchContent" v-if="isCancel">-->
-<!--                        <div class="searchResult">-->
-<!--                            <ul class="ul" v-if="searchResultData.length">-->
-<!--                                <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/searchResult', query: {name: search}}">{{search}}</router-link>-->
-<!--                            </ul>-->
-<!--                        </div>-->
-<!--                    </div>-->
                 </headSearch>
             </div>
         </van-sticky>
-<!--        <div class="mask" v-if="isCancel"></div>-->
         <div class="doctorTyeList_item">
             <div class="tips ptb20 plr30">找到 {{searchResultData.length ? searchResultData.length : 0}} 条结果</div>
             <div v-if="searchResultData.length">
@@ -39,11 +31,6 @@
                     <div class="provenance ptb10"><span class="provenance_t">【出处】</span>《世中联名老中医典型医案》</div>
                 </div>
             </div>
-<!--            <div class="plr30 ptb20 content">-->
-<!--                <div class="title ptb10">鼻渊 副鼻窦炎 | 程莘农</div>-->
-<!--                <div class="desc ptb10"><span class="desc_t">【证候表现】</span>经常鼻流黄涕十余年。</div>-->
-<!--                <div class="provenance ptb10"><span class="provenance_t">【出处】</span>《世中联名老中医典型医案》</div>-->
-<!--            </div>-->
         </div>
         <load-more :loadingType="loadingType" :contentText="contentText"/>
     </div>

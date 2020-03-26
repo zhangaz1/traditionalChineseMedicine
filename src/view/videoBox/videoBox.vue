@@ -13,33 +13,6 @@
                 :isCancel="isCancel"
         >
             <div slot="searchContent" class="searchContent" v-if="isCancel">
-                <div v-if="!searchResultData.length" class="hot plr30">
-                    <div class="title ptb20">热搜</div>
-                    <ul class="content ptb20">
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                    </ul>
-                </div>
-                <div v-if="!searchResultData.length" class="history plr30">
-                    <div class="title ptb20">
-                        搜索历史
-                        <van-icon name="delete" class="title_icon" @click="_delete"/>
-                    </div>
-                    <ul class="content ptb20">
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                    </ul>
-                </div>
                 <div class="searchResult">
                     <ul class="ul" v-if="searchResultData.length">
                         <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/searchResult', query: {name: search}}">{{search}}</router-link>
@@ -51,18 +24,7 @@
         <div class="videoBox_nav mt20 mb20 plr30">
             <transition name="slide-fade">
                 <ul class="videoBox_nav_ul ptb20 mb40" :class="{_move: isMove}">
-                    <li class="videoBox_nav_ul_li mlr10 mb20">中医基础</li>
-                    <li class="videoBox_nav_ul_li mlr10 mb20">中医基础</li>
-                    <li class="videoBox_nav_ul_li mlr10 mb20">中医基础</li>
-                    <li class="videoBox_nav_ul_li mlr10 mb20">中医基础</li>
-                    <li class="videoBox_nav_ul_li mlr10 mb20">中医基础</li>
-                    <li class="videoBox_nav_ul_li mlr10 mb20">中医基础</li>
-                    <li class="videoBox_nav_ul_li mlr10 mb20">中医基础</li>
-                    <li class="videoBox_nav_ul_li mlr10 mb20">中医基础</li>
-                    <li class="videoBox_nav_ul_li mlr10 mb20">中医基础</li>
-                    <li class="videoBox_nav_ul_li mlr10 mb20">中医基础</li>
-                    <li class="videoBox_nav_ul_li mlr10 mb20">中医基础</li>
-                    <li class="videoBox_nav_ul_li mlr10 mb20">中医基础</li>
+                    <li class="videoBox_nav_ul_li mlr10 mb20" v-for="(item, index) of parentTypes" :class="{active: current === index}" :key="'item' + index" @click="switchTap(item, index)">{{item.title}}</li>
                 </ul>
             </transition>
             <span class="videoBox_nav_icon" @click="_animation" :class="{isDeg: isMove}"></span>
@@ -70,37 +32,26 @@
         <div class="videoBox_content plr30">
             <div class="videoBox_content_title ptb20">
                 <div class="videoBox_content_video">视频内容</div>
-                <div class="videoBox_content_num">共有41部</div>
+                <div class="videoBox_content_num">共有{{totalcount}}部</div>
             </div>
             <ul class="videoBox_content_item">
-                <router-link :to="{path: '/videoBox/components/videoBoxDetail', query: {id: '1'}}" tag="li" class="videoBox_content_item_li mr20">
+                <router-link v-for="(video, index) of videoData" :key="'video' + index" :to="{path: '/videoBox/components/videoBoxDetail', query: {id: video.id}}" tag="li" class="videoBox_content_item_li mr20">
                     <div class="item_img">
-                        <img src="https://www.zk120.com/media/widgets/banners/2020/03/190805112845859.20200310145039745.jpg" class="_img mb20"/>
-                        <span class="_txt p8">小二推拿</span>
+                        <img :src="video.cover" class="_img mb20"/>
+                        <span class="_txt p8">{{video.title}}</span>
                     </div>
-                    <p class="txt_title ptb20">小二推拿</p>
-                </router-link>
-                <router-link :to="{path: '/videoBox/components/videoBoxDetail', query: {id: '1'}}" tag="li" class="videoBox_content_item_li mr20">
-                    <div class="item_img">
-                        <img src="https://www.zk120.com/media/widgets/banners/2020/03/190805112845859.20200310145039745.jpg" class="_img mb20"/>
-                        <span class="_txt p8">小二推拿</span>
-                    </div>
-                    <p class="txt_title ptb20">小二推拿</p>
-                </router-link>
-                <router-link :to="{path: '/videoBox/components/videoBoxDetail', query: {id: '1'}}" tag="li" class="videoBox_content_item_li mr20">
-                    <div class="item_img">
-                        <img src="https://www.zk120.com/media/widgets/banners/2020/03/190805112845859.20200310145039745.jpg" class="_img mb20"/>
-                        <span class="_txt p8">小二推拿</span>
-                    </div>
-                    <p class="txt_title ptb20">小二推拿</p>
+                    <p class="txt_title ptb20">{{video.title}}</p>
                 </router-link>
             </ul>
         </div>
+        <load-more :loadingType="loadingType" :contentText="contentText"/>
     </div>
 </template>
 
 <script>
     import headSearch from '@/components/headSearch/';
+    import { getVideoData, getVediolistByChannel } from '@/api/content';
+    import loadMore from '@/components/loadMore/loadMore.vue';
     export default {
         name: 'videoBox',
         data() {
@@ -110,12 +61,65 @@
                 searchResultData: [], // 存储搜索结果
                 isCancel: false,
                 isSearch: false, // 是否显示搜索
+                videoData: [], // 视频数据
+                parentTypes: [], // 视频分类
+                totalcount: '', // 视频总数
+                current: 0, // 当前下标
+                loadingType: 0,
+                contentText: {
+                    contentdown: '上拉显示更多',
+                    contentrefresh: '正在加载...',
+                    contentnomore: '没有更多数据了'
+                }
             };
         },
         components: {
-            headSearch
+            headSearch,
+            loadMore
+        },
+        mounted() {
+            this.getVideoData();
+            this.handleScroll();
+        },
+        created() {
+
         },
         methods: {
+            /** 2020/3/26
+            * 作者：王青高
+            * 功能：{} 监听滚动条
+            * 参数：{}
+            */
+            handleScroll() {
+                window.onscroll = function () {
+                    // 变量scrollTop是滚动条滚动时，距离顶部的距离
+                    var scrollTop =
+                        document.documentElement.scrollTop || document.body.scrollTop; // 变量windowHeight是可视区的高度
+                    var windowHeight =
+                        document.documentElement.clientHeight || document.body.clientHeight; // 变量scrollHeight是滚动条的总高度
+                    var scrollHeight =
+                        document.documentElement.scrollHeight || document.body.scrollHeight; // 滚动条到底部的条件
+                    if (scrollTop + windowHeight === scrollHeight) {
+                        console.log('scrollTop', scrollTop, 'windowHeight', windowHeight, 'scrollHeight', scrollHeight);
+
+                    };
+                };
+            },
+            /** 2020/3/26
+            * 作者：王青高
+            * 功能：{} 获取视频初始化信息
+            * 参数：{}
+            */
+            getVideoData() {
+                getVideoData().then(res => {
+                    let result = res.data;
+                    if (res.state === '1') {
+                        this.videoData = result.vedios;
+                        this.parentTypes = result.parentTypes;
+                        this.totalcount = result.totalcount;
+                    }
+                });
+            },
             /** 2020/3/19
              * 作者：王青高
              * 功能：{} 弹出搜索
@@ -162,7 +166,6 @@
              * 参数：{}
              */
             onCancel() {
-                // console.log('取消');
                 if (this.isCancel) {
                     this.isCancel = false;
                     this.searchResultData = [];
@@ -196,6 +199,21 @@
                 if (this.searchResultData.length) {
                     this.searchResultData = [];
                 }
+            },
+            /** `2020/3/26`
+            * 作者：王青高
+            * 功能：{} 切换分类
+            * 参数：{}
+            */
+            switchTap(obj, index) {
+                this.current = index;
+                getVediolistByChannel(obj.id).then(res => {
+                    let result = res.data;
+                    if (res.state === '1') {
+                        this.videoData = result.list;
+                        this.totalcount = result.totalcount;
+                    }
+                });
             }
         }
     };
@@ -258,8 +276,6 @@
                 }
                 .searchResult {
                     .li {
-                        /*height: 100px;*/
-                        /*line-height: 100px;*/
                         font-size: 36px;
                         color: $coloe_3;
                         position: relative;
@@ -281,7 +297,7 @@
             position: relative;
             overflow: hidden;
             &_ul {
-                height: 60px;
+                height: 20px;
                 transition: all .5s;
                 &_li {
                     display: inline-block;
@@ -314,16 +330,11 @@
                 height: 50px;
             }
             &_item {
-                height: 320px;
-                display: flex;
-                align-items: center;
-                flex-wrap: wrap;
                 &_li {
                     position: relative;
                     width: 31%;
                     height: 100%;
-                    display: flex;
-                    flex-direction: column;
+                    display: inline-block;
                     &:nth-child(3n) {
                         margin-right: 0;
                     }
@@ -333,6 +344,7 @@
                         flex-grow: 1;
                         box-shadow: 2px 2px 2px 5px rgba(3, 3, 3, .1);
                         border-radius: 10px;
+                        height: 240px;
                         ._img {
                             width: 100%;
                             height: 100%;
@@ -340,6 +352,7 @@
                         }
 
                         ._txt {
+                            @include ellipsis();
                             position: absolute;
                             right: 0;
                             bottom: 0;
@@ -347,16 +360,17 @@
                             border-radius: 10px 0;
                             color: $color-default;
                             font-size: 28px;
+                            width: 90%;
                         }
                     }
 
                     .txt_title {
+                        @include ellipsis();
                         font-size: 24px;
                         color: #828282;
                         text-align: left;
                         width: 100%;
                     }
-
                     /* 视频推荐 end */
                 }
             }
@@ -386,5 +400,8 @@
     }
     .isDeg {
         transform: rotate(315deg) !important;
+    }
+    .active {
+        color: $color;
     }
 </style>

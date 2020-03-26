@@ -30,6 +30,8 @@
 </template>
 
 <script>
+    import { addFeedBack } from '@/api/content';
+    import { Toast } from 'vant';
     export default {
         name: 'feedBack',
         data() {
@@ -51,8 +53,13 @@
              * 功能：{Function} 表单提交-反馈建议
              * 参数：{}
              */
-            onSubmit() {
-                console.log('建议提交');
+            onSubmit(values) {
+                if (!this.message) return;
+                addFeedBack(values).then(res => {
+                    if (res.state === '1') {
+                        Toast('提交成功!');
+                    }
+                });
             }
         }
     };

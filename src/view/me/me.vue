@@ -19,11 +19,11 @@
                 <span class="txt pl80">VIP会员</span>
                 <button type="button" class="open ptb4 plr20 mr20" @click="openVip">开通</button>
             </li>
-            <li class="me_vip_li ptb20 plr30">
-                <van-icon name="todo-list-o" class="icon" />
-                <span class="txt pl80">每日任务</span>
-                <button type="button" class="open ptb4 plr20 mr20" @click="Sign">签到</button>
-            </li>
+<!--            <li class="me_vip_li ptb20 plr30">-->
+<!--                <van-icon name="todo-list-o" class="icon" />-->
+<!--                <span class="txt pl80">每日任务</span>-->
+<!--                <button type="button" class="open ptb4 plr20 mr20" @click="Sign">签到</button>-->
+<!--            </li>-->
             <li class="me_vip_li ptb20 plr30" @click="footprint">
                 <van-icon name="browsing-history-o" class="icon"/>
                 <span class="txt pl80">我的足迹</span>
@@ -48,41 +48,44 @@
         </ul>
         <van-action-sheet v-model="shareMenu" title="选择要分享的平台" class="me_share" :round="false">
             <div class="pb100">
-                <swiper class="me_share_swiper ptb40" :options="swiperShare">
-                    <swiper-slide class="me_share_swiper_item">
-                        <div class="me_share_swiper_item_link">
-                            <div class="item_img mb20">
-                                <img :src="moneyImg" class="img"/>
-                            </div>
-                            <p class="txt">微信</p>
-                        </div>
-                    </swiper-slide>
-                    <swiper-slide class="me_share_swiper_item" @click="shareBtn('qq')">
-                        <div class="me_share_swiper_item_link">
-                            <div class="item_img mb20">
-                                <img :src="moneyImg" class="img"/>
-                            </div>
-                            <p class="txt">QQ</p>
-                        </div>
-                    </swiper-slide>
-                    <swiper-slide class="me_share_swiper_item" @click="shareBtn('zone')">
-                        <div class="me_share_swiper_item_link">
-                            <div class="item_img mb20">
-                                <img :src="moneyImg" class="img"/>
-                            </div>
-                            <p class="txt">QQ空间</p>
-                        </div>
-                    </swiper-slide>
-                    <swiper-slide class="me_share_swiper_item">
-                        <div class="me_share_swiper_item_link">
-                            <div class="item_img mb20">
-                                <img :src="moneyImg" class="img"/>
-                            </div>
-                            <p class="txt">微信朋友圈</p>
-                        </div>
-                    </swiper-slide>
-                    <div class="swiper-pagination" slot="pagination"></div>
-                </swiper>
+<!--                <swiper class="me_share_swiper ptb40" :options="swiperShare">-->
+<!--                    <swiper-slide class="me_share_swiper_item">-->
+<!--                        <div class="me_share_swiper_item_link">-->
+<!--                            <div class="item_img mb20">-->
+<!--                                <img :src="moneyImg" class="img"/>-->
+<!--                            </div>-->
+<!--                            <p class="txt">微信</p>-->
+<!--                        </div>-->
+<!--                    </swiper-slide>-->
+<!--                    <swiper-slide class="me_share_swiper_item" @click="shareBtn('qq')">-->
+<!--                        <div class="me_share_swiper_item_link">-->
+<!--                            <div class="item_img mb20">-->
+<!--                                <img :src="moneyImg" class="img"/>-->
+<!--                            </div>-->
+<!--                            <p class="txt">QQ</p>-->
+<!--                        </div>-->
+<!--                    </swiper-slide>-->
+<!--                    <swiper-slide class="me_share_swiper_item" @click="shareBtn('zone')">-->
+<!--                        <div class="me_share_swiper_item_link">-->
+<!--                            <div class="item_img mb20">-->
+<!--                                <img :src="moneyImg" class="img"/>-->
+<!--                            </div>-->
+<!--                            <p class="txt">QQ空间</p>-->
+<!--                        </div>-->
+<!--                    </swiper-slide>-->
+<!--                    <swiper-slide class="me_share_swiper_item">-->
+<!--                        <div class="me_share_swiper_item_link">-->
+<!--                            <div class="item_img mb20">-->
+<!--                                <img :src="moneyImg" class="img"/>-->
+<!--                            </div>-->
+<!--                            <p class="txt">微信朋友圈</p>-->
+<!--                        </div>-->
+<!--                    </swiper-slide>-->
+<!--                    <div class="swiper-pagination" slot="pagination"></div>-->
+<!--                </swiper>-->
+                    <div class="share ptb30">
+                        <vshare :vshareConfig="vshareConfig"/>
+                    </div>
                 <div class="ptb20 me_share_cancel" @click="share">取消分享</div>
             </div>
         </van-action-sheet>
@@ -91,8 +94,8 @@
 
 <script>
     import { menuConfig, swiperShare } from './config';
-    import { swiper, swiperSlide } from 'vue-awesome-swiper';
     import Cookies from "js-cookie";
+    import vshare from 'vshare';
     export default {
         name: 'me',
         data() {
@@ -103,14 +106,30 @@
                 menuConfig,
                 isLogin: false, // 是否登录
                 shareMenu: false, // 是否显示分享好友
-                userInfo: ''
+                userInfo: '',
+                vshareConfig: {
+                    shareList: ['qzone', 'tsina', 'tqq', 'renren', 'weixin', 'more'],
+                    common: {
+                        bdText: '',
+                        bdDesc: '你号',
+                        bdUrl: window.location.hostname,
+                        bdPic: 'https://www.zk120.com/zixun/wp-content/uploads/2018/07/p.zk120.net_.cn_2018-07-05_17-59-10.png',
+                    },
+                    share: [{
+                        bdSize: 32
+                    }],
+                    image: {
+                        viewType: 'collection',
+                        viewSize: 64
+                    }
+                }
             };
         },
         components: {
-            swiper,
-            swiperSlide
+            vshare
         },
         created() {
+            localStorage.setItem('isDisplay', 'true');
             // 检测是否用户登录
             if (Cookies.get('shuan120token')) {
                 this.userInfo = JSON.parse(localStorage.getItem('user'));
@@ -168,7 +187,7 @@
             * 参数：{}
             */
             goLogin() {
-                this.$router.push({path: '/login'});
+                this.$router.push('/login');
             },
             /** 2020/3/20
             * 作者：王青高
@@ -388,6 +407,10 @@
                 height: 50px;
             }
         }
-
+    }
+    .share {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
     }
 </style>

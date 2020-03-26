@@ -1,52 +1,23 @@
 <template>
-    <div class="videoBoxTxt pb100">
-<!--        <van-sticky>-->
-<!--            <div class="videoBoxTxt_sticky">-->
-<!--                <van-nav-bar-->
-<!--                        :title="title"-->
-<!--                        right-text="..."-->
-<!--                        left-arrow-->
-<!--                        @click-left="onGoBack"-->
-<!--                        class="videoBoxTxt_title"-->
-<!--                >-->
+    <div class="videoBoxTxt pb100" v-if="vedio">
+        <van-sticky>
+            <div class="videoBoxTxt_sticky">
+                <van-nav-bar
+                        :title="vedio.title"
+                        left-arrow
+                        @click-left="onGoBack"
+                        class="videoBoxTxt_title"
+                >
+<!--                                            right-text="..."-->
 <!--                    <template #right>-->
-<!--                        <van-icon name="search" class="mr20" @click="onSearch"/>-->
 <!--                        <van-icon name="ellipsis" @click="onClickRight"/>-->
 <!--                    </template>-->
-<!--                </van-nav-bar>-->
-<!--                <ul class="videoBoxTxt_title_dropDown" v-show="isShow">-->
-<!--                    <li class="videoBoxTxt_title_dropDown_item pl100">-->
-<!--                        <van-icon name="browsing-history-o" />-->
-<!--                        <span class="txt">我的足迹</span>-->
-<!--                    </li>-->
-<!--                    <li class="videoBoxTxt_title_dropDown_item pl100">-->
-<!--                        <van-icon name="star-o" />-->
-<!--                        <span class="txt">我的收藏</span>-->
-<!--                    </li>-->
-<!--                    <li class="videoBoxTxt_title_dropDown_item pl100">-->
-<!--                        <van-icon name="share" />-->
-<!--                        <span class="txt ">分享好友</span>-->
-<!--                    </li>-->
-<!--                </ul>-->
-<!--            </div>-->
-<!--        </van-sticky>-->
-<!--        <div class="videoBoxTxt_content ptb20 plr30">-->
-<!--            <div class="videoBoxTxt_content_title mtb50">1点就有疗效，膝关节重生的选穴按揉法</div>-->
-<!--            <div class="videoBoxTxt_content_meta">-->
-<!--                <p class="logo">-->
-<!--                    <img src="https://www.zk120.com/media/accounts/images/portraits/2018/03/673639e9ec6de4a2c3d9a4d96e96aebd.jpg" class="avatar" width="36" height="36">-->
-<!--                </p>-->
-<!--                <div class="right pl100 ptb10">-->
-<!--                    <p class="author ptb10">-->
-<!--                        神黄中医智库-苁蓉-->
-<!--                    </p>-->
-<!--                    <p class="time ptb10">-->
-<!--                        2017-12-19<span class="weizhi-read readwz">阅读量30005</span>-->
-<!--                    </p>-->
-<!--                </div>-->
-<!--            </div>-->
+                </van-nav-bar>
+            </div>
+        </van-sticky>
+        <div class="videoBoxTxt_content ptb20 plr30">
+            <div class="videoBoxTxt_content_title mtb50">{{vedio.title}}</div>
             <div class="videoBoxTxt_content_video">
-<!--                <video src="https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm" controls width="100%" height="100%"></video>-->
                 <video-player
                         class="video-player vjs-custom-skin"
                         ref="videoPlayer"
@@ -58,22 +29,35 @@
                         @ready="playerReadied"
                 />
             </div>
-            <div class="videoBoxTxt_content_btn plr30 ptb20">
-                <button type="button" class="prev plr20 ptb10" @click="getPrev">上一集</button>
-                <button type="button" class="next plr20 ptb10" @click="getNext">下一集</button>
+            <div class="videoBoxTxt_content_meta">
+<!--                <p class="logo">-->
+<!--                    <img src="https://www.zk120.com/media/accounts/images/portraits/2018/03/673639e9ec6de4a2c3d9a4d96e96aebd.jpg" class="avatar" width="36" height="36">-->
+<!--                </p>-->
+                <div class="right ptb10">
+                    <p class="author ptb10">
+                        {{vedio.description}}
+                    </p>
+                    <p class="time ptb10">
+                        {{vedio.createtime}}<span class="weizhi-read readwz pl10">阅读量 {{vedio.readnum}}</span>
+                    </p>
+                </div>
             </div>
+<!--            <div class="videoBoxTxt_content_btn plr30 ptb20">-->
+<!--                <button type="button" class="prev plr20 ptb10" @click="getPrev">上一集</button>-->
+<!--                <button type="button" class="next plr20 ptb10" @click="getNext">下一集</button>-->
+<!--            </div>-->
         </div>
+    </div>
 </template>
 
 <script>
-
+    import { getVedioContent } from '@/api/content';
     export default {
         name: 'videoBoxTxt',
         data() {
             return {
                 isShow: false, // 默认不显示菜单
-                title: '文章',
-                videlUrl: 'https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm',
+                videlUrl: '',
                 // 视频播放
                 playerOptions: {
                     playbackRates: [ 0.5, 1.0, 1.5, 2.0 ], // 可选择的播放速度
@@ -90,7 +74,7 @@
                         // type: 'video/webm',
                         type: 'video/webm',
                         // type: 'video/3gp',
-                        src: 'https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm'// url地址
+                        src: ''// url地址
                     } ],
                     poster: require('../../../assets/image/0001.jpg'), // 你的封面地址
                     // width: document.documentElement.clientWidth,
@@ -101,7 +85,8 @@
                         remainingTimeDisplay: false, // 是否显示剩余时间功能
                         fullscreenToggle: true // 全屏按钮
                     }
-                }
+                },
+                vedio: null, // 视频内容
             };
         },
         computed: {
@@ -109,7 +94,29 @@
             //     return this.$refs.videoPlayer.player;
             // }
         },
+        mounted() {
+            let id = this.$route.query.id;
+            if (id) {
+                this.getVedioContent(id);
+            } else {
+                this.$router.push('/videoBox');
+            }
+        },
         methods: {
+            /** 2020/3/26
+            * 作者：王青高
+            * 功能：{} 获取视频播放内容
+            * 参数：{}
+            */
+            getVedioContent(id) {
+                getVedioContent({ id }).then(res => {
+                    let result = res.data;
+                    if (res.state === '1') {
+                        this.vedio = result.vedio;
+                        this.$set(this.playerOptions.sources[0], 'src', result.vedio.url);
+                    }
+                });
+            },
             /** 2020/3/20
              * 作者：王青高
              * 功能：{Function} 返回上一页
@@ -124,11 +131,7 @@
              *参数:
              */
             onClickRight() {
-                if (this.isShow) {
-                    this.isShow = false;
-                } else {
-                    this.isShow = true;
-                }
+                this.$router.push('/footPrint');
             },
             /** 2020/3/19
              * 作者：王青高
@@ -284,6 +287,7 @@
                     height: 72px;
                 }
                 .right {
+
                     .author {
                         color: $coloe_3;
                         font-size: 26px;
@@ -292,6 +296,7 @@
                     .time {
                         color: $color_999;
                         font-size: 24px;
+                        text-align: right;
                     }
                 }
             }

@@ -3,42 +3,32 @@
         <publicTitle
                 :navData="navData"
                 @getCurrent="getCurrent"
+                :_active="true"
         >
             <div slot="publicTitleRight" class="footPrint_right plr20" @click="_delete">清空</div>
         </publicTitle>
-        <ul class="footPrint_box plr30">
-            <li class="footPrint_box_li pl100">
+        <ul class="footPrint_box plr30" v-if="footList.length">
+            <li class="footPrint_box_li pl100" v-for="(item, index) of footList" :key="'item' + index" @click="toRouter(item)">
                 <img :src="require('../../assets/img/footPrint.png')" alt="" class="img">
                 <div class="right ptb10">
-                    <h3 class="right_title ptb10">名家医案</h3>
-                    <div class="right_txt ptb10"><span class="right_txt_one">赵绍琴临证验精选</span><span class="right_txt_one">> 美尼尔氏综合征</span></div>
-                </div>
-            </li>
-            <li class="footPrint_box_li pl100">
-                <img :src="require('../../assets/img/footPrint.png')" alt="" class="img">
-                <div class="right ptb10">
-                    <h3 class="right_title ptb10">名家医案</h3>
-                    <div class="right_txt ptb10"><span class="right_txt_one">赵绍琴临证验精选</span><span class="right_txt_one">> 美尼尔氏综合征</span></div>
-                </div>
-            </li>
-            <li class="footPrint_box_li pl100">
-                <img :src="require('../../assets/img/footPrint.png')" alt="" class="img">
-                <div class="right ptb10">
-                    <h3 class="right_title ptb10">名家医案</h3>
-                    <div class="right_txt ptb10"><span class="right_txt_one">赵绍琴临证验精选</span><span class="right_txt_one">> 美尼尔氏综合征</span></div>
+                    <h3 class="right_title ptb10">{{item.title}}</h3>
+                    <div class="right_txt ptb10"><span class="right_txt_one">{{item.createtime}}</span></div>
                 </div>
             </li>
         </ul>
+        <div v-else-if="type === 1" class="footPrint_tips ptb40">暂无浏览</div>
+        <div v-else-if="type === 2" class="footPrint_tips ptb40">暂无收藏</div>
+        <load-more :loadingType="loadingType" :contentText="contentText"/>
     </div>
 </template>
 
 <script>
     import publicTitle from '@/components/publicTitle';
+    import loadMore from '@/components/loadMore/loadMore.vue';
     import { navData } from './config';
     import { getFoot, clearFoot } from '@/api/content';
-    import axios from 'axios';
-    import qs from 'qs';
     import { Toast } from 'vant';
+    import { eventScroll } from '@/utils/addEventScroll';
     export default {
         name: 'footPrint',
         data() {
@@ -47,8 +37,28 @@
                 current: 0, // 下标索引
                 pagesize: 15,
                 page: 1,
+                type: 1, // 1：足迹， 2：收藏
                 footList: [], // 存储足迹或收藏内容
+                totalcount: '', // 存储总数
+                loadingType: 0,
+                contentText: {
+                    contentdown: '上拉显示更多',
+                    contentrefresh: '正在加载...',
+                    contentnomore: '没有更多数据了'
+                }
             };
+        },
+        created() {
+            localStorage.setItem('isDisplay', 'false');
+            eventScroll().then(res => {
+                if (res) {
+                    this.page = (this.page + 1);
+                    this.getCurrent(this.current);
+                }
+            });
+        },
+        mounted() {
+            this.getCurrent(0);
         },
         methods: {
             /** 2020/3/19
@@ -57,29 +67,25 @@
              * 参数：{}
              */
             getCurrent(index) {
+                if (this.footList.length >= this.totalcount) {
+                    this.loadingType = 2;
+                    return;
+                }
                 this.current = index;
+                this.type = (index + 1);
+                this.loadingType = 1;
                 getFoot({
                     pagesize: this.pagesize,
                     page: this.page,
-                    type: index
+                    type: this.type
                 }).then(res => {
-                    console.log('res', res);
+                    let result = res.data;
+                    if (res.state === '1') {
+                        this.totalcount = result.totalcount;
+                        this.footList = this.footList.concat(result.list);
+                        this.loadingType = 0;
+                    }
                 });
-                axios.get('/footprint/getFoot', qs.stringify({
-                    pagesize: this.pagesize,
-                    page: this.page,
-                    type: index
-                })).then(res => {
-                    console.log('res', res);
-                });
-            },
-            /** 2020/3/19
-             * 作者：王青高
-             * 功能：{} 弹出搜索
-             * 参数：{}
-             */
-            onSearch() {
-                console.log('点击了搜索');
             },
             /** 2020-3-22 0022
              *作者:王青高
@@ -87,16 +93,25 @@
              *参数:
              */
             _delete() {
-                clearFoot({ type: this.current }).then(res => {
+                clearFoot({ type: this.type }).then(res => {
                     if (res.state === '1') {
                         this.footList = [];
                         Toast('清除成功');
                     }
                 });
+            },
+            /** 2020/3/26
+            * 作者：王青高
+            * 功能：{} 根据分类跳转不同的详情页
+            * 参数：{}
+            */
+            toRouter(obj) {
+                console.log('obj', obj);
             }
         },
         components: {
-            publicTitle
+            publicTitle,
+            loadMore
         }
     };
 </script>
@@ -148,6 +163,14 @@
                     }
                 }
             }
+        }
+        &_tips {
+            background: $bgc-theme;
+            height: 80vh;
+            display: flex;
+            justify-content: center;
+            box-sizing: border-box;
+            color: $color_999;
         }
     }
 </style>

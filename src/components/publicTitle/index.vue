@@ -6,8 +6,7 @@
                     <van-icon name="arrow-left" />
                 </div>
                 <ul class="publicTitle_box_content">
-                    <li class="li plr20"  @click="getCurrent(index)" v-for="(item, index) of navData" :key="'item' + index">{{item.txt}}</li>
-                    <!--  :class="{active: current === index}"-->
+                    <li class="li plr20" :class="{active: current === index && _active}"  @click="getCurrent(index)" v-for="(item, index) of navData" :key="'item' + index">{{item.txt}}</li>
                 </ul>
                 <slot name="publicTitleRight"></slot>
             </div>
@@ -30,6 +29,10 @@
                 default() {
                     return [];
                 }
+            },
+            _active: {
+                type: Boolean,
+                defalut: false
             }
         },
         methods: {

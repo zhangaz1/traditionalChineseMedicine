@@ -48,7 +48,7 @@
 <!--                </div>-->
                 <div class="searchResult">
                     <ul class="ul" v-if="searchResultData.length">
-                        <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/searchResult', query: {name: search}}">{{search}}</router-link>
+                        <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/doctorCase/components/doctorDetail', query: { id: search.id, title: search.title}}">{{search.title}}</router-link>
                     </ul>
                 </div>
             </div>
@@ -86,7 +86,7 @@
     import pupblicPanel from '@/components/publicPanel';
     import headSearch from '@/components/headSearch/';
     import { navData, menuData } from './config';
-    import { getChildrenDoctor, getIndexData } from '@/api/content';
+    import { getChildrenDoctor, getIndexData, getDoctorSearch } from '@/api/content';
     export default {
         name: 'doctorCase',
         data() {
@@ -100,6 +100,11 @@
                 hotData: [], // 热门分类
                 allData: [], // 所有分类
                 childrenData: [], // 二级分类
+                searchOption: {
+                    pageSize: 10,
+                    page: 1,
+                    searchtype: 2
+                },
             };
         },
         mounted() {
@@ -214,11 +219,18 @@
                 }
             },
             searchVal(val) {
-                console.log('搜索内容', val);
-                if (val) {
-                    this.searchResultData.push(val);
-                }
-            },
+                getDoctorSearch({
+                    pagesize: this.searchOption.pageSize,
+                    page: this.searchOption.page,
+                    keyword: val,
+                    searchtype: this.searchOption.searchtype
+                }).then(res => {
+                    let result = res.data;
+                    if (res.state === '1') {
+                        this.searchResultData = result.list;
+                    }
+                });
+            }
         },
         components: {
             publicTitle,

@@ -11,9 +11,9 @@
             <ul class="learnPlan_tag_box">
                 <li class="mb40">
                     <div class="li mb20">
-                        <van-field v-model="text" label="问：" placeholder="请输入问题" label-width="25px" />
+                        <van-field v-model="ans" label="问：" placeholder="请输入问题" label-width="25px" />
                         <van-field
-                                v-model="message"
+                                v-model="ques"
                                 rows="2"
                                 autosize
                                 label-width="25px"
@@ -25,25 +25,15 @@
                         />
                     </div>
                     <div class="btn">
-                        <van-button type="default" size="small" plain hairline @click="save">保存</van-button>
+                        <van-button type="default" size="small" plain hairline @click="addLearnPlan">添加</van-button>
                     </div>
                 </li>
             </ul>
-            <ul class="learnPlan_tag_box h600">
-                <li class="mb40">
+            <ul class="learnPlan_tag_box h900" v-if="messageList.length">
+                <li class="mb40" v-for="(item, index) of messageList" :key="'item' + index">
                     <div class="li mb20">
-                        <van-field v-model="text" label="问：" placeholder="请输入问题" label-width="25px" />
-                        <van-field
-                                v-model="message"
-                                rows="2"
-                                autosize
-                                label-width="25px"
-                                label="答:"
-                                type="textarea"
-                                maxlength="200"
-                                placeholder="请输入回答内容"
-                                show-word-limit
-                        />
+                        <div class="title ptb30 plr30">问：<span>{{item.ans}}</span></div>
+                        <div class="desc ptb30 plr30">答：<span>{{item.ques}}</span></div>
                     </div>
                 </li>
             </ul>
@@ -52,13 +42,19 @@
 </template>
 
 <script>
+    import { getLearnPlan, addLearnPlan } from '@/api/content';
+    import { Toast } from 'vant';
     export default {
         name: 'learnPlan',
         data() {
             return {
-                text: '', // 答
-                message: '' // 内容
+                messageList: [], // 学习方案
+                ans: '',
+                ques: ''
             };
+        },
+        mounted() {
+            this.getLearnPlan();
         },
         methods: {
             /** 2020/3/22
@@ -69,13 +65,39 @@
             onGoBack() {
                 this.$router.go(-1);
             },
-            /** 2020/3/24
+            /** 2020/3/26
             * 作者：王青高
-            * 功能：{} 保存学习方案
+            * 功能：{} 获取学习方案
             * 参数：{}
             */
-            save() {
-
+            getLearnPlan() {
+                getLearnPlan().then(res => {
+                    let result = res.data;
+                    if (res.state === '1') {
+                        this.messageList = result.list;
+                    }
+                });
+            },
+            /** 2020/3/26
+            * 作者：王青高
+            * 功能：{} 添加学习方案
+            * 参数：{}
+            */
+            addLearnPlan() {
+                if (!this.ans && !this.ques) {
+                    Toast('请完整填写学习方案');
+                    return;
+                }
+                addLearnPlan({
+                    ans: this.ans,
+                    ques: this.ques
+                }).then(res => {
+                    let result = res.data;
+                    if (res.state === '1') {
+                       Toast('添加成功!');
+                       this.getLearnPlan();
+                    }
+                });
             }
         }
     };
@@ -100,8 +122,8 @@
             background: $bgColor;
             height: 100vh;
             box-sizing: border-box;
-            .h600 {
-                height: 600px;
+            .h900 {
+                height: 900px;
                 overflow-y: scroll;
             }
             &_box {
@@ -116,6 +138,21 @@
                 .btn {
                     width: 100%;
                     text-align: right;
+                }
+                .title {
+                    position: relative;
+                    &:after {
+                        content: '';
+                        position: absolute;
+                        left: 5%;
+                        bottom: 0;
+                        width: 90%;
+                        height: 1px;
+                        background: #ebedf0;
+                    }
+                }
+                .desc {
+                    @include multiline-ellipsis(6);
                 }
             }
         }

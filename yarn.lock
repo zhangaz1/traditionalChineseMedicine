@@ -11707,6 +11707,13 @@ vscode-uri@^1.0.6:
   resolved "https://registry.yarnpkg.com/vscode-uri/-/vscode-uri-1.0.8.tgz#9769aaececae4026fb6e22359cb38946580ded59"
   integrity sha512-obtSWTlbJ+a+TFRYGaUumtVwb+InIUVI0Lu0VBUAPmj2cU5JutEXg3xUE0c2J5Tcy7h2DEKVJBFi+Y9ZSFzzPQ==
 
+vshare@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/vshare/-/vshare-2.0.0.tgz#9da6ee1300da19f1b6324e540fceb3fa046afa1f"
+  integrity sha512-Z5AUwrCq2bwatLno1TtYkGyRE4vyDmSq4Ub3KuRr9sZCgPJCGJxo+FucvZuhgEafwXIJRR2iXXgD2hC0SsO7Ww==
+  dependencies:
+    vue "^2.5.11"
+
 vue-awesome-swiper@^3.1.3:
   version "3.1.3"
   resolved "https://registry.npm.taobao.org/vue-awesome-swiper/download/vue-awesome-swiper-3.1.3.tgz#05500b501ffb3fec9bf7eb9985bcf4ae8360ed9e"
@@ -11849,7 +11856,7 @@ vue-video-player@^5.0.2:
     videojs-flash "^2.1.0"
     videojs-hotkeys "^0.2.20"
 
-vue@^2.6.11:
+vue@^2.5.11, vue@^2.6.11:
   version "2.6.11"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.11.tgz#76594d877d4b12234406e84e35275c6d514125c5"
   integrity sha512-VfPwgcGABbGAue9+sfrD4PuwFar7gPb1yl1UK1MwXoQPAw0BKSqWfoYCT/ThFrdEVWoI51dBuyCoiNU9bZDZxQ==
