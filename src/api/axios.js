@@ -1,9 +1,8 @@
 // 封装axios的请求， 返回重新封装的数据格式
 // 对错误的统一处理
 import axios from 'axios';
-import qs from 'qs';
 import { EventBus } from "@/utils/event-bus";
-// import Cookies from 'js-cookie';
+import { Toast } from 'vant';
 const CancelToken = axios.CancelToken;
 class HttpRequest {
     constructor(baseUrl) {
@@ -39,16 +38,13 @@ class HttpRequest {
             let key = config.url + '&' + config.method;
             this.removePending(key, true);
             config.cancelToken = new CancelToken(c => {
-                // console.log('this.pending[key]', this.pending[key])
                 this.pending[key] = c;
-                // console.log('c', c, 'this.pending[key]', this.pending[key])
             });
             EventBus.$emit("loadingShow", { data: true });
             return config;
         }, error => {
-            // errorHandle(error);
             EventBus.$emit("loadingShow", { data: false });
-            alert('客户端请求失败！code:' + error);
+            Toast('客户端请求失败！code:' + error);
             // Do something with request error
             return Promise.reject(error);
         });
@@ -59,16 +55,17 @@ class HttpRequest {
             // Do something with response data
             let key = res.config.url + '&' + res.config.method;
             this.removePending(key);
-            if (res.status === 200) {
+            if (res.status === 200 && res.data.state === '1') {
                 return Promise.resolve(res.data);
             } else {
+                Toast(res.data.msg);
                 return Promise.reject(res);
             }
         }, error => {
             // Any status codes that falls outside the range of 2xx cause this function to trigger
             // Do something with response error
             EventBus.$emit("loadingShow", { data: false });
-            alert('服务端请求失败！code:' + error);
+            Toast('服务端请求失败！code:' + error);
             return Promise.reject(error);
         });
     }

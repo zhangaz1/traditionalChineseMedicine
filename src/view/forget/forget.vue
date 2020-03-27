@@ -349,6 +349,9 @@
         height: 100%;
         background: rgba(3, 3, 3, .2);
         z-index: 9;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
         .van-icon-close {
             font-size: 100px;
         }

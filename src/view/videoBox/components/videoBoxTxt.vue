@@ -23,10 +23,6 @@
                         ref="videoPlayer"
                         :playsinline="true"
                         :options="playerOptions"
-                        @play="onPlayerPlay"
-                        @pause="onPlayerPause($event)"
-                        @statechanged="playerStateChanged($event)"
-                        @ready="playerReadied"
                 />
             </div>
             <div class="videoBoxTxt_content_meta">
@@ -57,7 +53,7 @@
         data() {
             return {
                 isShow: false, // 默认不显示菜单
-                videlUrl: '',
+                // videlUrl: '',
                 // 视频播放
                 playerOptions: {
                     playbackRates: [ 0.5, 1.0, 1.5, 2.0 ], // 可选择的播放速度
@@ -88,11 +84,6 @@
                 },
                 vedio: null, // 视频内容
             };
-        },
-        computed: {
-            // player() {
-            //     return this.$refs.videoPlayer.player;
-            // }
         },
         mounted() {
             let id = this.$route.query.id;
@@ -156,30 +147,6 @@
              */
             getNext() {
                 console.log('获取下一集');
-                // setTimeout(() => {
-                //     this.$set(this.playerOptions.sources[0], 'src', this.videlUrl);
-                // }, 3000);
-            },
-            // listen event
-            onPlayerPlay(player) {
-                // console.log('player play!', player);
-            },
-            onPlayerPause(player) {
-                // console.log('player pause!', player)
-            },
-            // ...player event
-
-            // or listen state event
-            playerStateChanged(playerCurrentState) {
-                // console.log('player current update state', playerCurrentState)
-            },
-
-            // player is ready
-            playerReadied(player) {
-                // console.log('the player is readied', player);
-                // this.onPlayerPlay();
-                // you can use it to do something...
-                // player.[methods]
             }
         }
     };
