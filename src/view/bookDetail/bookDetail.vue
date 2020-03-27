@@ -1,6 +1,6 @@
 <template>
     <div class="bookDetail plr30 ptb20">
-        <div class="bookDetail_book">
+        <div class="bookDetail_book" @click="openIsSetting">
             <div class="bookDetail_book_title">中草药标题</div>
             <div class="bookDetail_book_article">
                 （集注）王肯堂曰：但有一毫头痛恶寒，即为表证未解，不可下也。
@@ -108,8 +108,8 @@
             EventBus.$emit("isDisplay", { data: false });
         },
         methods: {
-            getVal() {
-                console.log('点击了我');
+            openIsSetting() {
+                if (this.isSetting) this.isSetting = false;
             },
             /** 2020/3/26
              * 作者：王青高
@@ -289,9 +289,9 @@
         &_settingBox {
             position: fixed;
             left: 0;
-            bottom: -100px;
+            bottom: -300px;
             width: 100%;
-            height: 200px;
+            height: 300px;
             box-shadow: 0 3px 10px rgba(3, 3, 3, 0.1);
             z-index: $navbar-z-index;
             background: $color-default;
@@ -304,6 +304,10 @@
         opacity: 1;
     }
     .footer {
+        bottom: 0;
+        opacity: 1;
+    }
+    .setting {
         bottom: 0;
         opacity: 1;
     }
