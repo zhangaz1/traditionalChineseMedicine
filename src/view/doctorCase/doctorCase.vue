@@ -46,10 +46,12 @@
 <!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
 <!--                    </ul>-->
 <!--                </div>-->
-                <div class="searchResult">
+                <div class="searchResult" @scroll.stop="addScroll($event)">
                     <ul class="ul" v-if="searchResultData.length">
                         <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/doctorCase/components/doctorDetail', query: { id: search.id, title: search.title}}">{{search.title}}</router-link>
+                        <li class="li noData ptb30 plr30" v-if="searchResultData.length === totalcount">没有更多数据</li>
                     </ul>
+                    <div class="li noData ptb30 plr30" v-if="!searchResultData.length">暂无数据</div>
                 </div>
             </div>
         </headSearch>
@@ -102,10 +104,12 @@
                 allData: [], // 所有分类
                 childrenData: [], // 二级分类
                 searchOption: {
-                    pageSize: 10,
+                    pageSize: 20,
                     page: 1,
                     searchtype: 2
-                }
+                },
+                searchValue: '', // 搜索关键字
+                totalcount: '0', // 数据长度
             };
         },
         mounted() {
@@ -113,6 +117,20 @@
             EventBus.$emit("isDisplay", { data: true });
         },
         methods: {
+            /** 2020/3/30
+             * 作者：王青高
+             * 功能：{} 监听滚动条是否触底
+             * 参数：{}
+             */
+            addScroll(event) {
+                if (this.totalcount === this.searchResultData.length) return;
+                let scrollTop = event.target.scrollTop;
+                let clientHeight = event.target.clientHeight;
+                let scrollHeight = event.target.scrollHeight;
+                if (scrollTop + clientHeight >= (scrollHeight - 10)) {
+                    this.searchVal(this.searchValue);
+                }
+            },
             /** 2020-3-25 0025
              *作者:王青高
              *功能: 获取医案首页信息
@@ -137,7 +155,7 @@
                 getChildrenDoctor({ pid }).then(res => {
                     let result = res.data;
                     if (res.state === '1') {
-                        this.childrenData = result;
+                        this.childrenData = result.subTypes;
                     }
                 });
             },
@@ -184,7 +202,6 @@
              * 参数：{}
              */
             onCancel() {
-                // console.log('取消');
                 if (this.isCancel) {
                     this.isCancel = false;
                     this.searchResultData = [];
@@ -220,15 +237,28 @@
                 }
             },
             searchVal(val) {
+                if (!val && this.searchValue === '') {
+                    this.searchResultData = [];
+                    this.searchOption.page = 1;
+                    return;
+                }
+                if (!val || val !== this.searchValue) {
+                    this.searchResultData = [];
+                    this.searchOption.page = 1;
+                }
+                this.searchValue = val;
                 getSearch({
                     pagesize: this.searchOption.pageSize,
-                    page: this.searchOption.page,
-                    keyword: val,
+                    page: this.searchOption.page++,
+                    keyword: this.searchValue,
                     searchtype: this.searchOption.searchtype
                 }).then(res => {
                     let result = res.data;
                     if (res.state === '1') {
-                        this.searchResultData = result.list;
+                        if (result && result.list.length) {
+                            this.totalcount = result.totalcount;
+                            this.searchResultData = this.searchResultData.concat(result.list);
+                        }
                     }
                 });
             }
@@ -257,16 +287,16 @@
             justify-content: center;
         }
         &_search {
-            position: relative;
+            position: fixed;
             border-bottom: 1px solid $ccc-color;
             left: 0;
-            top: -108px;
+            top: 0;
+            width: 100%;
             z-index: $search-z-index;
             .searchContent {
                 position: absolute;
                 background: $bgc-theme;
                 width: 100%;
-                height: 110vh;
                 left: 0;
                 top: 110px;
                 z-index: $search-z-index;
@@ -297,9 +327,9 @@
                     }
                 }
                 .searchResult {
+                    height: 80vh;
+                    overflow-y: scroll;
                     .li {
-                        /*height: 100px;*/
-                        /*line-height: 100px;*/
                         font-size: 36px;
                         color: $coloe_3;
                         position: relative;
@@ -311,6 +341,11 @@
                             width: 100%;
                             height: 1px;
                             background: $bg_ddcdaf;
+                        }
+                        &.noData {
+                            text-align: center;
+                            color: $ccc-color;
+                            font-size: 28px;
                         }
                     }
                 }

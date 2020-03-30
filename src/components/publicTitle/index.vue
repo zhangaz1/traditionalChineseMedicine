@@ -67,6 +67,7 @@
         height: 108px;
         z-index: $search-z-index;
         background: $bgc-theme;
+        border-bottom: 1px solid $ccc-color;
         .publicTitle_box {
             display: flex;
             align-items: center;

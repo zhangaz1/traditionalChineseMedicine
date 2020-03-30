@@ -48,10 +48,12 @@
 <!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
 <!--                    </ul>-->
 <!--                </div>-->
-                <div class="searchResult">
+                <div class="searchResult" @scroll.stop="addScroll($event)">
                     <ul class="ul" v-if="searchResultData.length">
                         <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/bookContentFeed', query: { id: search.id, title: search.title}}">{{search.title}}</router-link>
+                        <li class="li noData ptb30 plr30" v-if="searchResultData.length === totalcount">没有更多数据</li>
                     </ul>
+                    <div class="li noData ptb30 plr30" v-if="!searchResultData.length">暂无数据</div>
                 </div>
             </div>
         </headSearch>
@@ -93,10 +95,12 @@
                 isSearch: false, // 是否显示搜索
                 isNum: 0,
                 searchOption: {
-                    pageSize: 10,
+                    pageSize: 20,
                     page: 1,
-                    searchtype: 2
-                }
+                    searchtype: 1
+                },
+                searchValue: '', // 搜索关键字
+                totalcount: '0', // 数据长度
             };
         },
         mounted() {
@@ -123,6 +127,20 @@
             EventBus.$emit("isDisplay", { data: true });
         },
         methods: {
+            /** 2020/3/30
+             * 作者：王青高
+             * 功能：{} 监听滚动条是否触底
+             * 参数：{}
+             */
+            addScroll(event) {
+                if (this.totalcount === this.searchResultData.length) return;
+                let scrollTop = event.target.scrollTop;
+                let clientHeight = event.target.clientHeight;
+                let scrollHeight = event.target.scrollHeight;
+                if (scrollTop + clientHeight >= (scrollHeight - 10)) {
+                    this.searchVal(this.searchValue);
+                }
+            },
             /** 2020/3/19
              * 作者：王青高
              * 功能：{Function} @getCurrent 获取当前下标索引，显示相关内容
@@ -150,7 +168,7 @@
              * 参数：{}
              */
             switchTap(data) {
-                this.$router.push({ path: '/bookTypeLlist', query: { id: data.id, title: data.title } });
+                this.$router.push({ path: '/bookTypeList', query: { id: data.id, title: data.title } });
             },
             /** 2020-3-25 0025
              *作者:王青高
@@ -158,15 +176,28 @@
              *参数:
              */
             searchVal(val) {
+                if (!val && this.searchValue === '') {
+                    this.searchResultData = [];
+                    this.searchOption.page = 1;
+                    return;
+                }
+                if (!val || val !== this.searchValue) {
+                    this.searchResultData = [];
+                    this.searchOption.page = 1;
+                }
+                this.searchValue = val;
                 getSearch({
                     pagesize: this.searchOption.pageSize,
-                    page: this.searchOption.page,
-                    keyword: val,
+                    page: this.searchOption.page++,
+                    keyword: this.searchValue,
                     searchtype: this.searchOption.searchtype
                 }).then(res => {
                     let result = res.data;
                     if (res.state === '1') {
-                        this.searchResultData = result.list;
+                        if (result && result.list) {
+                            this.totalcount = result.totalcount;
+                            this.searchResultData = this.searchResultData.concat(result.list);
+                        }
                     }
                 });
             },
@@ -244,16 +275,17 @@
             justify-content: center;
         }
         &_search {
-            position: relative;
+            position: fixed;
             border-bottom: 1px solid $ccc-color;
             left: 0;
-            top: -108px;
+            top: 0;
+            width: 100%;
             z-index: $search-z-index;
             .searchContent {
                 position: absolute;
                 background: $bgc-theme;
                 width: 100%;
-                height: 110vh;
+                height: 100vh;
                 left: 0;
                 top: 110px;
                 z-index: $search-z-index;
@@ -284,6 +316,11 @@
                     }
                 }
                 .searchResult {
+                    height: 80vh;
+                    overflow-y: scroll;
+                    .ul {
+
+                    }
                     .li {
                         font-size: 36px;
                         color: $coloe_3;
@@ -296,6 +333,11 @@
                             width: 100%;
                             height: 1px;
                             background: $bg_ddcdaf;
+                        }
+                        &.noData {
+                            text-align: center;
+                            color: $ccc-color;
+                            font-size: 28px;
                         }
                     }
                 }

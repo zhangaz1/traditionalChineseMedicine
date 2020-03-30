@@ -7,25 +7,27 @@
                 @click-left="onGoBack"
                 fixed
         />
-        <div class="feedBack_content plr30 ptb20">
-            <van-form @submit="onSubmit">
-                <van-field
-                        v-model="message"
-                        rows="10"
-                        autosize
-                        type="textarea"
-                        maxlength="200"
-                        placeholder="请输入反馈建议内容"
-                        show-word-limit
-                        class="feedBack_content_field"
-                />
-                <div style="margin: 16px;">
-                    <van-button round block type="info" native-type="submit" class="feedBack_content_btn">
-                        提 交
-                    </van-button>
-                </div>
-            </van-form>
-        </div>
+        <van-sticky :offset-top="54">
+            <div class="feedBack_content plr30 ptb20">
+                <van-form @submit="onSubmit">
+                    <van-field
+                            v-model="message"
+                            rows="10"
+                            autosize
+                            type="textarea"
+                            maxlength="200"
+                            placeholder="请输入反馈建议内容"
+                            show-word-limit
+                            class="feedBack_content_field"
+                    />
+                    <div style="margin: 16px;">
+                        <van-button round block type="info" native-type="submit" class="feedBack_content_btn">
+                            提 交
+                        </van-button>
+                    </div>
+                </van-form>
+            </div>
+        </van-sticky>
     </div>
 </template>
 

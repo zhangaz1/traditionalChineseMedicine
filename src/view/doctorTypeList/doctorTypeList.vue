@@ -24,22 +24,22 @@
         </van-sticky>
         <div class="doctorTyeList_item">
             <div class="tips ptb20 plr30">找到 {{searchResultData.length ? searchResultData.length : 0}} 条结果</div>
-            <div v-if="searchResultData.length">
+            <div v-if="searchResultData.length"  @scroll="addScroll($event)" class="box">
                 <div class="plr30 ptb20 content" v-for="(item, index) of searchResultData" :key="'item' + index" @click="switchDetail(item.id)">
-                    <div class="title ptb10">{{item.title}} 副鼻窦炎 | 程莘农</div>
-                    <div class="desc ptb10"><span class="desc_t">【证候表现】</span>经常鼻流黄涕十余年。</div>
-                    <div class="provenance ptb10"><span class="provenance_t">【出处】</span>《世中联名老中医典型医案》</div>
+                    <div class="title ptb10">{{item.title}}</div>
+                    <div class="desc ptb10"><span class="desc_t">{{item.description}}</span></div>
+<!--                    <div class="provenance ptb10"><span class="provenance_t">【出处】</span>《世中联名老中医典型医案》</div>-->
                 </div>
+                <div class="noData plr30 ptb20 content" v-if="searchResultData.length === totalcount">没有更多数据</div>
             </div>
+            <div class="noData plr30 ptb20 content" v-if="!searchResultData.length">暂无数据</div>
         </div>
-        <load-more :loadingType="loadingType" :contentText="contentText"/>
     </div>
 </template>
 
 <script>
     import headSearch from '@/components/headSearch/';
     import { getSearch, getDoctorArticle } from '@/api/content';
-    import loadMore from '@/components/loadMore/loadMore.vue';
     import { EventBus } from "@/utils/event-bus";
     export default {
         name: 'doctorTypeList',
@@ -50,49 +50,69 @@
                 isCancel: false,
                 isDefaultVal: '', // 默认关键字
                 searchOption: {
-                    pageSize: 10,
+                    pageSize: 20,
                     page: 1,
                     searchtype: 2
                 },
                 searchResultData: [], // 显示搜索结果数据
-                loadingType: 0,
-                contentText: {
-                    contentdown: '上拉显示更多',
-                    contentrefresh: '正在加载...',
-                    contentnomore: '没有更多数据了'
-                },
+                searchValue: '', // 搜索关键字
+                totalcount: '0', // 数据长度
             };
         },
         components: {
-            headSearch,
-            loadMore
+            headSearch
         },
         created() {
             let obj = this.$route.query;
             this.isDefaultVal = obj.title;
-            this.getDoctorArticle(obj.id);
+            this.getSearch(obj.title);
         },
         mounted() {
             EventBus.$emit("isDisplay", { data: false });
         },
         methods: {
+            /** 2020/3/30
+             * 作者：王青高
+             * 功能：{} 监听滚动条是否触底
+             * 参数：{}
+             */
+            addScroll(event) {
+                if (this.totalcount === this.searchResultData.length) return;
+                let scrollTop = event.target.scrollTop;
+                let clientHeight = event.target.clientHeight;
+                let scrollHeight = event.target.scrollHeight;
+                if (scrollTop + clientHeight >= (scrollHeight - 10)) {
+                    this.searchVal(this.searchValue);
+                }
+            },
             /** 2020-3-26 0026
              *作者:王青高
              *功能: 搜索框搜索
              *参数:
              */
             getSearch(val) {
-                this.loadingType = 1;
+                if (!val && this.searchValue === '') {
+                    this.searchResultData = [];
+                    this.searchOption.page = 1;
+                    return;
+                }
+                if (!val || val !== this.searchValue) {
+                    this.searchResultData = [];
+                    this.searchOption.page = 1;
+                }
+                this.searchValue = val;
                 getSearch({
                     pagesize: this.searchOption.pageSize,
-                    page: this.searchOption.page,
-                    keyword: val,
+                    page: this.searchOption.page++,
+                    keyword: this.searchValue,
                     searchtype: this.searchOption.searchtype
                 }).then(res => {
                     let result = res.data;
                     if (res.state === '1') {
-                        this.searchResultData = result.list;
-                        if (this.searchResultData.length < 10) this.loadingType = 2;
+                        if (result && result.list.length) {
+                            this.totalcount = result.totalcount;
+                            this.searchResultData = this.searchResultData.concat(result.list);
+                        }
                     }
                 });
             },
@@ -102,7 +122,6 @@
              *参数:
              */
             getDoctorArticle(id) {
-                this.loadingType = 1;
                 getDoctorArticle({
                     pagesize: this.searchOption.pageSize,
                     page: this.searchOption.page,
@@ -111,7 +130,6 @@
                     let result = res.data;
                     if (res.state === '1') {
                         this.searchResultData = result.list;
-                        if (this.searchResultData.length < 10) this.loadingType = 2;
                     }
                 });
             },
@@ -208,6 +226,7 @@
     }
     .van-nav-bar {
         line-height: 108px;
+        height: 108px;
     }
     .van-nav-bar__text,
     .van-nav-bar .van-icon {
@@ -263,6 +282,8 @@
                     }
                 }
                 .searchResult {
+                    height: 900px;
+                    overflow-y: scroll;
                     .li {
                         font-size: 36px;
                         color: $coloe_3;
@@ -283,6 +304,11 @@
         &_item {
             background: $bgc-theme;
             position: relative;
+            height: 100%;
+            .box {
+                height: 80%;
+                overflow-y: scroll;
+            }
             .tips {
                 position: relative;
                 text-align: center;
@@ -306,6 +332,14 @@
             .content {
                 position: relative;
                 border-bottom: 1px solid #eee;
+                .desc {
+                    line-height: 1.5;
+                }
+                &.noData {
+                    text-align: center;
+                    color: $ccc-color;
+                    font-size: 28px;
+                }
                 &_img {
                     position: absolute;
                     left: 10px;

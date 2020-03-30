@@ -12,13 +12,12 @@
                 <van-icon name="wap-home" class="mr20" />
                 <span class="txt">医案 - </span>
                 <span class="txt">分类 - </span>
-                <span class="txt">内科 - </span>
-                <span class="txt">{{article.title}}</span>
+                <span class="txt">{{lastchannelname}} - </span>
+                <span class="txt">{{currchannelname}}</span>
             </div>
             <div class="doctorDetail_box_content">
                 <h2 class="title ptb20">{{article.description}}</h2>
                 <p class="content ptb10" v-html="article.content"></p>
-                <p class="content ptb10">欢迎使用hello,world。欢迎使用hello,world。欢迎使用hello,world。欢迎使用hello,world。欢迎使用hello,world。</p>
             </div>
             <div class="doctorDetail_box_share ptb30 mtb100">
                 <div @click="collection" class="collection ptb20 plr30 mb20">
@@ -41,6 +40,7 @@
     import { EventBus } from "@/utils/event-bus";
     import { Toast } from 'vant';
     import vshare from 'vshare';
+    import { baseUrl } from '@/utils/';
     export default {
         name: 'doctorDetail',
         data() {
@@ -62,7 +62,10 @@
                         viewSize: 64
                     }
                 },
-                article: null // 存储文章详情
+                article: null, // 存储文章详情
+                baseUrl,
+                currchannelname: '',
+                lastchannelname: ''
             };
         },
         beforeCreate(to, from , next) {
@@ -100,22 +103,37 @@
              */
             getDoctorArticleDetail(id) {
                 getDoctorArticleDetail({ id }).then(res => {
-                    let result = res.data;
                     if (res.state === '1') {
+                        let result = res.data;
                         this.article = result.info;
-                        // this.$set(this.article, ) = result.info;
+                        this.currchannelname = result.currchannelname;
+                        this.lastchannelname = result.lastchannelname;
+                        if (result.isCollection === '0') {
+                            this.icon = 'like-o';
+                        } else {
+                            this.icon = 'like';
+                        }
                         this.$set(this.vshareConfig.common, 'bdText', this.article.title);
                         this.$set(this.vshareConfig.common, 'bdDesc', this.article.description);
                     };
                 });
             }
         },
-        created() {
-            let obj = this.$route.query;
-            this.getDoctorArticleDetail(obj.id);
+        updated() {
+            let img = document.getElementsByTagName('img');
+            for (let i = 0; i < img.length; i++) {
+                img[i].style.width = '100%';
+                img[i].style.height = '200px';
+            }
         },
         mounted() {
             EventBus.$emit("isDisplay", { data: false });
+            if (this.$route.query) {
+                let obj = this.$route.query;
+                this.getDoctorArticleDetail(obj.id);
+            } else {
+                this.$router.push('/doctorCase');
+            }
         }
     };
 </script>
@@ -135,7 +153,6 @@
         }
         &_box {
             width: 100%;
-            height: 600px;
             &_li {
                 display: flex;
                 align-items: center;
@@ -148,6 +165,8 @@
             &_content {
                 font-size: 30px;
                 color: $coloe_3;
+                /*height: 600px;*/
+                overflow-y: scroll;
                 .title {
                     font-size: 60px;
                     border-bottom: 1px solid $ccc-color;

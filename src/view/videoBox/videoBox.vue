@@ -13,11 +13,12 @@
                 :isCancel="isCancel"
         >
             <div slot="searchContent" class="searchContent" v-if="isCancel">
-                <div class="searchResult">
+                <div class="searchResult" @scroll.stop="addScroll($event)">
                     <ul class="ul" v-if="searchResultData.length">
-                        <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/videoBox/components/videoBoxDetail', query: {id: search.id}}">{{search.title}}</router-link>
+                        <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/videoBox/components/videoBoxDetail', query: { id: search.id, title: search.title}}">{{search.title}}</router-link>
+                        <li class="li noData ptb30 plr30" v-if="searchResultData.length === totalcount">没有更多数据</li>
                     </ul>
-                    <div v-else class="searchResult_normal ptb20">暂无相关内容</div>
+                    <div class="li noData ptb30 plr30" v-if="!searchResultData.length">暂无数据</div>
                 </div>
             </div>
         </headSearch>
@@ -43,11 +44,9 @@
                     </div>
                     <p class="txt_title ptb20">{{video.title}}</p>
                 </router-link>
-                <li>
-                    <load-more :loadingType="loadingType" :contentText="contentText"/>
-                </li>
+                <li class="videoBox_content_item_li mr20" v-if="videoData.length === totalcount">没有更多数据</li>
             </ul>
-
+            <div class="li ptb30 plr30" v-if="!videoData.length">暂无数据</div>
         </div>
     </div>
 </template>
@@ -55,7 +54,6 @@
 <script>
     import headSearch from '@/components/headSearch/';
     import { getVideoData, getVediolistByChannel, getSearch } from '@/api/content';
-    import loadMore from '@/components/loadMore/loadMore.vue';
     import { EventBus } from "@/utils/event-bus";
     export default {
         name: 'videoBox',
@@ -68,40 +66,53 @@
                 isSearch: false, // 是否显示搜索
                 videoData: [], // 视频数据
                 parentTypes: [], // 视频分类
-                totalcount: 0, // 视频总数
                 current: 0, // 当前下标
-                loadingType: 0,
-                contentText: {
-                    contentdown: '上拉显示更多',
-                    contentrefresh: '正在加载...',
-                    contentnomore: '没有更多数据了'
-                },
                 pageOption: {
                     channelid: '',
                     pagesize: 10,
                     page: 1
-                }
+                },
+                searchValue: '', // 搜索关键字
+                totalcount: '0', // 数据长度, 视频总数
+                searchOption: {
+                    pageSize: 20,
+                    page: 1,
+                    searchtype: 2
+                },
             };
         },
         components: {
-            headSearch,
-            loadMore
+            headSearch
         },
         mounted() {
             this.getVideoData();
             EventBus.$emit("isDisplay", { data: true });
         },
         methods: {
+            /** 2020/3/30
+             * 作者：王青高
+             * 功能：{} 监听滚动条是否触底
+             * 参数：{}
+             */
+            addScroll(event) {
+                if (this.totalcount === this.searchResultData.length) return;
+                let scrollTop = event.target.scrollTop;
+                let clientHeight = event.target.clientHeight;
+                let scrollHeight = event.target.scrollHeight;
+                if (scrollTop + clientHeight >= (scrollHeight - 10)) {
+                    this.getSearch(this.searchValue);
+                }
+            },
             /** 2020/3/26
             * 作者：王青高
             * 功能：{} 监听滚动条
             * 参数：{}
             */
             handleScroll(event) {
+                if (this.totalcount === this.videoData.length) return;
                 let scrollTop = event.target.scrollTop;
                 let clientHeight = event.target.clientHeight;
                 let scrollHeight = event.target.scrollHeight;
-                console.log('scrollTop', scrollTop, 'windowHeight', clientHeight, 'scrollHeight', scrollHeight);
                 if (scrollTop + clientHeight >= (scrollHeight - 10)) {
                     this.pageOption.page++;
                     this.switchTap();
@@ -120,7 +131,6 @@
                         this.pageOption.channelid = result.parentTypes[0].id; // 初始化当前列表id;
                         this.parentTypes = result.parentTypes;
                         this.totalcount = result.totalcount;
-                        this.isLoadType(this.videoData);
                     }
                 });
             },
@@ -129,7 +139,8 @@
              * 功能：{} 弹出搜索
              * 参数：{}
              */
-            onSearch(val) {
+            onSearch() {
+                document.documentElement.scrollTop = 0;
                 if (!this.isSearch) {
                     this.isSearch = true;
                     this.isCancel = true;
@@ -163,15 +174,28 @@
              *参数:
              */
             getSearch(val) {
+                if (!val && this.searchValue === '') {
+                    this.searchResultData = [];
+                    this.searchOption.page = 1;
+                    return;
+                }
+                if (!val || val !== this.searchValue) {
+                    this.searchResultData = [];
+                    this.searchOption.page = 1;
+                }
+                this.searchValue = val;
                 getSearch({
-                    pagesize: this.pageOption.pagesize,
-                    page: this.pageOption.page,
-                    keyword: val,
-                    searchtype: 2
+                    pagesize: this.searchOption.pageSize,
+                    page: this.searchOption.page++,
+                    keyword: this.searchValue,
+                    searchtype: this.searchOption.searchtype
                 }).then(res => {
                     let result = res.data;
                     if (res.state === '1') {
-                        this.searchResultData = result.list;
+                        if (result && result.list.length) {
+                            this.totalcount = result.totalcount;
+                            this.searchResultData = this.searchResultData.concat(result.list);
+                        }
                     }
                 });
             },
@@ -224,37 +248,19 @@
             * 参数：{}
             */
             switchTap(obj, index, bol) {
-                this.loadingType = 1;
                 if (bol) {
                     this.videoData = [];
                     this.pageOption.page = 1;
                 }
                 if (obj) this.pageOption.channelid = obj.id;
                 if (index >= 0) this.current = index;
-                if (this.videoData.length >= this.totalcount && this.totalcount !== 0) {
-                    this.loadingType = 2;
-                    return;
-                }
                 getVediolistByChannel(this.pageOption).then(res => {
                     let result = res.data;
                     if (res.state === '1') {
                         this.videoData = this.videoData.concat(result.list);
                         this.totalcount = result.totalcount;
-                        this.isLoadType(this.videoData);
                     }
                 });
-            },
-            /** 2020-3-26 0026
-             *作者:王青高
-             *功能: 判断数据是否小于10
-             *参数:
-             */
-            isLoadType(arr) {
-                if (arr.length < 10) {
-                    this.loadingType = 2;
-                } else {
-                    this.loadingType = 0;
-                }
             }
         }
     };
@@ -276,16 +282,16 @@
             height: 108px;
         }
         &_search {
-            position: relative;
+            position: fixed;
             border-bottom: 1px solid $ccc-color;
             left: 0;
-            top: -108px;
+            top: 0;
+            width: 100%;
             z-index: $search-z-index;
             .searchContent {
                 position: absolute;
                 background: $bgc-theme;
                 width: 100%;
-                height: 110vh;
                 left: 0;
                 top: 110px;
                 z-index: $search-z-index;
@@ -316,6 +322,8 @@
                     }
                 }
                 .searchResult {
+                    height: 80vh;
+                    overflow-y: scroll;
                     .li {
                         font-size: 36px;
                         color: $coloe_3;
@@ -328,6 +336,11 @@
                             width: 100%;
                             height: 1px;
                             background: $bg_ddcdaf;
+                        }
+                        &.noData {
+                            text-align: center;
+                            color: $ccc-color;
+                            font-size: 28px;
                         }
                     }
                     &_normal {
@@ -373,6 +386,12 @@
                 align-items: center;
                 height: 50px;
             }
+            .li {
+                width: 100%;
+                text-align: center;
+                font-size: 28px;
+                color: $ccc-color;
+            }
             &_item {
                 overflow-y: scroll;
                 height: 70vh;
@@ -381,6 +400,12 @@
                     width: 31%;
                     height: 300px;
                     display: inline-block;
+                    &:last-child {
+                        width: 100%;
+                        text-align: center;
+                        font-size: 28px;
+                        color: $ccc-color;
+                    }
                     &:nth-child(3n) {
                         margin-right: 0;
                     }

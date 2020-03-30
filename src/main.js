@@ -11,13 +11,12 @@ import '@/assets/css/index.scss';
 import '../node_modules/video.js/dist/video-js.css';
 import '../node_modules/vue-video-player/src/custom-theme.css';
 import videoPlayer from 'vue-video-player';
-import { Icon, Search, Cell, Swipe, Overlay, SwipeItem, Lazyload, sticky, Tab, Tabs, Dialog, NavBar, Form, Field, Button, Checkbox, CheckboxGroup, Toast, Uploader, RadioGroup, Radio, ActionSheet, Loading, Switch } from 'vant';
+import { Icon, Search, Cell, Swipe, Overlay, SwipeItem, Lazyload, List, sticky, Tab, Tabs, Dialog, NavBar, Form, Field, Button, Checkbox, CheckboxGroup, Toast, Uploader, RadioGroup, Radio, ActionSheet, Loading, Switch } from 'vant';
 
 Vue.use(VueAwesomeSwiper);
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 Vue.use(videoPlayer);
-
-Vue.use(Icon).use(Search).use(Cell).use(Swipe).use(SwipeItem).use(Lazyload).use(sticky).use(Tabs).use(Tab).use(Dialog).use(NavBar).use(Form).use(Field).use(Button).use(Checkbox).use(CheckboxGroup).use(Toast).use(Uploader).use(RadioGroup).use(Radio).use(ActionSheet).use(Loading).use(Overlay).use(Switch);
+Vue.use(Icon).use(Search).use(Cell).use(Swipe).use(SwipeItem).use(Lazyload).use(sticky).use(Tabs).use(Tab).use(Dialog).use(NavBar).use(Form).use(Field).use(Button).use(Checkbox).use(CheckboxGroup).use(Toast).use(Uploader).use(RadioGroup).use(Radio).use(ActionSheet).use(Loading).use(Overlay).use(Switch).use(List);
 
 new Vue({
   router,

@@ -4,7 +4,7 @@
          :class="{isNight: isNight, turnBook: isTurnBook}"
          :style="{backgroundColor: bookDetailConfig[current]}">
         <div class="bookDetail_book" @click="openIsSetting($event)">
-            <div class="bookDetail_book_title">{{articleTitle}}</div>
+            <div class="bookDetail_book_title">{{bookitem.title}}</div>
             <div class="bookDetail_book_voice ptb20" @click="openVoice($event)">
                 <van-icon :name="voiceData" class="voiceIcon mr20" />语音播报
                 <audio src="" ref="audios" @ended="audioGoOn"></audio>
@@ -15,11 +15,10 @@
                      @touchstart="startTurnPage($event)"
                      ref="article"
                      :class="{isNight: isNight}"
-                     :style="[{ color: bookDetailColorConfig[current] }, { fontSize: fontConfig.size + 'px'}]">
-                    {{article}}
+                     :style="[{ color: bookDetailColorConfig[current] }, { fontSize: fontConfig.size + 'px'}]" v-html="article">
                 </div>
             </div>
-            <div class="bookDetail_book_percent ptb10">0.0%</div>
+<!--            <div class="bookDetail_book_percent ptb10">0.0%</div>-->
             <div class="bookDetail_book_adv" v-if="adv">
                 <video-player
                         class="video-player vjs-custom-skin"
@@ -38,11 +37,11 @@
         </div>
         <div class="bookDetail_back" :class="{back: isMenu, _isNight: isNight}">
             <van-icon name="arrow-left" class="left" @click="arrowLeft($event)"/>
-            <div class="title">{{articleTitle}}</div>
+<!--            <div class="title">{{title}}</div> 书名标题-->
         </div>
         <div class="bookDetail_footer ptb10" :class="{footer: isMenu, _isNight: isNight}">
             <div class="bookDetail_footer_nav" @click="directory(0, $event)"><van-icon name="bars" class="icon mb20"/><span class="txt">目录</span></div>
-            <div class="bookDetail_footer_nav" @click="directory(1, $event)"><van-icon name="bookmark-o" class="icon mb20"/><span class="txt">书签</span></div>
+<!--            <div class="bookDetail_footer_nav" @click="directory(1, $event)"><van-icon name="bookmark-o" class="icon mb20"/><span class="txt">书签</span></div>-->
             <div class="bookDetail_footer_nav" @click="isSetting = !isSetting"><van-icon name="setting-o" class="icon mb20"/><span class="txt">设置</span></div>
         </div>
         <div class="bookDetail_settingBox" :class="{setting: isSetting, _isNight: isNight}">
@@ -68,7 +67,7 @@
         <div class="bookDetail_directory" :class="{directory: isDirectory}">
             <van-sticky  v-show="isDirectory">
                 <van-nav-bar
-                        :title="articleTitle"
+                        :title="title"
                         left-arrow
                         @click-left="onGoBack($event)"
                 />
@@ -82,18 +81,19 @@
             </van-sticky>
             <div class="bookDetail_directory_list">
                 <ul class="_one" v-if="curDirectory === 0">
-                    <li class="_one_li">重广补注黄帝内经素问·序</li>
-                    <li class="_one_li">重广补注黄帝内经素问·序</li>
-                    <li class="_one_li">目录</li>
-                    <li class="_one_li">
-                        卷第一
-                        <ul class="_two">
-                            <li class="_two_li plr30">上古天真论篇第一</li>
-                            <li class="_two_li plr30">上古天真论篇第一</li>
-                            <li class="_two_li plr30">上古天真论篇第一</li>
-                            <li class="_two_li plr30">上古天真论篇第一</li>
-                        </ul>
-                    </li>
+                    <router-link class="_one_li" tag="li" v-for="(dir, index) of directoryData.bookitem" :key="'idr' + index" :to="{path: '/bookDetail', query: {id: dir.id}}">{{dir.title}}</router-link>
+<!--                    <li class="_one_li">重广补注黄帝内经素问·序</li>-->
+<!--                    <li class="_one_li">重广补注黄帝内经素问·序</li>-->
+<!--                    <li class="_one_li">目录</li>-->
+<!--                    <li class="_one_li">-->
+<!--                        卷第一-->
+<!--                        <ul class="_two">-->
+<!--                            <li class="_two_li plr30">上古天真论篇第一</li>-->
+<!--                            <li class="_two_li plr30">上古天真论篇第一</li>-->
+<!--                            <li class="_two_li plr30">上古天真论篇第一</li>-->
+<!--                            <li class="_two_li plr30">上古天真论篇第一</li>-->
+<!--                        </ul>-->
+<!--                    </li>-->
                 </ul>
                 <ul class="bookmark" v-else>
                     <li class="li plr30 ptb20" @click="getBookMark(mark, $event)" v-for="(mark, index) of bookmarkData" :key="'mark' + index">
@@ -108,7 +108,8 @@
 
 <script>
     import { EventBus } from "@/utils/event-bus";
-    import { bookDetailConfig, bookDetailColorConfig, navItem, txtDatat } from './config';
+    import { bookDetailConfig, bookDetailColorConfig, navItem } from './config';
+    import { getItemContent, getBookItem } from '@/api/content';
     export default {
         name: 'bookDetail',
         data() {
@@ -138,7 +139,7 @@
                         durationDisplay: true, // 显示持续时间
                         remainingTimeDisplay: false, // 是否显示剩余时间功能
                         fullscreenToggle: true // 全屏按钮
-                    },
+                    }
                 },
                 vedio: null, // 视频内容
                 isMenu: false, // 默认关闭菜单
@@ -178,31 +179,40 @@
                 ],
                 voiceData: 'volume-o',
                 isTurnBook: false, //  启动翻书特效
-                adv: true, // 是否有广告
+                adv: false, // 是否有广告
                 articleData: [], // 存储一张内容数据
                 articleLen: 500, // 限制语音播报文字的长度
                 articleVar: 0, // 初始化播报文字开始
                 audioUrl: 'http://tts.baidu.com/text2audio?cuid=baiduid&lan=zh&ctp=1&pdt=311&tex=',
                 article: '',
-                txtDatat,
                 Index_: 0, // 初始化页数
+                bookitem: {}, // 书籍内容
+                directoryData: [], // 存储目录内容
+                title: '', //
             };
         },
-        created() {
-            this.article = txtDatat;
+        watch: {
+            // 如果路由有变化，会再次执行该方法
+            '$route': 'init'
         },
         mounted() {
-            let id = this.$route.query.id;
-            if (id) {
-                this.getVedioContent(id);
-            } else {
-                this.$router.push('/book');
-            }
+            this.init();
             EventBus.$emit("isDisplay", { data: false });
-            this.initPage(txtDatat);
-            this.initAudio();
         },
         methods: {
+            /** 2020/3/30
+            * 作者：王青高
+            * 功能：{} 初始化数据
+            * 参数：{}
+            */
+            init() {
+                let id = this.$route.query.id;
+                if (id) {
+                    this.getItemContent(id);
+                } else {
+                    this.$router.push('/book');
+                }
+            },
             /** 2020-3-29 0029
              *作者: 王青高
              *功能: 给音频赋值
@@ -231,7 +241,6 @@
              */
             switchTab(item, index) {
                 this.curDirectory = index;
-                console.log('发起请求', this.$route.query.id);
             },
             /** 2020-3-29 0029
              *作者:王青高
@@ -247,23 +256,25 @@
             },
             /** 2020/3/26
              * 作者：王青高
-             * 功能：{} 获取视频播放内容
+             * 功能：{} 获取小说内容
              * 参数：{}
              */
-            getVedioContent(id) {
-                // getVedioContent({ id }).then(res => {
-                //     let result = res.data;
-                //     if (res.state === '1') {
-                //         this.vedio = result.vedio;
-                //         this.$set(this.playerOptions.sources[0], 'src', result.vedio.url);
-                //     }
-                // });
+            getItemContent(id) {
+                getItemContent({ id }).then(res => {
+                    let result = res.data;
+                    if (res.state === '1') {
+                        this.bookitem = result.bookitem;
+                        this.article = this.bookitem.content;
+                        this.initPage(this.article);
+                        this.initAudio();
+                    }
+                });
             },
             /** `2020/3/27`
-            * 作者：王青高
-            * 功能：{} 跳转上一章
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{} 跳转上一章
+             * 参数：{}
+             */
             prev() {
                 let i = --this.Index_;
                 if (this.Index_ >= 0) {
@@ -294,10 +305,10 @@
                 }
             },
             /** 2020/3/27
-            * 作者：王青高
-            * 功能：{} 打卡菜单
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{} 打卡菜单
+             * 参数：{}
+             */
             openMenu() {
                 if (this.isMenu) {
                     this.isMenu = false;
@@ -308,22 +319,21 @@
                 }
             },
             /** 2020/3/27
-            * 作者：王青高
-            * 功能：{} 返回上一页
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{} 返回上一页
+             * 参数：{}
+             */
             arrowLeft(event) {
                 event.preventDefault();
                 this.$router.go(-1);
             },
             /** 2020/3/27
-            * 作者：王青高
-            * 功能：{} 添加书签
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{} 添加书签
+             * 参数：{}
+             */
             addTag(event) {
                 event.preventDefault();
-                console.log('添加书签');
             },
             /** 2020/3/20
              * 作者：王青高
@@ -335,10 +345,10 @@
                 this.isDirectory = false;
             },
             /** 2020/3/27
-            * 作者：王青高
-            * 功能：{} 目录
-            * 参数：{String} index: 目录和书签当前
-            */
+             * 作者：王青高
+             * 功能：{} 目录
+             * 参数：{String} index: 目录和书签当前
+             */
             directory(index, event) {
                 event.preventDefault();
                 document.documentElement.scrollTop = 0;
@@ -346,6 +356,21 @@
                 this.isMenu = false;
                 this.menuTitle = '菜单';
                 this.curDirectory = index;
+                this.getBookItem(this.bookitem.bookid);
+            },
+            /** 2020/3/30
+            * 作者：王青高
+            * 功能：{} 获取目录
+            * 参数：{String} 书籍id
+            */
+            getBookItem(id) {
+                getBookItem({ id }).then(res => {
+                    if (res.state === '1') {
+                        let result = res.data;
+                        this.directoryData = result;
+                        this.title = this.directoryData.book.title;
+                    }
+                });
             },
             /** 2020-3-29 0029
              *作者:王青高
@@ -369,7 +394,7 @@
                 } else {
                     this.fontConfig.isFontMinus = true;
                 }
-                this.initPage(txtDatat);
+                this.initPage(this.article);
             },
             /** 2020-3-29 0029
              *作者: 王青高
@@ -384,7 +409,7 @@
                 } else {
                     this.fontConfig.isFontAdd = true;
                 }
-                this.initPage(txtDatat);
+                this.initPage(this.article);
             },
             /** 2020-3-29 0029
              *作者: 王青高
@@ -392,7 +417,6 @@
              *参数:
              */
             turnPage(event) {
-                console.log('触发了我');
                 event.preventDefault();
                 if (this.touchConfig.timer) clearTimeout(this.touchConfig.timer);
                 this.touchConfig.timer = setTimeout(() => {
@@ -416,7 +440,6 @@
              *参数:
              */
             startTurnPage(event) {
-                console.log('触摸');
                 this.touchConfig.startPageX = event.targetTouches[0].pageX;
                 this.touchConfig.startPageY = event.targetTouches[0].pageY;
             },
@@ -427,7 +450,6 @@
              */
             getBookMark(obj, event) {
                 event.preventDefault();
-                console.log('到达当前书签', obj);
             },
             /** 2020-3-29 0029
              *作者:王青高
@@ -440,7 +462,6 @@
                 if (voiceIcon === 'volume-o') {
                     this.voiceData = 'volume';
                     this.$refs.audios.play();
-                    // new Audio('http://tts.baidu.com/text2audio?cuid=baiduid&lan=zh&ctp=1&pdt=311&tex=' + this.article).play();
                 } else {
                     this.voiceData = 'volume-o';
                     this.$refs.audios.pause();
@@ -457,11 +478,9 @@
                 let len = writeStr.length; // 总长度
                 let cH = this.$refs.article.clientHeight; // 总高度
                 let pageStrNum = ''; // 每页大概有多少个字符
-                console.log('ch', cH);
                 if (cH > clientHeight) {
                     pageStrNum = (clientHeight / cH) * len; // 每页大概有多少个字符
                     let page = Math.ceil(len / pageStrNum); // 分成多少页
-                    // console.log('clientHeight', clientHeight, 'len', len, 'cH', cH, 'pageStrNum', pageStrNum, 'page', page);
                     this.overflowhiddenTow(writeStr, page, pageStrNum);
                     this.article = this.articleData[0];
                 } else {
@@ -522,7 +541,7 @@
             width: 100%;
             height: 100%;
             .bookBox {
-                height: 60%;
+                height: 60%; // 有视频的高度
                 overflow: hidden;
             }
             &_title {
@@ -679,7 +698,7 @@
             }
         }
         &_directory {
-            position: absolute;
+            position: fixed;
             width: 100%;
             left: -100%;
             top: 0;
@@ -696,6 +715,7 @@
                 background: $bgc-theme;
                 .li {
                     width: 50%;
+                    flex-grow: 1;
                 }
             }
             &_list {

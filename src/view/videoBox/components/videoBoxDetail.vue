@@ -39,7 +39,7 @@
 </template>
 
 <script>
-    import { getVedioList, addToCollectionInfo } from '@/api/content';
+    import { getVedioList, addToCollectionVedio  } from '@/api/content';
     import { EventBus } from "@/utils/event-bus";
     import { Toast } from 'vant';
     export default {
@@ -89,7 +89,7 @@
              */
             _collection() {
                 let id = this.vedio.id;
-                addToCollectionInfo({ id }).then(res => {
+                addToCollectionVedio({ id }).then(res => {
                     if (res.state === '1') {
                         if (res.msg === '取消收藏成功!') {
                             this.icon = 'like-o';

@@ -77,6 +77,18 @@ const getVedioList = id => {
 const getVedioContent = id => {
     return axios.get('/vedio/getVedioContent?' + qs.stringify(id));
 };
+// 点击书籍获取目录
+const getBookItem = id => {
+    return axios.get('/shuku/getBookItem?' + qs.stringify(id));
+};
+// 点击章节获取内容
+const getItemContent = id => {
+    return axios.get('/shuku/getItemContent?' + qs.stringify(id));
+};
+// 点击视频收藏
+const addToCollectionVedio = id => {
+    return axios.get('/vedio/addToCollectionVedio?' + qs.stringify(id));
+};
 export {
     getFoot,
     clearFoot,
@@ -96,5 +108,8 @@ export {
     getVideoData,
     getVediolistByChannel,
     getVedioList,
-    getVedioContent
+    getVedioContent,
+    getBookItem,
+    getItemContent,
+    addToCollectionVedio
 };

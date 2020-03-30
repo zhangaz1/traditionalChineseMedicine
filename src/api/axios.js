@@ -58,7 +58,7 @@ class HttpRequest {
             if (res.status === 200 && res.data.state === '1') {
                 return Promise.resolve(res.data);
             } else {
-                Toast(res.data.msg);
+                Toast(res.data.msg || '请求异常,code:' + res.data.state);
                 return Promise.reject(res);
             }
         }, error => {

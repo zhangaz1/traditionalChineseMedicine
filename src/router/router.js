@@ -97,9 +97,9 @@ export default new Router({
             component: () => import(/* webpackChunkName: 'login' */ '@/view/myBookBox/myBookBox.vue')
         },
         {
-            path: '/bookTypeLlist',
-            name: 'bookTypeLlist',
-            component: () => import(/* webpackChunkName: 'login' */ '@/view/bookTypeLlist/bookTypeLlist.vue')
+            path: '/bookTypeList',
+            name: 'bookTypeList',
+            component: () => import(/* webpackChunkName: 'login' */ '@/view/bookTypeList/bookTypeList.vue')
         },
         {
             path: '/videoBox/components/videoBoxTxt',

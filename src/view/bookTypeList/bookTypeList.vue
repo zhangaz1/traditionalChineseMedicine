@@ -19,25 +19,18 @@
                         :isCancel="isCancel"
                         :_searchVal="isDefaultVal"
                 >
-<!--                    <div slot="searchContent" class="searchContent" v-if="isCancel">-->
-<!--                        <div class="searchResult">-->
-<!--                            <ul class="ul" v-if="searchResultData.length">-->
-<!--                                <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/videoBox/components/videoBoxDetail', query: {id: search.id}}">{{search.title}}</router-link>-->
-<!--                            </ul>-->
-<!--                        </div>-->
-<!--                    </div>-->
                 </headSearch>
             </div>
         </van-sticky>
         <div class="bookTypeList_item plr30">
-            <div class="tips ptb20" >共有{{isNum}}条结果</div>
+            <div class="tips ptb20" >共有{{searchResultData.length}}条结果</div>
             <div class="title ptb20">{{title}}</div>
-            <div class="content pl160 ptb20">
-                <router-link tag="div" :to="{path: '/bookContentFeed', query: {id: '1'}}" class="content_img sprite-book-cover0">
-                    <div class="content_img_free"></div>
+            <div class="content pl160 ptb20" v-for="(book, index) of searchResultData" :key="'book' + index">
+                <router-link tag="div" :to="{path: '/bookContentFeed', query: {id: book.id}}" class="content_img sprite-book-cover0">
+                    <div class="content_img_free" v-if="book.isfree === '1'"></div>
                     <div class="content_img_txt">
                         <div class="title">
-                            <span class="name">景岳全书</span>一
+                            <span class="name">{{book.title}}</span>
                         </div>
                     </div>
                     <ul class="content_img_line">
@@ -48,34 +41,11 @@
                         <li class="li"></li>
                     </ul>
                 </router-link>
-                <router-link tag="div" :to="{path: '/bookDetail', query: {id: '1'}}" class="content_txt pl20">
-                    <div class="title mb20">景岳全书(一)</div>
-                    <p class="author mb10">明·张景岳</p>
-                    <p class="description">首创方药八阵法的医学全书。</p>
-                    <button class="resultsBtns">阅读</button>
-                </router-link>
-            </div>
-            <div class="content pl160 ptb20">
-                <div class="content_img sprite-book-cover1">
-                    <div class="content_img_free"></div>
-                    <div class="content_img_txt">
-                        <div class="title">
-                            <span class="name">景岳全书</span>一
-                        </div>
-                    </div>
-                    <ul class="content_img_line">
-                        <li class="li"></li>
-                        <li class="li"></li>
-                        <li class="li"></li>
-                        <li class="li"></li>
-                        <li class="li"></li>
-                    </ul>
-                </div>
-                <div class="content_txt pl20">
-                    <div class="title mb20">景岳全书(一)</div>
-                    <p class="author mb10">明·张景岳</p>
-                    <p class="description">首创方药八阵法的医学全书。</p>
-                    <button class="resultsBtns">阅读</button>
+                <div  class="content_txt pl20">
+                    <div class="title mb20">{{book.title}}</div>
+                    <p class="author mb10">{{book.author}}</p>
+                    <p class="description">{{book.description}}</p>
+                    <router-link :to="{path: '/bookDetail', query: {id: book.id}}" tag="button" type="button" class="resultsBtns">阅读</router-link>
                 </div>
             </div>
         </div>
@@ -84,7 +54,7 @@
 
 <script>
     import headSearch from '@/components/headSearch/';
-    import { getBookList, getSearch } from '@/api/content';
+    import { getSearch } from '@/api/content';
     import { EventBus } from "@/utils/event-bus";
     export default {
         name: 'bookTypeList',
@@ -95,12 +65,10 @@
                 searchResultData: [], // 存储搜索或跳转数据
                 isCancel: false,
                 isSearch: false, // 是否显示搜索
-                isNum: 0,
                 isDefaultVal: '', // 默认搜索关键字
                 isJump: false,
                 pageOption: {
-                    channelid: '',
-                    pagesize: 10,
+                    pagesize: 20,
                     page: 1
                 }
             };
@@ -109,7 +77,7 @@
             let params = this.$route.query;
             this.isDefaultVal = params.title;
             this.title = params.title;
-            this.getBookList(params.id);
+            this.getSearch(params.title);
         },
         mounted() {
             EventBus.$emit("isDisplay", { data: false });
@@ -134,16 +102,6 @@
                     if (res.state === '1') {
                         this.searchResultData = result.list;
                     }
-                });
-            },
-            /** 2020-3-25 0025
-             *作者:王青高
-             *功能: 获取指定书籍
-             *参数:
-             */
-            getBookList(id) {
-                getBookList({ id }).then(res => {
-                    console.log('res', res);
                 });
             },
             /** 2020/3/20
@@ -184,7 +142,6 @@
              * 参数：{}
              */
             onCancel() {
-                // console.log('取消');
                 if (this.isCancel) {
                     this.isCancel = false;
                     this.searchResultData = [];
@@ -207,7 +164,6 @@
              * 参数：{}
              */
             _delete() {
-                console.log('删除历史');
             },
             /** 2020/3/24
              * 作者：王青高
@@ -224,15 +180,14 @@
              * 功能：{} 弹出搜索
              * 参数：{}
              */
-            onSearch(val) {
-                console.log('点击了搜索');
+            onSearch() {
                 if (!this.isSearch) {
                     this.isSearch = true;
                     this.isCancel = true;
                 } else {
                     this.isSearch = false;
                 }
-            },
+            }
         }
     };
 </script>

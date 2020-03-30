@@ -22,22 +22,22 @@
                     },
                     {
                         'txt': '书库',
-                        'icon': 'newspaper-o',
+                        'icon': 'description',
                         'path': '/book'
                     },
                     {
                         'txt': '医案',
-                        'icon': 'wap-home-o',
+                        'icon': 'newspaper-o',
                         'path': '/doctorCase'
                     },
                     {
                         'txt': '视频',
-                        'icon': 'wap-home-o',
+                        'icon': 'video-o',
                         'path': '/videoBox'
                     },
                     {
                         'txt': '我的',
-                        'icon': 'wap-home-o',
+                        'icon': 'user-o',
                         'path': '/me'
                     }
                 ],

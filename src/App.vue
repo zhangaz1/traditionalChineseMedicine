@@ -6,6 +6,7 @@
         <div class="loadingTxt">正在加载中...</div>
       </div>
     </div>
+    <publicBackTop/>
     <commonFooter v-if="isDisplay"/>
     <router-view></router-view>
   </div>
@@ -13,20 +14,23 @@
 
 <script>
   import commonFooter from '@/view/footer/commonFooter';
+  import publicBackTop from '@/components/publicBackTop/publicBackTop.vue';
   import { EventBus } from "@/utils/event-bus";
   export default {
     name: 'App',
     data() {
       return {
-        //请求loading框是否显示
+        // 请求loading框是否显示
         loadingShow: false,
         // 如果同时发出多个请求只有loadNub = 0时加载框消失
         loadNub: 0,
-        isDisplay: true // 是否显示底部导航菜单
+        isDisplay: true, // 是否显示底部导航菜单
+        isScroll: false, // 禁止滚动条滚动
       }
     },
     components: {
-      commonFooter
+      commonFooter,
+      publicBackTop
     },
     mounted() {
       /**
@@ -52,11 +56,13 @@
     beforeDestroy() {
       EventBus.$off("loadingShow");
       EventBus.$off("isDisplay");
+      EventBus.$off("isOverflow");
     }
   };
 </script>
 
 <style lang="scss">
+
   .van-field__error-message {
     position: absolute !important;
     right: 0 !important;

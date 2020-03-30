@@ -11,7 +11,8 @@
                 <img :src="moneyImg" alt="" class="img">
                 <span class="money ml20">金币：500</span>
             </div>
-            <img :src="headImg" alt="" class="me_login_img">
+            <img  v-if="userInfo.headimg" :src="baseUrl + userInfo.headimg" alt="" class="me_login_img">
+            <img  v-else :src="headImg" alt="" class="me_login_img">
         </div>
         <ul class="me_vip mb20">
             <li class="me_vip_li ptb20 plr30">
@@ -97,6 +98,7 @@
     import Cookies from "js-cookie";
     import vshare from 'vshare';
     import { EventBus } from "@/utils/event-bus";
+    import { baseUrl } from '@/utils';
     export default {
         name: 'me',
         data() {
@@ -119,7 +121,8 @@
                     share: [{
                         bdSize: 32
                     }],
-                }
+                },
+                baseUrl
             };
         },
         components: {

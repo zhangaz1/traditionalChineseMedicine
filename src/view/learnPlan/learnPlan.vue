@@ -7,28 +7,32 @@
             @click-left="onGoBack"
             fixed
         />
+        <van-sticky :offset-top="54">
+            <div class="learnPlan_tag plr30 ptb20">
+                <ul class="learnPlan_tag_box">
+                    <li class="mb40">
+                        <div class="li mb20">
+                            <van-field v-model="ans" label="问：" placeholder="请输入问题" label-width="25px" />
+                            <van-field
+                                    v-model="ques"
+                                    rows="2"
+                                    autosize
+                                    label-width="25px"
+                                    label="答:"
+                                    type="textarea"
+                                    maxlength="200"
+                                    placeholder="请输入回答内容"
+                                    show-word-limit
+                            />
+                        </div>
+                        <div class="btn">
+                            <van-button type="default" size="small" plain hairline @click="addLearnPlan">添加</van-button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </van-sticky>
         <div class="learnPlan_tag plr30 ptb20">
-            <ul class="learnPlan_tag_box">
-                <li class="mb40">
-                    <div class="li mb20">
-                        <van-field v-model="ans" label="问：" placeholder="请输入问题" label-width="25px" />
-                        <van-field
-                                v-model="ques"
-                                rows="2"
-                                autosize
-                                label-width="25px"
-                                label="答:"
-                                type="textarea"
-                                maxlength="200"
-                                placeholder="请输入回答内容"
-                                show-word-limit
-                        />
-                    </div>
-                    <div class="btn">
-                        <van-button type="default" size="small" plain hairline @click="addLearnPlan">添加</van-button>
-                    </div>
-                </li>
-            </ul>
             <ul class="learnPlan_tag_box h900" v-if="messageList.length">
                 <li class="mb40" v-for="(item, index) of messageList" :key="'item' + index">
                     <div class="li mb20">
@@ -115,14 +119,14 @@
         line-height: 108px;
     }
     .learnPlan {
-        position: relative;
+        /*position: relative;*/
 
         &_title {
             height: 108px;
         }
         &_tag {
             background: $bgColor;
-            height: 100vh;
+            /*height: 100vh;*/
             box-sizing: border-box;
             .h900 {
                 height: 900px;

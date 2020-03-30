@@ -17,77 +17,64 @@
                         :isCancel="isCancel"
                 >
                     <div slot="searchContent" class="searchContent" v-if="isCancel">
-<!--                        <div v-if="!searchResultData.length" class="hot plr30">-->
-<!--                            <div class="title ptb20">热搜</div>-->
-<!--                            <ul class="content ptb20">-->
-<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                            </ul>-->
-<!--                        </div>-->
-<!--                        <div v-if="!searchResultData.length" class="history plr30">-->
-<!--                            <div class="title ptb20">-->
-<!--                                搜索历史-->
-<!--                                <van-icon name="delete" class="title_icon" @click="_delete"/>-->
-<!--                            </div>-->
-<!--                            <ul class="content ptb20">-->
-<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                            </ul>-->
-<!--                        </div>-->
-                        <div class="searchResult">
+                        <!--                        <div v-if="!searchResultData.length" class="hot plr30">-->
+                        <!--                            <div class="title ptb20">热搜</div>-->
+                        <!--                            <ul class="content ptb20">-->
+                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                        <!--                            </ul>-->
+                        <!--                        </div>-->
+                        <!--                        <div v-if="!searchResultData.length" class="history plr30">-->
+                        <!--                            <div class="title ptb20">-->
+                        <!--                                搜索历史-->
+                        <!--                                <van-icon name="delete" class="title_icon" @click="_delete"/>-->
+                        <!--                            </div>-->
+                        <!--                            <ul class="content ptb20">-->
+                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                        <!--                            </ul>-->
+                        <!--                        </div>-->
+                        <div class="searchResult" @scroll.stop="addScroll($event)">
                             <ul class="ul" v-if="searchResultData.length">
-                                <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/searchResult', query: {name: search}}">{{search}}</router-link>
+                                <li class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" @click="openDetail(search)">{{search.title}}</li>
+                                <li class="li noData ptb30 plr30" v-if="searchResultData.length === totalcount">没有更多数据</li>
                             </ul>
+                            <div class="li noData ptb30 plr30" v-if="!searchResultData.length">暂无数据</div>
                         </div>
                     </div>
                 </headSearch>
-<!--                <ul class="home_dropDown" v-show="isShow">-->
-<!--                    <li class="home_dropDown_item pl100">-->
-<!--                        <van-icon name="browsing-history-o" />-->
-<!--                        <span class="txt">我的足迹</span>-->
-<!--                    </li>-->
-<!--                    <li class="home_dropDown_item pl100">-->
-<!--                        <van-icon name="star-o" />-->
-<!--                        <span class="txt">我的收藏</span>-->
-<!--                    </li>-->
-<!--                    <li class="home_dropDown_item pl100">-->
-<!--                        <van-icon name="share" />-->
-<!--                        <span class="txt ">分享好友</span>-->
-<!--                    </li>-->
-<!--                </ul>-->
             </div>
         </van-sticky>
         <publicSwipe heightVal="200">
-            <van-swipe-item v-for="(banner, index) of bannerData" :key="index + 'image'"  class="home_swiper_item" slot="swiperItem">
-<!--                <img :src="'http://47.103.217.238:9002' + banner.img" class="img"/>-->
-                <img src="https://www.zk120.com/media/widgets/banners/2020/03/190805112845859.20200310145039745.jpg" class="img"/>
+            <van-swipe-item v-for="(imgItem, index) of bannerData" :key="index + 'imgItem'"  class="home_swiper_item" slot="swiperItem">
+                  <img :src="'http://47.103.217.238:9002' + imgItem.img" class="img"/>
             </van-swipe-item>
         </publicSwipe>
         <subMenu class="plr30 bg_f ptb10" title="医案推荐榜" toRouter="/doctorCase">
             <ul class="home_nav ptb20" slot="content">
-                <router-link tag="li" :to="{path:'/doctorTypeList', query: {param: nav}}" class="home_nav_li mb20 mr20" v-for="(nav, index) of doctorData" :key="'nav' + index">
+                <router-link tag="li" :to="{path:'/doctorTypeList', query: {id: nav.id, title: nav.title}}" class="home_nav_li mb20 mr20" v-for="(nav, index) of doctorData" :key="'nav' + index">
                     <p class="txt ptb10 plr20">{{nav.title}}</p>
                 </router-link>
             </ul>
         </subMenu>
         <subMenu class="plr30 bg_f ptb10" title="书籍推荐榜" toRouter="/book">
             <swiper class="swiper_common" :options="swiperBook" slot="content">
-                <swiper-slide  class="swiper_common_item">
-                    <router-link tag="div" :to="{path: '/bookContentFeed', query: {id: '1'}}" class="content_img sprite-book-cover0">
-                        <div class="content_img_free"></div>
+                <swiper-slide  class="swiper_common_item" v-for="(book, index) of booklist" :key="'book' + index">
+                    <router-link tag="div" :to="{path: '/bookContentFeed', query: { id: book.id }}" class="content_img sprite-book-cover0">
+                        <div class="content_img_free" v-if="book.isfree === '1'"></div>
                         <div class="content_img_txt">
                             <div class="title">
-                                <span class="name">景岳全书</span>一
+                                <span class="name">{{book.title}}</span>
                             </div>
                         </div>
                         <ul class="content_img_line">
@@ -98,97 +85,7 @@
                             <li class="li"></li>
                         </ul>
                     </router-link>
-                    <p class="content_img_title pl10">中医四大经典著作之一。</p>
-                </swiper-slide>
-                <swiper-slide  class="swiper_common_item">
-                    <router-link tag="div" :to="{path: '/bookContentFeed', query: {id: '1'}}" class="content_img sprite-book-cover0">
-                        <div class="content_img_free"></div>
-                        <div class="content_img_txt">
-                            <div class="title">
-                                <span class="name">景岳全书</span>一
-                            </div>
-                        </div>
-                        <ul class="content_img_line">
-                            <li class="li"></li>
-                            <li class="li"></li>
-                            <li class="li"></li>
-                            <li class="li"></li>
-                            <li class="li"></li>
-                        </ul>
-                    </router-link>
-                    <p class="content_img_title pl10">中医四大经典著作之一。</p>
-                </swiper-slide>
-                <swiper-slide  class="swiper_common_item">
-                    <router-link tag="div" :to="{path: '/bookContentFeed', query: {id: '1'}}" class="content_img sprite-book-cover0">
-                        <div class="content_img_free"></div>
-                        <div class="content_img_txt">
-                            <div class="title">
-                                <span class="name">景岳全书</span>一
-                            </div>
-                        </div>
-                        <ul class="content_img_line">
-                            <li class="li"></li>
-                            <li class="li"></li>
-                            <li class="li"></li>
-                            <li class="li"></li>
-                            <li class="li"></li>
-                        </ul>
-                    </router-link>
-                    <p class="content_img_title pl10">中医四大经典著作之一。</p>
-                </swiper-slide>
-                <swiper-slide  class="swiper_common_item">
-                    <router-link tag="div" :to="{path: '/bookContentFeed', query: {id: '1'}}" class="content_img sprite-book-cover0">
-                        <div class="content_img_free"></div>
-                        <div class="content_img_txt">
-                            <div class="title">
-                                <span class="name">景岳全书</span>一
-                            </div>
-                        </div>
-                        <ul class="content_img_line">
-                            <li class="li"></li>
-                            <li class="li"></li>
-                            <li class="li"></li>
-                            <li class="li"></li>
-                            <li class="li"></li>
-                        </ul>
-                    </router-link>
-                    <p class="content_img_title pl10">中医四大经典著作之一。</p>
-                </swiper-slide>
-                <swiper-slide  class="swiper_common_item">
-                    <router-link tag="div" :to="{path: '/bookContentFeed', query: {id: '1'}}" class="content_img sprite-book-cover0">
-                        <div class="content_img_free"></div>
-                        <div class="content_img_txt">
-                            <div class="title">
-                                <span class="name">景岳全书</span>一
-                            </div>
-                        </div>
-                        <ul class="content_img_line">
-                            <li class="li"></li>
-                            <li class="li"></li>
-                            <li class="li"></li>
-                            <li class="li"></li>
-                            <li class="li"></li>
-                        </ul>
-                    </router-link>
-                    <p class="content_img_title pl10">中医四大经典著作之一。</p>
-                </swiper-slide>
-                <swiper-slide  class="swiper_common_item">
-                    <router-link tag="div" :to="{path: '/bookContentFeed', query: {id: '1'}}" class="content_img sprite-book-cover0">
-                        <div class="content_img_free"></div>
-                        <div class="content_img_txt">
-                            <div class="title">
-                                <span class="name">景岳全书</span>一
-                            </div>
-                        </div>
-                        <ul class="content_img_line">
-                            <li class="li"></li>
-                            <li class="li"></li>
-                            <li class="li"></li>
-                            <li class="li"></li>
-                            <li class="li"></li>
-                        </ul>
-                    </router-link>
-                    <p class="content_img_title pl10">中医四大经典著作之一。</p>
+                    <p class="content_img_title pl10">{{book.description}}</p>
                 </swiper-slide>
             </swiper>
         </subMenu>
@@ -217,7 +114,7 @@
     import copyright from './components/copyright';
     import { swiperVideo, swiperBook } from './config';
     import { swiper, swiperSlide } from 'vue-awesome-swiper';
-    import { getHomeInfo } from '@/api/content';
+    import { getHomeInfo, getSearch } from '@/api/content';
     import { EventBus } from "@/utils/event-bus";
     export default {
         name: 'home',
@@ -225,19 +122,20 @@
             return {
                 swiperVideo,
                 swiperBook,
-                images: [
-                    'https://www.zk120.com/media/widgets/banners/2020/03/190805112845859.20200310145039745.jpg',
-                    'https://www.zk120.com/media/widgets/banners/2020/03/190222160830508.20200310145039990.jpg',
-                    'https://www.zk120.com/media/widgets/banners/2020/03/190222160830508.20200310145039990.jpg',
-                    'https://www.zk120.com/media/widgets/banners/2020/03/190222160830508.20200310145039990.jpg',
-                    'https://www.zk120.com/media/widgets/banners/2020/03/190222160830508.20200310145039990.jpg'
-                ],
                 isShow: false, // 是否显示顶部菜单
                 isCancel: false,
                 searchResultData: [], // 存储搜索结果
                 doctorData: [], // 医案推荐榜
                 bannerData: [], // banner图
                 videoData: [], // 视频推荐榜
+                booklist: [], // 书籍推荐榜
+                searchOption: {
+                    pageSize: 20,
+                    page: 1,
+                    searchtype: 0
+                },
+                searchValue: '', // 搜索关键字
+                totalcount: '0', // 数据长度
             };
         },
         components: {
@@ -253,6 +151,20 @@
             EventBus.$emit("isDisplay", { data: true });
         },
         methods: {
+            /** 2020/3/30
+             * 作者：王青高
+             * 功能：{} 监听滚动条是否触底
+             * 参数：{}
+             */
+            addScroll(event) {
+                if (this.totalcount === this.searchResultData.length) return;
+                let scrollTop = event.target.scrollTop;
+                let clientHeight = event.target.clientHeight;
+                let scrollHeight = event.target.scrollHeight;
+                if (scrollTop + clientHeight >= (scrollHeight - 10)) {
+                    this.searchVal(this.searchValue);
+                }
+            },
             /** 2020-3-25 0025
              *作者:王青高
              *功能: 获取首页信息
@@ -265,13 +177,58 @@
                         this.doctorData = result.yalist;
                         this.bannerData = result.banners;
                         this.videoData = result.vediolist;
+                        this.booklist = result.booklist;
                     }
                 });
             },
-            searchVal(val) {
-                if (val) {
-                    this.searchResultData.push(val);
+            /** 2020/3/30
+             * 作者：王青高
+             * 功能：{} 根据类型跳转不同的详情页
+             * 参数：{}
+             */
+            openDetail(obj) {
+                if (obj) {
+                    switch (obj.type) {
+                        case 1:
+                            this.$router.push({ path: '/bookContentFeed', query: { id: obj.id } });
+                            break;
+                        case 2:
+                            this.$router.push({ path: '/doctorCase/components/doctorDetail', query: { id: obj.id } });
+                            break;
+                        case 3:
+                            this.$router.push({ path: '/videoBox/components/videoBoxDetail', query: { id: obj.id } });
+                            break;
+                    }
                 }
+            },
+            /** 2020/3/30
+            * 作者：王青高
+            * 功能：{} 根据关键字搜索内容
+            * 参数：{}
+            */
+            searchVal(val) {
+                if (!val && this.searchValue === '') {
+                    this.searchResultData = [];
+                    this.searchOption.page = 1;
+                    return;
+                }
+                if (!val || val !== this.searchValue) {
+                    this.searchResultData = [];
+                    this.searchOption.page = 1;
+                }
+                this.searchValue = val;
+                getSearch({
+                    pagesize: this.searchOption.pageSize,
+                    page: this.searchOption.page++,
+                    keyword: this.searchValue,
+                    searchtype: this.searchOption.searchtype
+                }).then(res => {
+                    let result = res.data;
+                    if (res.state === '1') {
+                        this.totalcount = result.totalcount;
+                        this.searchResultData = this.searchResultData.concat(result.list);
+                    }
+                });
             },
             /** 2020-3-19 0019
              *作者:王青高
@@ -394,7 +351,7 @@
                 width: 100%;
                 left: 0;
                 top: 110px;
-                z-index: $search-z-index;
+                z-index: 9999;
                 .history,
                 .hot {
                     .title {
@@ -422,6 +379,11 @@
                     }
                 }
                 .searchResult {
+                    height: 80vh;
+                    overflow-y: scroll;
+                    .ul {
+
+                    }
                     .li {
                         /*height: 100px;*/
                         /*line-height: 100px;*/
@@ -436,6 +398,11 @@
                             width: 100%;
                             height: 1px;
                             background: $bg_ddcdaf;
+                        }
+                        &.noData {
+                            text-align: center;
+                            color: $ccc-color;
+                            font-size: 28px;
                         }
                     }
                 }

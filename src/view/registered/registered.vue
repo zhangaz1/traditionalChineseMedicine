@@ -24,7 +24,7 @@
                         class="validator"
                         maxlength="11"
                 />
-                <van-field v-model="nickname" name="nickname" placeholder="昵称" class="validator" :rules="[{ required: true, message: '请填写昵称' }]" />
+                <van-field v-model="nickname" maxlength="6" name="nickname" placeholder="昵称" class="validator" :rules="[{ required: true, message: '请填写昵称' }]" />
                 <van-field
                         v-model="password"
                         type="password"
@@ -115,14 +115,14 @@
                     headimgurl: this.headImgUrl
                 })).then(res => {
                     let data = res.data;
-                    console.log('res', res);
                     if (res.data.state === '1') {
-                        console.log(data.data.user);
                         tips1.clear();
                         this.login(values);
                     } else {
                         Toast('注册失败！ 请重新注册!');
                     }
+                }).catch(err => {
+                    Toast('系统错误', err);
                 });
             },
             login(userInfo) {
@@ -197,6 +197,8 @@
                 };
                 axios.post('/imgupload/upfile', param, config).then(res => {
                     if (res.data.state === '1') {
+                        let result = res.data;
+                        this.headImgUrl = result.data.imgurl;
                         Toast('上传成功');
                         this.isTrue = false;
                     } else {

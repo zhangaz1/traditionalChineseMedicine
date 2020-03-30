@@ -15,12 +15,10 @@
                     <div class="right_txt ptb10"><span class="right_txt_one">{{item.createtime}}</span></div>
                 </div>
             </li>
-            <li>
-                <load-more :loadingType="loadingType" :contentText="contentText"/>
-            </li>
+            <li class="li noData ptb30 plr30" v-if="footList.length === totalcount">没有更多数据</li>
         </ul>
-        <div v-else-if="type === 1" class="footPrint_tips ptb40">暂无浏览</div>
-        <div v-else-if="type === 2" class="footPrint_tips ptb40">暂无收藏</div>
+        <div v-else-if="type === 1 && !footList.length" class="footPrint_tips ptb40">暂无浏览</div>
+        <div v-else-if="type === 2 && !footList.length" class="footPrint_tips ptb40">暂无收藏</div>
     </div>
 </template>
 
@@ -41,13 +39,7 @@
                 page: 1,
                 type: 1, // 1：足迹， 2：收藏
                 footList: [], // 存储足迹或收藏内容
-                totalcount: '', // 存储总数
-                loadingType: 0,
-                contentText: {
-                    contentdown: '上拉显示更多',
-                    contentrefresh: '正在加载...',
-                    contentnomore: '没有更多数据了'
-                }
+                totalcount: '0', // 存储总数
             };
         },
         created() {
@@ -67,10 +59,9 @@
                 let scrollTop = event.target.scrollTop;
                 let clientHeight = event.target.clientHeight;
                 let scrollHeight = event.target.scrollHeight;
-                console.log('scrollTop', scrollTop, 'windowHeight', clientHeight, 'scrollHeight', scrollHeight);
                 if (scrollTop + clientHeight >= (scrollHeight - 10)) {
                     this.page++;
-                    this.getCurrent(this.current);
+                    this.getCurrent(this.current, 'isPull');
                 }
             },
             /** 2020/3/19
@@ -78,14 +69,9 @@
              * 功能：{Function} @getCurrent 获取当前下标索引，显示相关内容
              * 参数：{}
              */
-            getCurrent(index) {
+            getCurrent(index, isStr) {
                 this.type = (index + 1);
                 this.current = index;
-                if (this.footList.length >= this.totalcount) {
-                    this.loadingType = 2;
-                    return;
-                }
-                this.loadingType = 1;
                 getFoot({
                     pagesize: this.pagesize,
                     page: this.page,
@@ -94,9 +80,14 @@
                     let result = res.data;
                     if (res.state === '1') {
                         this.totalcount = result.totalcount;
-                        this.footList = this.footList.concat(result.list);
-                        this.loadingType = 0;
+                        if (isStr) {
+                            this.footList = this.footList.concat(result.list);
+                        } else {
+                            this.footList = result.list;
+                        }
                     }
+                }).catch(err => {
+                    if (err) this.footList = [];
                 });
             },
             /** 2020-3-22 0022
@@ -118,17 +109,29 @@
                 });
             },
             /** 2020/3/26
-            * 作者：王青高
-            * 功能：{} 根据分类跳转不同的详情页
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{} 根据分类跳转不同的详情页
+             * 参数：{}
+             */
             toRouter(obj) {
+                if (obj) {
+                    switch (obj.type) {
+                        case 1:
+                            this.$router.push({ path: '/bookContentFeed', query: { id: obj.id } });
+                            break;
+                        case 2:
+                            this.$router.push({ path: '/doctorCase/components/doctorDetail', query: { id: obj.id } });
+                            break;
+                        case 3:
+                            this.$router.push({ path: '/videoBox/components/videoBoxDetail', query: { id: obj.id } });
+                            break;
+                    }
+                }
                 console.log('obj', obj);
             }
         },
         components: {
-            publicTitle,
-            loadMore
+            publicTitle
         }
     };
 </script>
@@ -148,6 +151,11 @@
             background: $bgc-theme;
             height: 100vh;
             box-sizing: border-box;
+            .noData {
+                text-align: center;
+                color: $ccc-color;
+                font-size: 28px;
+            }
             &_li {
                 position: relative;
                 &:after {
@@ -189,7 +197,7 @@
             display: flex;
             justify-content: center;
             box-sizing: border-box;
-            color: $color_999;
+            color: $ccc-color;
         }
     }
 </style>
