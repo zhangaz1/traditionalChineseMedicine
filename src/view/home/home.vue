@@ -3,7 +3,7 @@
         <van-sticky>
             <div class="home_sticky">
                 <van-nav-bar
-                        title="人身通考"
+                        :title="title"
                         right-text="..."
                         @click-right="onClickRight"
                         class="mb20"
@@ -57,7 +57,9 @@
         </van-sticky>
         <publicSwipe heightVal="200">
             <van-swipe-item v-for="(imgItem, index) of bannerData" :key="index + 'imgItem'"  class="home_swiper_item" slot="swiperItem">
-                  <img :src="'http://47.103.217.238:9002' + imgItem.img" class="img"/>
+                <a :href="imgItem.url">
+                    <img :src="imgItem.img" class="img"/>
+                </a>
             </van-swipe-item>
         </publicSwipe>
         <subMenu class="plr30 bg_f ptb10" title="医案推荐榜" toRouter="/doctorCase">
@@ -70,7 +72,7 @@
         <subMenu class="plr30 bg_f ptb10" title="书籍推荐榜" toRouter="/book">
             <swiper class="swiper_common" :options="swiperBook" slot="content">
                 <swiper-slide  class="swiper_common_item" v-for="(book, index) of booklist" :key="'book' + index">
-                    <router-link tag="div" :to="{path: '/bookContentFeed', query: { id: book.id }}" :style="{backgroundImage: 'url(' + testImg + ')', backgroundSize: '100% 100%' }" class="content_img">
+                    <router-link tag="div" :to="{path: '/bookContentFeed', query: { id: book.id }}" :style="{backgroundImage: 'url(' + book.cover + ')', backgroundSize: '100% 100%' }" class="content_img">
                         <div class="content_img_free" v-if="book.isfree === '1'"></div>
 <!--                        <div class="content_img_txt">-->
 <!--                            <div class="title">-->
@@ -94,8 +96,8 @@
                 <swiper-slide v-for="(video, index) in videoData" :key="index  + 'videoData'"  class="swiper_common_item">
                     <router-link :to="{path: '/videoBox/components/videoBoxDetail', query: {id: video.id}}" class="swiper_common_item_link">
                         <div class="item_img">
-                            <img src="http://www.rkswzx.cn/routing/userimg/20180426/20180426164140_427.jpg" class="_img mb20"/>
-                            <!-- <img :src="video.img" class="_img mb20"/> -->
+<!--                            <img src="http://www.rkswzx.cn/routing/userimg/20180426/20180426164140_427.jpg" class="_img mb20"/>-->
+                             <img :src="video.cover" class="_img mb20"/>
                             <span class="_txt">{{video.title}}</span>
                         </div>
                         <p class="txt_title ptb20">{{video.title}}</p>
@@ -136,7 +138,7 @@
                 },
                 searchValue: '', // 搜索关键字
                 totalcount: '0', // 数据长度
-                testImg: 'https://p.ssl.qhimg.com/d/novel_4413971876881555599.jpg'
+                title: '', // 页面标题
             };
         },
         components: {
@@ -179,6 +181,7 @@
                         this.bannerData = result.banners;
                         this.videoData = result.vediolist;
                         this.booklist = result.booklist;
+                        this.title = result.title;
                     }
                 });
             },
@@ -547,6 +550,7 @@
                     .item_img {
                         position: relative;
                         flex-grow: 1;
+                        width: 220px;
                         height: 240px;
                         ._img {
                             width: 100%;

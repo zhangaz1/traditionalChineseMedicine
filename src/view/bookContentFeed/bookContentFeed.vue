@@ -23,7 +23,7 @@
         <div class="bookContentFeed_book">
             <div class="plr30 bookTitle">
                 <div class="content pl160 ptb20" v-if="curArticle">
-                    <router-link tag="div" :to="{path: '/bookContentFeed', query: {id: curArticle.id}}" :style="{backgroundImage: 'url(' + testImg + ')', backgroundSize: '100% 100%' }" class="content_img sprite-book-cover0">
+                    <router-link tag="div" :to="{path: '/bookContentFeed', query: {id: curArticle.id}}" :style="{backgroundImage: 'url(' + curArticle.cover + ')', backgroundSize: '100% 100%' }" class="content_img sprite-book-cover0">
                         <div class="content_img_free" v-if="curArticle.isfree === '1'"></div>
 <!--                        <div class="content_img_txt">-->
 <!--                            <div class="title">-->
@@ -133,7 +133,7 @@
                 isPull: false, // 向下、向上
                 curArticle: '', // 当前文章
                 directory: [], // 存储目录
-                testImg: 'https://p.ssl.qhimg.com/d/novel_4413971876881555599.jpg'
+                // testImg: 'https://p.ssl.qhimg.com/d/novel_4413971876881555599.jpg'
             };
         },
         components: {
@@ -173,7 +173,7 @@
                 if (this.curArticle) {
                     this.$router.push({ path: '/bookTypeList', query: { id: this.curArticle.channel, title: this.curArticle.title } });
                 } else {
-                    this.$router.go(-1);
+                    this.$router.push('/book');
                 }
             },
             /** 2020-3-19 0019

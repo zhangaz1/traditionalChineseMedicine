@@ -277,6 +277,7 @@
              *参数:
              */
             initAudio() {
+                if (!this.article) this.$router.push({ path: '/bookContentFeed', id: this.curId });
                 this.$refs.audios.src = this.audioUrl + encodeURI(this.article.substring(0, this.articleLen));
                 this.articleVar = this.articleLen;
             },
@@ -545,6 +546,7 @@
                 this.touchConfig.startPageY = event.targetTouches[0].pageY;
                 if (this.touchConfig.timer) clearTimeout(this.touchConfig.timer);
                 this.touchConfig.timer = setTimeout(() => {
+                    console.log('aaa')
                     let startX = this.touchConfig.startPageX;
                     let centerWidth = clientWidth / 2; // 获取中间宽度
                     if (centerWidth < startX) {

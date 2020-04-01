@@ -91,7 +91,7 @@ const addToCollectionVedio = id => {
 };
 const getBookListByChannel = options => {
     return axios.get('/shuku/getBookListByChannel?' + qs.stringify(options));
-}
+};
 export {
     getFoot,
     clearFoot,
