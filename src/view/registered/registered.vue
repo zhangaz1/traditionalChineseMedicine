@@ -70,7 +70,7 @@
                 nickname: '',
                 checked: true, // 是否勾选协议
                 headImg: [],
-                isTrue: true,
+                isTrue: true, // 是否隐藏
                 headImgUrl: '', // 存储图片地址.
                 isImg: false, // 是否显示协议
             };
@@ -99,14 +99,6 @@
              */
             onSubmit(values) {
                 // 注册手机
-                // reg({
-                //     phone: values.phone,
-                //     password: values.password,
-                //     nickname: values.nickname,
-                //     headimgurl: this.headImgUrl
-                // }).then(res => {
-                //     console.log(res);
-                // });
                 const tips1 = Toast('正在登录中...');
                 axios.post('/login/registByPhone', qs.stringify({
                     phone: values.phone,

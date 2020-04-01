@@ -356,6 +356,7 @@
             &_ul {
                 height: 20px;
                 transition: all .5s;
+                overflow: hidden;
                 &_li {
                     display: inline-block;
                     font-size: 28px;

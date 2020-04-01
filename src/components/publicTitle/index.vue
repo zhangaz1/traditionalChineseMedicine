@@ -3,7 +3,7 @@
         <van-sticky>
             <div class="publicTitle_box">
                 <div class="publicTitle_box_arrowLeft" @click="goBack">
-                    <van-icon name="arrow-left" />
+                    <van-icon name="arrow-left" v-if="_left"/>
                 </div>
                 <ul class="publicTitle_box_content">
                     <li class="li plr20" :class="{active: current === index && _active}"  @click="getCurrent(index)" v-for="(item, index) of navData" :key="'item' + index">{{item.txt}}</li>
@@ -33,6 +33,10 @@
             _active: {
                 type: Boolean,
                 defalut: false
+            },
+            _left: {
+                type: Boolean,
+                default: false
             }
         },
         methods: {
@@ -47,11 +51,11 @@
             },
             /** 2020/3/19
             * 作者：王青高
-            * 功能：{} 返回上一页
+            * 功能：{} 向父组件传递 返回上一页
             * 参数：{}
             */
             goBack() {
-                this.$router.go(-1);
+                if (this._left) this.$emit('goback');
             }
         }
     };

@@ -89,6 +89,9 @@ const getItemContent = id => {
 const addToCollectionVedio = id => {
     return axios.get('/vedio/addToCollectionVedio?' + qs.stringify(id));
 };
+const getBookListByChannel = options => {
+    return axios.get('/shuku/getBookListByChannel?' + qs.stringify(options));
+}
 export {
     getFoot,
     clearFoot,
@@ -111,5 +114,6 @@ export {
     getVedioContent,
     getBookItem,
     getItemContent,
-    addToCollectionVedio
+    addToCollectionVedio,
+    getBookListByChannel
 };

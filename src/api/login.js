@@ -1,21 +1,6 @@
 import axios from './request';
 import qs from 'qs';
-/** 2020-2-15 0015
- *作者:王青高
- *功能: 图形验证码
- *参数: {sid: uuid码}
- */
-const getCode = (sid) => {
-    // 等价于 axios.request({
-    //    method: 'get',
-    //    url: '/getCaptcha'
-    // })
-    return axios.get('/public/getCaptcha', {
-        params: {
-            sid: sid
-        }
-    });
-};
+
 /** 2020-2-15 0015
  *作者:王青高
  *功能: 忘记密码
@@ -49,7 +34,7 @@ const reg = regInfo => {
 /** 2020/3/25
 * 作者：王青高
 * 功能：{} 上传头像
-* 参数：{}
+* 参数：{} 图片文件
 */
 // 上传头像
 const upHeadImg = file => {
@@ -57,4 +42,29 @@ const upHeadImg = file => {
       ...file
   });
 };
-export { getCode, forget, login, reg, upHeadImg };
+/** 2020/3/31
+* 作者：王青高
+* 功能：{} 获取用户信息
+* 参数：{}
+*/
+const getUserInfo = () => {
+  return axios.get('/my/getUserInfo');
+};
+/** 2020/3/31
+* 作者：王青高
+* 功能：{} 修改用户信息
+* 参数：{Object} 头像图片、昵称
+*/
+const updateInfo = options => {
+    return axios.get('/my/updateInfo?' + qs.stringify(options));
+};
+/** 2020/4/1
+* 作者：王青高
+* 功能：{} 退出登录
+* 参数：{}
+*/
+const logout = () => {
+    return axios.get('/login/logout');
+};
+
+export { forget, login, reg, upHeadImg, getUserInfo, updateInfo, logout };

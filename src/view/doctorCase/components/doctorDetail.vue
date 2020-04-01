@@ -108,7 +108,7 @@
                         this.article = result.info;
                         this.currchannelname = result.currchannelname;
                         this.lastchannelname = result.lastchannelname;
-                        if (result.isCollection === '0') {
+                        if (result.isCollection === 0) {
                             this.icon = 'like-o';
                         } else {
                             this.icon = 'like';

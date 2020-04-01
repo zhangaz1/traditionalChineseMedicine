@@ -3,6 +3,7 @@
         <publicTitle
                 :navData="navData"
                 @getCurrent="getCurrent"
+                route="/home"
         >
             <div
                     slot="publicTitleRight"
@@ -215,7 +216,6 @@
              * 参数：{}
              */
             onCancel() {
-                // console.log('取消');
                 if (this.isCancel) {
                     this.isCancel = false;
                     this.searchResultData = [];

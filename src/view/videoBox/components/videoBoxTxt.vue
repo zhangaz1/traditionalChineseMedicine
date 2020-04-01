@@ -68,7 +68,7 @@
                         // type: 'video/mp4',
                         // type: 'video/ogg',
                         // type: 'video/webm',
-                        type: 'video/webm',
+                        type: 'video/mp4',
                         // type: 'video/3gp',
                         src: ''// url地址
                     } ],

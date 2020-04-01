@@ -6,7 +6,6 @@
         <div class="loadingTxt">正在加载中...</div>
       </div>
     </div>
-    <publicBackTop/>
     <commonFooter v-if="isDisplay"/>
     <router-view></router-view>
   </div>
@@ -14,7 +13,6 @@
 
 <script>
   import commonFooter from '@/view/footer/commonFooter';
-  import publicBackTop from '@/components/publicBackTop/publicBackTop.vue';
   import { EventBus } from "@/utils/event-bus";
   export default {
     name: 'App',
@@ -29,8 +27,7 @@
       }
     },
     components: {
-      commonFooter,
-      publicBackTop
+      commonFooter
     },
     mounted() {
       /**
@@ -62,7 +59,6 @@
 </script>
 
 <style lang="scss">
-
   .van-field__error-message {
     position: absolute !important;
     right: 0 !important;
@@ -95,7 +91,7 @@
   }
   .loadingTxt {
     text-align: center;
-    color: #fff;
+    color: #333;
     margin-top: 20px;
   }
   @keyframes loading {

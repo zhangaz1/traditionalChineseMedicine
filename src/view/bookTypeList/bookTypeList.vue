@@ -45,7 +45,7 @@
                     <div class="title mb20">{{book.title}}</div>
                     <p class="author mb10">{{book.author}}</p>
                     <p class="description">{{book.description}}</p>
-                    <router-link :to="{path: '/bookDetail', query: {id: book.id}}" tag="button" type="button" class="resultsBtns">阅读</router-link>
+                    <router-link :to="{path: '/bookContentFeed', query: {id: book.id}}" tag="button" type="button" class="resultsBtns">详情</router-link>
                 </div>
             </div>
         </div>
@@ -54,7 +54,7 @@
 
 <script>
     import headSearch from '@/components/headSearch/';
-    import { getSearch } from '@/api/content';
+    import { getSearch, getBookListByChannel } from '@/api/content';
     import { EventBus } from "@/utils/event-bus";
     export default {
         name: 'bookTypeList',
@@ -75,9 +75,7 @@
         },
         created() {
             let params = this.$route.query;
-            this.isDefaultVal = params.title;
-            this.title = params.title;
-            this.getSearch(params.title);
+            this.getBookListByChannel(params.id);
         },
         mounted() {
             EventBus.$emit("isDisplay", { data: false });
@@ -86,6 +84,24 @@
             headSearch
         },
         methods: {
+            /** 2020/3/31
+            * 作者：王青高
+            * 功能：{} 点击分类书籍
+            * 参数：{}
+            */
+            getBookListByChannel(id) {
+                getBookListByChannel({
+                    pagesize: this.pageOption.pagesize,
+                    page: this.pageOption.page,
+                    channelid: id
+                }).then(res => {
+                    let result = res.data;
+                    if (res.state === '1') {
+                        this.searchResultData = result.list;
+                        this.title = result.channelname;
+                    }
+                });
+            },
             /** 2020-3-26 0026
              *作者:王青高
              *功能: 搜索框搜索
@@ -110,7 +126,7 @@
              * 参数：{}
              */
             onGoBack() {
-                this.$router.go(-1);
+                this.$router.push('/book');
             },
             /** 2020-3-19 0019
              *作者:王青高

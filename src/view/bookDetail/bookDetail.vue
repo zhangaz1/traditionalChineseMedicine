@@ -3,7 +3,7 @@
          ref="bookDetail"
          :class="{isNight: isNight, turnBook: isTurnBook}"
          :style="{backgroundColor: bookDetailConfig[current]}">
-        <div class="bookDetail_book" @click="openIsSetting($event)">
+        <div class="bookDetail_book">
             <div class="bookDetail_book_title">{{bookitem.title}}</div>
             <div class="bookDetail_book_voice ptb20" @click="openVoice($event)">
                 <van-icon :name="voiceData" class="voiceIcon mr20" />语音播报
@@ -11,8 +11,8 @@
             </div>
             <div class="bookBox" ref="book" :class="{isHeight: !adv}">
                 <div class="bookDetail_book_article"
-                     @touchmove="turnPage($event)"
-                     @touchstart="startTurnPage($event)"
+                     @touchmove.stop="turnPage($event)"
+                     @touchstart.stop="startTurnPage($event)"
                      ref="article"
                      :class="{isNight: isNight}"
                      :style="[{ color: bookDetailColorConfig[current] }, { fontSize: fontConfig.size + 'px'}]" v-html="article">
@@ -27,22 +27,22 @@
                         :options="playerOptions"
                 />
             </div>
-            <div class="bookDetail_book_jump mtb50">
-                <div class="prev plr30 ptb10" @click="prev()">上一章</div>
-                <div class="next plr30 ptb10" @click="next()">下一章</div>
+            <div class="bookDetail_book_jump mtb20">
+                <div class="prev plr30 ptb10" @click="prev()">上一页</div>
+                <div class="next plr30 ptb10" @click="next()">下一页</div>
             </div>
         </div>
         <div class="bookDetail_menu">
             <div class="menu ptb10 plr10" @click="openMenu($event)">{{menuTitle}}</div>
         </div>
         <div class="bookDetail_back" :class="{back: isMenu, _isNight: isNight}">
-            <van-icon name="arrow-left" class="left" @click="arrowLeft($event)"/>
+            <van-icon name="arrow-left" class="left" @click.stop="arrowLeft($event)"/>
 <!--            <div class="title">{{title}}</div> 书名标题-->
         </div>
         <div class="bookDetail_footer ptb10" :class="{footer: isMenu, _isNight: isNight}">
-            <div class="bookDetail_footer_nav" @click="directory(0, $event)"><van-icon name="bars" class="icon mb20"/><span class="txt">目录</span></div>
+            <div class="bookDetail_footer_nav" @click.stop="directory(0, $event)"><van-icon name="bars" class="icon mb20"/><span class="txt">目录</span></div>
 <!--            <div class="bookDetail_footer_nav" @click="directory(1, $event)"><van-icon name="bookmark-o" class="icon mb20"/><span class="txt">书签</span></div>-->
-            <div class="bookDetail_footer_nav" @click="isSetting = !isSetting"><van-icon name="setting-o" class="icon mb20"/><span class="txt">设置</span></div>
+            <div class="bookDetail_footer_nav" @click.stop="isSetting = !isSetting"><van-icon name="setting-o" class="icon mb20"/><span class="txt">设置</span></div>
         </div>
         <div class="bookDetail_settingBox" :class="{setting: isSetting, _isNight: isNight}">
             <van-cell center title="夜间模式" :class="{_isNight: isNight}">
@@ -50,18 +50,18 @@
                     <van-switch v-model="isNight" size="18" active-color="#07c160" inactive-color="#eee"/>
                 </template>
             </van-cell>
-            <div class="bookDetail_settingBox_size mtb20">
-                <button type="button" class="minus" @click="minus($event)" :disabled="fontConfig.isFontMinus" :class="{isDisable: fontConfig.isFontMinus}">A-</button>
-                <div class="nowSize">{{fontConfig.size}}</div>
-                <button type="button" class="add" @click="_add($event)" :disabled="fontConfig.isFontAdd" :class="{isDisable: fontConfig.isFontAdd}">A+</button>
-            </div>
-            <ul class="bookDetail_settingBox_bgColor">
+<!--            <div class="bookDetail_settingBox_size mtb20">-->
+<!--                <button type="button" class="minus" @click.stop="minus($event)" :disabled="fontConfig.isFontMinus" :class="{isDisable: fontConfig.isFontMinus}">A-</button>-->
+<!--                <div class="nowSize">{{fontConfig.size}}</div>-->
+<!--                <button type="button" class="add" @click.stop="_add($event)" :disabled="fontConfig.isFontAdd" :class="{isDisable: fontConfig.isFontAdd}">A+</button>-->
+<!--            </div>-->
+            <ul class="bookDetail_settingBox_bgColor ptb20">
                 <li class="bgColor"
                     v-for="(bg, index) of bookDetailConfig"
                     :key="'bg' + index"
                     :style="'backgroundColor: ' + bg"
                     :class="{bgActived: current === index}"
-                    @click="changeBg(bg, index, $event)"></li>
+                    @click.stop="changeBg(bg, index, $event)"></li>
             </ul>
         </div>
         <div class="bookDetail_directory" :class="{directory: isDirectory}">
@@ -73,7 +73,7 @@
                 />
                 <ul class="ul">
                     <li class="li ptb30"
-                        @click="switchTab(item, index)"
+                        @click.stop="switchTab(item, index)"
                         v-for="(item, index) of navItem"
                         :key="'item' + index"
                         :class="{isDirectory: curDirectory === index}">{{item}}</li>
@@ -81,7 +81,7 @@
             </van-sticky>
             <div class="bookDetail_directory_list">
                 <ul class="_one" v-if="curDirectory === 0">
-                    <router-link class="_one_li" tag="li" v-for="(dir, index) of directoryData.bookitem" :key="'idr' + index" :to="{path: '/bookDetail', query: {id: dir.id}}">{{dir.title}}</router-link>
+                    <li class="_one_li" @click.stop="openBook(dir)" v-for="(dir, index) of directoryData.bookitem" :key="'idr' + index" >{{dir.title}}</li>
 <!--                    <li class="_one_li">重广补注黄帝内经素问·序</li>-->
 <!--                    <li class="_one_li">重广补注黄帝内经素问·序</li>-->
 <!--                    <li class="_one_li">目录</li>-->
@@ -96,11 +96,22 @@
 <!--                    </li>-->
                 </ul>
                 <ul class="bookmark" v-else>
-                    <li class="li plr30 ptb20" @click="getBookMark(mark, $event)" v-for="(mark, index) of bookmarkData" :key="'mark' + index">
+                    <li class="li plr30 ptb20" @click.stop="getBookMark(mark, $event)" v-for="(mark, index) of bookmarkData" :key="'mark' + index">
                         <p class="title mb20">{{mark.title}}</p>
                         <p class="txt">{{mark.txt}}</p>
                     </li>
                 </ul>
+            </div>
+        </div>
+        <div class="bookDetail_help" @click.stop="alertHelp" v-if="closeHelp">
+            <div class="left">
+                <img :src="require('../../assets/img/left_help.png')" alt="" class="img">
+            </div>
+            <div class="center">
+                <img :src="require('../../assets/img/center_help.png')" alt="" class="img">
+            </div>
+            <div class="right">
+                <img :src="require('../../assets/img/right_help.png')" alt="" class="img">
             </div>
         </div>
     </div>
@@ -110,6 +121,7 @@
     import { EventBus } from "@/utils/event-bus";
     import { bookDetailConfig, bookDetailColorConfig, navItem } from './config';
     import { getItemContent, getBookItem } from '@/api/content';
+    import { Toast } from 'vant';
     export default {
         name: 'bookDetail',
         data() {
@@ -188,18 +200,55 @@
                 Index_: 0, // 初始化页数
                 bookitem: {}, // 书籍内容
                 directoryData: [], // 存储目录内容
-                title: '', //
+                title: '', // 标题
+                prev_: '', // 上一章
+                next_: '', // 下一章
+                initStatus: 0, // 初始化状态
+                closeHelp: true, // 是否弹出帮助框
             };
         },
         watch: {
             // 如果路由有变化，会再次执行该方法
             '$route': 'init'
         },
+        updated() {
+            /** 2020/3/31
+            * 作者：王青高
+            * 功能：{text} article: 由于初始化渲染为空所以执行两次进行补充渲染
+            * 参数：{}
+            */
+            if (this.initStatus < 2) {
+                this.$nextTick(function () {
+                    this.initPage(this.article);
+                });
+                this.initStatus++;
+            } else {
+                return;
+            }
+        },
         mounted() {
             this.init();
             EventBus.$emit("isDisplay", { data: false });
         },
         methods: {
+            /** 2020/3/31
+            * 作者：王青高
+            * 功能：{} 弹出帮助指南
+            * 参数：{}
+            */
+            alertHelp() {
+                this.closeHelp = false;
+                localStorage.setItem('Help', this.closeHelp);
+            },
+            /** 2020/3/31
+            * 作者：王青高
+            * 功能：{} 打开指定目录
+            * 参数：{}
+            */
+            openBook(book) {
+                this.isDirectory = false;
+                this.$router.push({ path: '/bookDetail', query: { id: book.id } });
+            },
             /** 2020/3/30
             * 作者：王青高
             * 功能：{} 初始化数据
@@ -209,6 +258,10 @@
                 let id = this.$route.query.id;
                 if (id) {
                     this.getItemContent(id);
+                    if (localStorage.getItem('Help')) {
+                        this.closeHelp = false;
+                        return;
+                    }
                 } else {
                     this.$router.push('/book');
                 }
@@ -263,10 +316,13 @@
                 getItemContent({ id }).then(res => {
                     let result = res.data;
                     if (res.state === '1') {
+                        if (localStorage.getItem('curPage')) {
+                            this.Index_ = localStorage.getItem('curPage');
+                        }
                         this.bookitem = result.bookitem;
                         this.article = this.bookitem.content;
-                        this.initPage(this.article);
-                        this.initAudio();
+                        this.next_ = result.nextid;
+                        this.prev_ = result.preid;
                     }
                 });
             },
@@ -276,15 +332,29 @@
              * 参数：{}
              */
             prev() {
-                let i = --this.Index_;
-                if (this.Index_ >= 0) {
-                    this.$nextTick(() => {
-                        this.article = this.articleData[i];
-                        this.initAudio();
-                        this.voiceData = 'volume-o';
-                    });
+                if (this.Index_ != 0) {
+                    let i = --this.Index_;
+                    if (this.Index_ >= 0) {
+                        this.$nextTick(() => {
+                            this.article = this.articleData[i];
+                            this.initAudio();
+                            this.voiceData = 'volume-o';
+                        });
+                    } else {
+                        this.Index_ = 0;
+                    }
+                    localStorage.setItem('curPage', i);
                 } else {
-                    this.Index_ = 0;
+                    if (this.prev_ != '') {
+                        this.Index_ = 0;
+                        localStorage.setItem('curPage', 0);
+                        this.articleData = []; // 初始化当前页面内容
+                        this.initStatus = 0; // 改变初始化状态;
+                        this.$router.push({ path: '/bookDetail', query: { id: this.prev_ } });
+                    } else {
+                        Toast('已经是第一页');
+                        return;
+                    }
                 }
             },
             /** `2020/3/27`
@@ -300,8 +370,19 @@
                         this.initAudio();
                         this.voiceData = 'volume-o';
                     });
+                    localStorage.setItem('curPage', i);
                 } else {
-                    this.Index_ = this.articleData.length - 1;
+                    if (this.next_ != '') {
+                        this.Index_ = 0;
+                        localStorage.setItem('curPage', 0);
+                        this.articleData = []; // 初始化当前页面内容
+                        this.initStatus = 0; // 改变初始化状态;
+                        this.$router.push({ path: '/bookDetail', query: { id: this.next_ } });
+                    } else {
+                        this.Index_ = this.articleData.length - 1;
+                        Toast('已经是最后一页');
+                        return;
+                    }
                 }
             },
             /** 2020/3/27
@@ -325,7 +406,11 @@
              */
             arrowLeft(event) {
                 event.preventDefault();
-                this.$router.go(-1);
+                if (this.bookitem && this.bookitem.bookid) {
+                    this.$router.push({ path: '/bookContentFeed', query: { id: this.bookitem.bookid } });
+                } else {
+                    this.$router.go(-1);
+                }
             },
             /** 2020/3/27
              * 作者：王青高
@@ -440,8 +525,25 @@
              *参数:
              */
             startTurnPage(event) {
+                event.preventDefault();
+                if (this.isSetting || this.isMenu) {
+                    this.openIsSetting(event);
+                    return;
+                }
+                let clientWidth = document.body.clientWidth;
                 this.touchConfig.startPageX = event.targetTouches[0].pageX;
                 this.touchConfig.startPageY = event.targetTouches[0].pageY;
+                if (this.touchConfig.timer) clearTimeout(this.touchConfig.timer);
+                this.touchConfig.timer = setTimeout(() => {
+                    let startX = this.touchConfig.startPageX;
+                    let centerWidth = clientWidth / 2; // 获取中间宽度
+                    if (centerWidth < startX) {
+                        this.next();
+                        localStorage.setItem('curPage', 0);
+                    } else {
+                        this.prev();
+                    }
+                }, 300);
             },
             /** 2020-3-29 0029
              *作者:王青高
@@ -480,9 +582,13 @@
                 let pageStrNum = ''; // 每页大概有多少个字符
                 if (cH > clientHeight) {
                     pageStrNum = (clientHeight / cH) * len; // 每页大概有多少个字符
+                    this.articleLen = pageStrNum;
                     let page = Math.ceil(len / pageStrNum); // 分成多少页
                     this.overflowhiddenTow(writeStr, page, pageStrNum);
-                    this.article = this.articleData[0];
+                    let curPage = localStorage.getItem('curPage');
+                    if (curPage) this.Index_ = curPage;
+                    this.article = this.articleData[this.Index_];
+                    this.initAudio();
                 } else {
                     return;
                 }
@@ -657,7 +763,7 @@
             left: 0;
             bottom: -300px;
             width: 100%;
-            height: 300px;
+            height: 200px;
             box-shadow: 0 3px 10px rgba(3, 3, 3, 0.1);
             z-index: $navbar-z-index;
             background: $color-default;
@@ -805,6 +911,39 @@
                 }
             }
         }
+        &_help {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            z-index: 99999999;
+            .right,
+            .left {
+                width: 30%;
+                height: 100%;
+                background: rgba(3, 3, 3, .7);
+                .img {
+                    width: 120px;
+                    height: 220px;
+                }
+            }
+            .center {
+                width: 40%;
+                height: 100%;
+                background: rgba(3, 3, 3, .8);
+                .img {
+                    width: 220px;
+                    height: 400px;
+                }
+            }
+            .right,
+            .left,
+            .center {
+                @include flex-center();
+            }
+        }
     }
     .back {
         top: 0;
@@ -849,6 +988,7 @@
         }
     }
     .isHeight {
-        height: 80%!important;
+        max-height: 85%!important;
+        min-height: 82%!important;
     }
 </style>

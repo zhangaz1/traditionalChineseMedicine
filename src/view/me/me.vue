@@ -20,15 +20,15 @@
                 <span class="txt pl80">VIP会员</span>
                 <button type="button" class="open ptb4 plr20 mr20" @click="openVip">开通</button>
             </li>
-<!--            <li class="me_vip_li ptb20 plr30">-->
-<!--                <van-icon name="todo-list-o" class="icon" />-->
-<!--                <span class="txt pl80">每日任务</span>-->
-<!--                <button type="button" class="open ptb4 plr20 mr20" @click="Sign">签到</button>-->
-<!--            </li>-->
+            <!--            <li class="me_vip_li ptb20 plr30">-->
+            <!--                <van-icon name="todo-list-o" class="icon" />-->
+            <!--                <span class="txt pl80">每日任务</span>-->
+            <!--                <button type="button" class="open ptb4 plr20 mr20" @click="Sign">签到</button>-->
+            <!--            </li>-->
             <li class="me_vip_li ptb20 plr30" @click="footprint">
                 <van-icon name="browsing-history-o" class="icon"/>
                 <span class="txt pl80">我的足迹</span>
-<!--                <span class="footprint mr20">美尼尔综合症</span>-->
+                <!--                <span class="footprint mr20">美尼尔综合症</span>-->
             </li>
         </ul>
         <ul class="me_vip mb20">
@@ -49,44 +49,44 @@
         </ul>
         <van-action-sheet v-model="shareMenu" title="选择要分享的平台" class="me_share" :round="false">
             <div class="pb100">
-<!--                <swiper class="me_share_swiper ptb40" :options="swiperShare">-->
-<!--                    <swiper-slide class="me_share_swiper_item">-->
-<!--                        <div class="me_share_swiper_item_link">-->
-<!--                            <div class="item_img mb20">-->
-<!--                                <img :src="moneyImg" class="img"/>-->
-<!--                            </div>-->
-<!--                            <p class="txt">微信</p>-->
-<!--                        </div>-->
-<!--                    </swiper-slide>-->
-<!--                    <swiper-slide class="me_share_swiper_item" @click="shareBtn('qq')">-->
-<!--                        <div class="me_share_swiper_item_link">-->
-<!--                            <div class="item_img mb20">-->
-<!--                                <img :src="moneyImg" class="img"/>-->
-<!--                            </div>-->
-<!--                            <p class="txt">QQ</p>-->
-<!--                        </div>-->
-<!--                    </swiper-slide>-->
-<!--                    <swiper-slide class="me_share_swiper_item" @click="shareBtn('zone')">-->
-<!--                        <div class="me_share_swiper_item_link">-->
-<!--                            <div class="item_img mb20">-->
-<!--                                <img :src="moneyImg" class="img"/>-->
-<!--                            </div>-->
-<!--                            <p class="txt">QQ空间</p>-->
-<!--                        </div>-->
-<!--                    </swiper-slide>-->
-<!--                    <swiper-slide class="me_share_swiper_item">-->
-<!--                        <div class="me_share_swiper_item_link">-->
-<!--                            <div class="item_img mb20">-->
-<!--                                <img :src="moneyImg" class="img"/>-->
-<!--                            </div>-->
-<!--                            <p class="txt">微信朋友圈</p>-->
-<!--                        </div>-->
-<!--                    </swiper-slide>-->
-<!--                    <div class="swiper-pagination" slot="pagination"></div>-->
-<!--                </swiper>-->
-                    <div class="share ptb30">
-                        <vshare :vshareConfig="vshareConfig"/>
-                    </div>
+                <!--                <swiper class="me_share_swiper ptb40" :options="swiperShare">-->
+                <!--                    <swiper-slide class="me_share_swiper_item">-->
+                <!--                        <div class="me_share_swiper_item_link">-->
+                <!--                            <div class="item_img mb20">-->
+                <!--                                <img :src="moneyImg" class="img"/>-->
+                <!--                            </div>-->
+                <!--                            <p class="txt">微信</p>-->
+                <!--                        </div>-->
+                <!--                    </swiper-slide>-->
+                <!--                    <swiper-slide class="me_share_swiper_item" @click="shareBtn('qq')">-->
+                <!--                        <div class="me_share_swiper_item_link">-->
+                <!--                            <div class="item_img mb20">-->
+                <!--                                <img :src="moneyImg" class="img"/>-->
+                <!--                            </div>-->
+                <!--                            <p class="txt">QQ</p>-->
+                <!--                        </div>-->
+                <!--                    </swiper-slide>-->
+                <!--                    <swiper-slide class="me_share_swiper_item" @click="shareBtn('zone')">-->
+                <!--                        <div class="me_share_swiper_item_link">-->
+                <!--                            <div class="item_img mb20">-->
+                <!--                                <img :src="moneyImg" class="img"/>-->
+                <!--                            </div>-->
+                <!--                            <p class="txt">QQ空间</p>-->
+                <!--                        </div>-->
+                <!--                    </swiper-slide>-->
+                <!--                    <swiper-slide class="me_share_swiper_item">-->
+                <!--                        <div class="me_share_swiper_item_link">-->
+                <!--                            <div class="item_img mb20">-->
+                <!--                                <img :src="moneyImg" class="img"/>-->
+                <!--                            </div>-->
+                <!--                            <p class="txt">微信朋友圈</p>-->
+                <!--                        </div>-->
+                <!--                    </swiper-slide>-->
+                <!--                    <div class="swiper-pagination" slot="pagination"></div>-->
+                <!--                </swiper>-->
+                <div class="share ptb30">
+                    <vshare :vshareConfig="vshareConfig"/>
+                </div>
                 <div class="ptb20 me_share_cancel" @click="share">取消分享</div>
             </div>
         </van-action-sheet>
@@ -99,6 +99,7 @@
     import vshare from 'vshare';
     import { EventBus } from "@/utils/event-bus";
     import { baseUrl } from '@/utils';
+    import { getUserInfo, logout } from '@/api/login';
     export default {
         name: 'me',
         data() {
@@ -120,7 +121,7 @@
                     },
                     share: [{
                         bdSize: 32
-                    }],
+                    }]
                 },
                 baseUrl
             };
@@ -142,35 +143,48 @@
             window._bd_share_main = '';
         },
         methods: {
+            /** 2020/3/31
+             * 作者：王青高
+             * 功能：{} 获取用户信息
+             * 参数：{}
+             */
+            getUserInfo() {
+                getUserInfo().then(res => {
+                    if (res.state === '1') {
+                        let result = res.data;
+                        this.userInfo = result.userinfo;
+                    }
+                });
+            },
             /** 2020/3/20
-            * 作者：王青高
-            * 功能：{Function} 开通会员
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{Function} 开通会员
+             * 参数：{}
+             */
             openVip() {
                 this.$router.push('/buyVip');
             },
             /** 2020/3/20
-            * 作者：王青高
-            * 功能：{Function} Sign : 签到
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{Function} Sign : 签到
+             * 参数：{}
+             */
             Sign() {
                 console.log('签到');
             },
             /** 2020/3/20
-            * 作者：王青高
-            * 功能：{Function} 跳转我的足迹
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{Function} 跳转我的足迹
+             * 参数：{}
+             */
             footprint() {
                 this.$router.push('/footprint');
             },
             /** 2020/3/20
-            * 作者：王青高
-            * 功能：{Function} 跳转学习方案、联系客服、反馈建议、分享好友 三个模块
-            * 参数：{Number} index: 0-学习方案, 1-联系客服, 2-反馈建议，3-分享好友
-            */
+             * 作者：王青高
+             * 功能：{Function} 跳转学习方案、联系客服、反馈建议、分享好友 三个模块
+             * 参数：{Number} index: 0-学习方案, 1-联系客服, 2-反馈建议，3-分享好友
+             */
             _Router(index) {
                 switch (index) {
                     case 0:
@@ -185,20 +199,20 @@
                 }
             },
             /** 2020/3/20
-            * 作者：王青高
-            * 功能：{Function} 跳转登录页面
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{Function} 跳转登录页面
+             * 参数：{}
+             */
             goLogin() {
                 this.$router.push('/login');
             },
             /** 2020/3/20
-            * 作者：王青高
-            * 功能：{}
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{} 跳转个人资料
+             * 参数：{}
+             */
             openUser() {
-                console.log('点击了我的头像');
+                this.$router.push('/userInfo');
             },
             /** 2020-3-22 0022
              *作者:王青高
@@ -213,13 +227,18 @@
                 }
             },
             /** 2020/3/25
-            * 作者：王青高
-            * 功能：{} 退出登录
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{} 退出登录
+             * 参数：{}
+             */
             quit() {
-                localStorage.removeItem('user');
-                this.$router.push('/login');
+                logout().then(res => {
+                    if (res.state === '1') {
+                        localStorage.removeItem('user');
+                        // localStorage.clear();
+                        this.$router.push('/login');
+                    }
+                });
             },
             /** 2020-3-22 0022
              *作者: 分享按钮
@@ -227,7 +246,7 @@
              *参数:
              */
             shareBtn(type) {
-                switch(type) {
+                switch (type) {
                     case 'qq':
                         // wx.onMenuShareQQ({
                         //     title: '', // 分享标题
@@ -261,7 +280,8 @@
         },
         mounted() {
             EventBus.$emit("isDisplay", { data: true });
-        },
+            this.getUserInfo();
+        }
     };
 </script>
 

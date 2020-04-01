@@ -56,7 +56,7 @@
                 <span class="article_arrow" @click="pullArrow" :class="{arrowDeg: isPull}"></span>
             </div>
             <div class="directory plr30 ptb40 mb20" v-else-if="current === 1">
-                <ul class="_one">
+                <ul class="_one" v-if="directory.length">
                     <router-link tag="li" :to="{path: '/bookDetail', query: { id: item.id }}" class="_one_li pl20 ptb20" v-for="(item, index) of directory" :key="'item' + index">{{item.title}}
 <!--                        <ul class="_two">-->
 <!--                            <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="_two_li pl20 ptb20">重广补注黄帝内经素问•序</router-link>-->
@@ -76,7 +76,7 @@
                 </ul>
             </div>
             <subMenu class="plr30 bg_f" title="推荐" toRouter="/bookTypeList">
-                <swiper class="swiper" :options="bookContentFeedConfig" slot="content">
+                <swiper class="swiper" :options="bookContentFeedConfig" slot="content" v-if="booklist.length">
                     <swiper-slide class="swiper_common" v-for="(book, index) of booklist" :key="'book' + index">
                         <div class="content ptb20">
                             <router-link tag="div" :to="{path: '/bookContentFeed', query: { id: book.id }}" class="content_img sprite-book-cover0">
@@ -100,7 +100,7 @@
                 </swiper>
             </subMenu>
         </div>
-        <router-link tag="button" :to="{path: '/bookDetail', query: {id: curArticle.id}}" type="button" class="footerFix">
+        <router-link tag="button" :to="{path: '/bookDetail', query: {id: directory[0].id}}" v-if="directory.length" type="button" class="footerFix">
             <span class="footerFix_icon">阅读</span>
         </router-link>
     </div>
@@ -131,7 +131,7 @@
                 current: 0,
                 isPull: false, // 向下、向上
                 curArticle: '', // 当前文章
-                directory: [], // 存储目录
+                directory: [] // 存储目录
             };
         },
         components: {
@@ -166,7 +166,11 @@
              * 参数：{}
              */
             onGoBack() {
-                this.$router.go(-1);
+                if (this.curArticle) {
+                    this.$router.push({ path: '/bookTypeList', query: { id: this.curArticle.channel, title: this.curArticle.title } });
+                } else {
+                    this.$router.go(-1);
+                }
             },
             /** 2020-3-19 0019
              *作者:王青高
@@ -190,7 +194,6 @@
              * 参数：{} index 当前索引
              */
             getCurrent(index) {
-                console.log(this.current);
                 this.current = index;
             },
             /** 2020/3/23

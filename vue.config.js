@@ -44,12 +44,13 @@ module.exports = {
             return {
                 plugins: [
                     new CompressionPlugin({
-                        test: /\.js$|\.html$|.\css/, // 匹配文件名
+                        test: /\.js$|\.css/, // 匹配文件名
                         threshold: 5120, // 对超过10k的数据压缩
-                        deleteOriginalAssets: true // 不删除源文件
+                        deleteOriginalAssets: false // 不删除源文件
                     })
                 ]
             };
         }
-    }
+    },
+    publicPath: process.env.NODE_ENV === 'production' ? '/' : '/'
 };

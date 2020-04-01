@@ -115,6 +115,20 @@ export default new Router({
             path: '/forget',
             name: 'forget',
             component: () => import(/* webpackChunkName: 'login' */ '@/view/forget/forget.vue')
+        },
+        {
+            path: '/userInfo',
+            name: 'userInfo',
+            component: () => import(/* webpackChunkName: 'login' */ '@/view/userInfo/userInfo.vue')
+        },
+        {
+            path: '/changeUserName',
+            name: 'changeUserName',
+            component: () => import(/* webpackChunkName: 'login' */ '@/view/changeUserName/changeUserName.vue')
+        },
+        {
+            path: '*',
+            redirect: '/home'
         }
     ],
     scrollBehavior: () => ({ y: 0 })

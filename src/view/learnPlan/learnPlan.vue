@@ -12,9 +12,9 @@
                 <ul class="learnPlan_tag_box">
                     <li class="mb40">
                         <div class="li mb20">
-                            <van-field v-model="ans" label="问：" placeholder="请输入问题" label-width="25px" />
+                            <van-field v-model="ques" label="问：" placeholder="请输入问题" label-width="25px" />
                             <van-field
-                                    v-model="ques"
+                                    v-model="ans"
                                     rows="2"
                                     autosize
                                     label-width="25px"
@@ -36,8 +36,8 @@
             <ul class="learnPlan_tag_box h900" v-if="messageList.length">
                 <li class="mb40" v-for="(item, index) of messageList" :key="'item' + index">
                     <div class="li mb20">
-                        <div class="title ptb30 plr30">问：<span>{{item.ans}}</span></div>
-                        <div class="desc ptb30 plr30">答：<span>{{item.ques}}</span></div>
+                        <div class="title ptb30 plr30">问：<span>{{item.ques}}</span></div>
+                        <div class="desc ptb30 plr30">答：<span>{{item.ans}}</span></div>
                     </div>
                 </li>
             </ul>

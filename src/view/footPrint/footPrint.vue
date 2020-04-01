@@ -3,7 +3,9 @@
         <publicTitle
                 :navData="navData"
                 @getCurrent="getCurrent"
+                @goback="goback"
                 :_active="true"
+                :_left="true"
         >
             <div slot="publicTitleRight" class="footPrint_right plr20" @click="_delete">清空</div>
         </publicTitle>
@@ -12,7 +14,8 @@
                 <img :src="require('../../assets/img/footPrint.png')" alt="" class="img">
                 <div class="right ptb10">
                     <h3 class="right_title ptb10">{{item.title}}</h3>
-                    <div class="right_txt ptb10"><span class="right_txt_one">{{item.createtime}}</span></div>
+                    <div class="right_txt ptb10" v-if="item.createtime"><span class="right_txt_one">{{item.createtime}}</span></div>
+                    <div class="right_txt ptb10" v-else-if="item.updatetime"><span class="right_txt_one">{{item.updatetime}}</span></div>
                 </div>
             </li>
             <li class="li noData ptb30 plr30" v-if="footList.length === totalcount">没有更多数据</li>
@@ -39,7 +42,7 @@
                 page: 1,
                 type: 1, // 1：足迹， 2：收藏
                 footList: [], // 存储足迹或收藏内容
-                totalcount: '0', // 存储总数
+                totalcount: '0' // 存储总数
             };
         },
         created() {
@@ -88,6 +91,7 @@
                     }
                 }).catch(err => {
                     if (err) this.footList = [];
+                    this.$router.push('/login');
                 });
             },
             /** 2020-3-22 0022
@@ -117,17 +121,24 @@
                 if (obj) {
                     switch (obj.type) {
                         case 1:
-                            this.$router.push({ path: '/bookContentFeed', query: { id: obj.id } });
+                            this.$router.push({ path: '/bookContentFeed', query: { id: obj.tempid } });
                             break;
                         case 2:
-                            this.$router.push({ path: '/doctorCase/components/doctorDetail', query: { id: obj.id } });
+                            this.$router.push({ path: '/doctorCase/components/doctorDetail', query: { id: obj.tempid } });
                             break;
                         case 3:
-                            this.$router.push({ path: '/videoBox/components/videoBoxDetail', query: { id: obj.id } });
+                            this.$router.push({ path: '/videoBox/components/videoBoxDetail', query: { id: obj.tempid } });
                             break;
                     }
                 }
-                console.log('obj', obj);
+            },
+            /** 2020/4/1
+            * 作者：王青高
+            * 功能：{} 返回上一页
+            * 参数：{}
+            */
+            goback() {
+                this.$router.go(-1);
             }
         },
         components: {
