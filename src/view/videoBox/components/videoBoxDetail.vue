@@ -74,6 +74,9 @@
                         this.vediolist = result.vediolist;
                         this.vedio = result.vedio;
                         this.title = this.vedio.title;
+                        if (result.isCollection === 1) {
+                            this.icon = 'like';
+                        }
                     } else {
                         Toast('数据获取失败，请刷新重试!');
                         setTimeout(() => {
