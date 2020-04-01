@@ -23,20 +23,20 @@
         <div class="bookContentFeed_book">
             <div class="plr30 bookTitle">
                 <div class="content pl160 ptb20" v-if="curArticle">
-                    <router-link tag="div" :to="{path: '/bookContentFeed', query: {id: curArticle.id}}" class="content_img sprite-book-cover0">
+                    <router-link tag="div" :to="{path: '/bookContentFeed', query: {id: curArticle.id}}" :style="{backgroundImage: 'url(' + testImg + ')', backgroundSize: '100% 100%' }" class="content_img sprite-book-cover0">
                         <div class="content_img_free" v-if="curArticle.isfree === '1'"></div>
-                        <div class="content_img_txt">
-                            <div class="title">
-                                <span class="name">{{curArticle.title}}</span>
-                            </div>
-                        </div>
-                        <ul class="content_img_line">
-                            <li class="li"></li>
-                            <li class="li"></li>
-                            <li class="li"></li>
-                            <li class="li"></li>
-                            <li class="li"></li>
-                        </ul>
+<!--                        <div class="content_img_txt">-->
+<!--                            <div class="title">-->
+<!--                                <span class="name">{{curArticle.title}}</span>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <ul class="content_img_line">-->
+<!--                            <li class="li"></li>-->
+<!--                            <li class="li"></li>-->
+<!--                            <li class="li"></li>-->
+<!--                            <li class="li"></li>-->
+<!--                            <li class="li"></li>-->
+<!--                        </ul>-->
                     </router-link>
                     <router-link tag="div" :to="{path: '/bookDetail', query: {id: curArticle.id}}" class="content_txt">
                         <div class="title mb20">{{curArticle.title}}</div>
@@ -79,30 +79,30 @@
                 <swiper class="swiper" :options="bookContentFeedConfig" slot="content" v-if="booklist.length">
                     <swiper-slide class="swiper_common" v-for="(book, index) of booklist" :key="'book' + index">
                         <div class="content ptb20">
-                            <router-link tag="div" :to="{path: '/bookContentFeed', query: { id: book.id }}" class="content_img sprite-book-cover0">
+                            <router-link tag="div" :to="{path: '/bookContentFeed', query: { id: book.id }}" :style="{backgroundImage: 'url(http://47.103.217.238:9002/attachment/userimg/20200331/20200331131129_674.jpeg)', backgroundSize: '100% 100%' }" class="content_img sprite-book-cover0">
                                 <div class="content_img_free" v-if="book.isfree === '1'"></div>
-                                <div class="content_img_txt">
-                                    <div class="title">
-                                        <span class="name">{{book.title}}</span>
-                                    </div>
-                                </div>
-                                <ul class="content_img_line">
-                                    <li class="li"></li>
-                                    <li class="li"></li>
-                                    <li class="li"></li>
-                                    <li class="li"></li>
-                                    <li class="li"></li>
-                                </ul>
+<!--                                <div class="content_img_txt">-->
+<!--                                    <div class="title">-->
+<!--                                        <span class="name">{{book.title}}</span>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <ul class="content_img_line">-->
+<!--                                    <li class="li"></li>-->
+<!--                                    <li class="li"></li>-->
+<!--                                    <li class="li"></li>-->
+<!--                                    <li class="li"></li>-->
+<!--                                    <li class="li"></li>-->
+<!--                                </ul>-->
                             </router-link>
-                            <p class="content_img_title">{{book.description}}</p>
+                            <p class="content_img_title">{{book.title}}</p>
                         </div>
                     </swiper-slide>
                 </swiper>
             </subMenu>
         </div>
-        <router-link tag="button" :to="{path: '/bookDetail', query: {id: directory[0].id}}" v-if="directory.length" type="button" class="footerFix">
+        <button @click="toRouter" type="button" class="footerFix">
             <span class="footerFix_icon">阅读</span>
-        </router-link>
+        </button>
     </div>
 </template>
 
@@ -112,6 +112,7 @@
     import { bookContentFeedConfig } from './config';
     import { EventBus } from "@/utils/event-bus";
     import { getBookItem } from '@/api/content';
+    import { Toast } from 'vant';
     export default {
         name: 'bookContentFeed',
         data() {
@@ -131,7 +132,8 @@
                 current: 0,
                 isPull: false, // 向下、向上
                 curArticle: '', // 当前文章
-                directory: [] // 存储目录
+                directory: [], // 存储目录
+                testImg: 'https://p.ssl.qhimg.com/d/novel_4413971876881555599.jpg'
             };
         },
         components: {
@@ -150,15 +152,17 @@
             * 参数：{}
             */
             getBookItem() {
-                let id = this.$route.query.id;
-                getBookItem({ id }).then(res => {
-                    let result = res.data;
-                    if (res.state === '1') {
-                        this.curArticle = result.book;
-                        this.booklist = result.tuijian;
-                        this.directory = result.bookitem;
-                    }
-                });
+                if (this.$route.query.id) {
+                    let id = this.$route.query.id;
+                    getBookItem({ id }).then(res => {
+                        let result = res.data;
+                        if (res.state === '1') {
+                            this.curArticle = result.book;
+                            this.booklist = result.tuijian;
+                            this.directory = result.bookitem;
+                        }
+                    });
+                }
             },
             /** 2020/3/20
              * 作者：王青高
@@ -206,6 +210,18 @@
                     this.isPull = false;
                 } else {
                     this.isPull = true;
+                }
+            },
+            /** 2020/4/1
+            * 作者：王青高
+            * 功能：{} 跳转阅读
+            * 参数：{}
+            */
+            toRouter() {
+                if (this.directory.length) {
+                    this.$router.push({ path: '/bookDetail', query: { id: this.directory[0].id } });
+                } else {
+                    Toast('此书籍暂无目录');
                 }
             }
         }

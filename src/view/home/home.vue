@@ -70,22 +70,22 @@
         <subMenu class="plr30 bg_f ptb10" title="书籍推荐榜" toRouter="/book">
             <swiper class="swiper_common" :options="swiperBook" slot="content">
                 <swiper-slide  class="swiper_common_item" v-for="(book, index) of booklist" :key="'book' + index">
-                    <router-link tag="div" :to="{path: '/bookContentFeed', query: { id: book.id }}" class="content_img sprite-book-cover0">
+                    <router-link tag="div" :to="{path: '/bookContentFeed', query: { id: book.id }}" :style="{backgroundImage: 'url(' + testImg + ')', backgroundSize: '100% 100%' }" class="content_img">
                         <div class="content_img_free" v-if="book.isfree === '1'"></div>
-                        <div class="content_img_txt">
-                            <div class="title">
-                                <span class="name">{{book.title}}</span>
-                            </div>
-                        </div>
-                        <ul class="content_img_line">
-                            <li class="li"></li>
-                            <li class="li"></li>
-                            <li class="li"></li>
-                            <li class="li"></li>
-                            <li class="li"></li>
-                        </ul>
+<!--                        <div class="content_img_txt">-->
+<!--                            <div class="title">-->
+<!--                                <span class="name">{{book.title}}</span>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <ul class="content_img_line">-->
+<!--                            <li class="li"></li>-->
+<!--                            <li class="li"></li>-->
+<!--                            <li class="li"></li>-->
+<!--                            <li class="li"></li>-->
+<!--                            <li class="li"></li>-->
+<!--                        </ul>-->
                     </router-link>
-                    <p class="content_img_title pl10">{{book.description}}</p>
+                    <p class="content_img_title pl10">{{book.title}}</p>
                 </swiper-slide>
             </swiper>
         </subMenu>
@@ -136,6 +136,7 @@
                 },
                 searchValue: '', // 搜索关键字
                 totalcount: '0', // 数据长度
+                testImg: 'https://p.ssl.qhimg.com/d/novel_4413971876881555599.jpg'
             };
         },
         components: {

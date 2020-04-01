@@ -1,6 +1,6 @@
 <template>
     <div class="videoBox ptb108">
-        <van-nav-bar :title="title" left-arrow @click-right="onSearch"  @click-left="onGoBack" fixed class="videoBox_title">
+        <van-nav-bar :title="title" @click-right="onSearch" fixed class="videoBox_title">
             <van-icon name="search" slot="right" />
         </van-nav-bar>
         <headSearch

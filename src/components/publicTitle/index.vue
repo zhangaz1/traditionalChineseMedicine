@@ -87,6 +87,7 @@
                     height: 100%;
                     line-height: 108px;
                     position: relative;
+                    font-size: 32px;
                 }
             }
             &_arrowLeft {

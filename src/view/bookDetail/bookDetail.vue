@@ -205,6 +205,8 @@
                 next_: '', // 下一章
                 initStatus: 0, // 初始化状态
                 closeHelp: true, // 是否弹出帮助框
+                curId: '', // 当前小说id
+                lastPage: '', // 存储当前页数
             };
         },
         watch: {
@@ -223,6 +225,7 @@
                 });
                 this.initStatus++;
             } else {
+                localStorage.removeItem('pagePrev');
                 return;
             }
         },
@@ -255,9 +258,11 @@
             * 参数：{}
             */
             init() {
-                let id = this.$route.query.id;
-                if (id) {
-                    this.getItemContent(id);
+                if (this.$route.query.id) {
+                    this.curId = this.$route.query.id;
+                }
+                if (this.curId) {
+                    this.getItemContent(this.curId);
                     if (localStorage.getItem('Help')) {
                         this.closeHelp = false;
                         return;
@@ -309,20 +314,22 @@
             },
             /** 2020/3/26
              * 作者：王青高
-             * 功能：{} 获取小说内容
-             * 参数：{}
+             * 功能：{} 获取小说内容, 如果本地有记录章节，并获取章节索引，否则初始化索引
+             * 参数：{String} 小说id
              */
             getItemContent(id) {
                 getItemContent({ id }).then(res => {
                     let result = res.data;
                     if (res.state === '1') {
-                        if (localStorage.getItem('curPage')) {
-                            this.Index_ = localStorage.getItem('curPage');
-                        }
                         this.bookitem = result.bookitem;
                         this.article = this.bookitem.content;
                         this.next_ = result.nextid;
                         this.prev_ = result.preid;
+                        if (localStorage.getItem('curPagebook' + id)) {
+                            this.Index_ = localStorage.getItem('curPagebook' + id);
+                        } else {
+                            localStorage.setItem('curPagebook' + id, this.Index_);
+                        }
                     }
                 });
             },
@@ -343,11 +350,12 @@
                     } else {
                         this.Index_ = 0;
                     }
-                    localStorage.setItem('curPage', i);
+                    localStorage.setItem('curPagebook' + this.curId, i);
                 } else {
                     if (this.prev_ != '') {
+                        localStorage.removeItem('curPagebook' + this.curId);
+                        localStorage.setItem('pagePrev', 1);
                         this.Index_ = 0;
-                        localStorage.setItem('curPage', 0);
                         this.articleData = []; // 初始化当前页面内容
                         this.initStatus = 0; // 改变初始化状态;
                         this.$router.push({ path: '/bookDetail', query: { id: this.prev_ } });
@@ -364,17 +372,18 @@
              */
             next() {
                 let i = ++this.Index_;
+                localStorage.removeItem('pagePrev');
                 if (this.Index_ < this.articleData.length) {
                     this.$nextTick(() => {
                         this.article = this.articleData[i];
                         this.initAudio();
                         this.voiceData = 'volume-o';
                     });
-                    localStorage.setItem('curPage', i);
+                    localStorage.setItem('curPagebook' + this.curId, i);
                 } else {
                     if (this.next_ != '') {
                         this.Index_ = 0;
-                        localStorage.setItem('curPage', 0);
+                        localStorage.removeItem('curPagebook' + this.curId);
                         this.articleData = []; // 初始化当前页面内容
                         this.initStatus = 0; // 改变初始化状态;
                         this.$router.push({ path: '/bookDetail', query: { id: this.next_ } });
@@ -393,6 +402,7 @@
             openMenu() {
                 if (this.isMenu) {
                     this.isMenu = false;
+                    this.isSetting = false;
                     this.menuTitle = '菜单';
                 } else {
                     this.isMenu = true;
@@ -517,7 +527,7 @@
                     if ((startX - endX) < -50 || (startY - endY) < -200) {
                         this.prev();
                     }
-                }, 300);
+                }, 50);
             },
             /** 2020-3-29 0029
              *作者:王青高
@@ -539,11 +549,10 @@
                     let centerWidth = clientWidth / 2; // 获取中间宽度
                     if (centerWidth < startX) {
                         this.next();
-                        localStorage.setItem('curPage', 0);
                     } else {
                         this.prev();
                     }
-                }, 300);
+                }, 50);
             },
             /** 2020-3-29 0029
              *作者:王青高
@@ -585,9 +594,14 @@
                     this.articleLen = pageStrNum;
                     let page = Math.ceil(len / pageStrNum); // 分成多少页
                     this.overflowhiddenTow(writeStr, page, pageStrNum);
-                    let curPage = localStorage.getItem('curPage');
-                    if (curPage) this.Index_ = curPage;
-                    this.article = this.articleData[this.Index_];
+                    if (localStorage.getItem('pagePrev')) {
+                        let len = (this.articleData.length - 1);
+                        this.article = this.articleData[len];
+                        this.Index_ = len;
+                        localStorage.setItem('curPagebook' + this.curId, len);
+                    } else {
+                        this.article = this.articleData[this.Index_];
+                    }
                     this.initAudio();
                 } else {
                     return;

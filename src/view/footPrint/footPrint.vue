@@ -183,7 +183,7 @@
                 .img {
                     position: absolute;
                     left: 0;
-                    top: 30px;
+                    top: 20px;
                     width: 80px;
                     height: 80px;
                 }
