@@ -546,7 +546,6 @@
                 this.touchConfig.startPageY = event.targetTouches[0].pageY;
                 if (this.touchConfig.timer) clearTimeout(this.touchConfig.timer);
                 this.touchConfig.timer = setTimeout(() => {
-                    console.log('aaa')
                     let startX = this.touchConfig.startPageX;
                     let centerWidth = clientWidth / 2; // 获取中间宽度
                     if (centerWidth < startX) {
@@ -587,6 +586,7 @@
              */
             initPage(writeStr) {
                 if (!writeStr) return;
+                writeStr = writeStr.replace(/<[^>]+>/g, ''); // 去除html标签
                 let clientHeight = this.$refs.book.clientHeight; // 固定高度
                 let len = writeStr.length; // 总长度
                 let cH = this.$refs.article.clientHeight; // 总高度

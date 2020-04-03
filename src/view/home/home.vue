@@ -3,11 +3,15 @@
         <van-sticky>
             <div class="home_sticky">
                 <van-nav-bar
-                        :title="title"
                         right-text="..."
                         @click-right="onClickRight"
                         class="mb20"
-                />
+                >
+                    <template #title>
+<!--                        <img src="/attachment/userimg/20200331/20200331131129_674.jpeg" alt="" class="titleImg">-->
+                         <img :src="titleImg" alt="" class="titleImg">
+                    </template>
+                </van-nav-bar>
                 <headSearch
                         class="home_search"
                         @searchVal="searchVal"
@@ -138,7 +142,7 @@
                 },
                 searchValue: '', // 搜索关键字
                 totalcount: '0', // 数据长度
-                title: '', // 页面标题
+                titleImg: '', // 页面标题
             };
         },
         components: {
@@ -181,7 +185,7 @@
                         this.bannerData = result.banners;
                         this.videoData = result.vediolist;
                         this.booklist = result.booklist;
-                        this.title = result.title;
+                        this.titleImg = result.logo;
                     }
                 });
             },
@@ -294,7 +298,6 @@
     /* 设置导航栏背景图 */
     .van-nav-bar__title {
         color: $color;
-        /*background:url('')*/
     }
     .van-nav-bar__text {
         color: $coloe_3;
@@ -303,6 +306,10 @@
     }
     .home {
         position: relative;
+        .titleImg {
+            width: 100%;
+            height: 92px;
+        }
         &_dropDown {
             position: absolute;
             right: 20px;
