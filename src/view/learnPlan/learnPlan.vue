@@ -1,5 +1,5 @@
 <template>
-    <div class="learnPlan ptb108">
+    <div class="learnPlan pt100">
         <van-nav-bar
             class="learnPlan_title"
             title="学习方案"
@@ -7,31 +7,31 @@
             @click-left="onGoBack"
             fixed
         />
-        <van-sticky :offset-top="54">
-            <div class="learnPlan_tag plr30 ptb20">
-                <ul class="learnPlan_tag_box">
-                    <li class="mb40">
-                        <div class="li mb20">
-                            <van-field v-model="ques" label="问：" placeholder="请输入问题" label-width="25px" />
-                            <van-field
-                                    v-model="ans"
-                                    rows="2"
-                                    autosize
-                                    label-width="25px"
-                                    label="答:"
-                                    type="textarea"
-                                    maxlength="200"
-                                    placeholder="请输入回答内容"
-                                    show-word-limit
-                            />
-                        </div>
-                        <div class="btn">
-                            <van-button type="default" size="small" plain hairline @click="addLearnPlan">添加</van-button>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </van-sticky>
+<!--        <van-sticky :offset-top="54">-->
+<!--            <div class="learnPlan_tag plr30 ptb20">-->
+<!--                <ul class="learnPlan_tag_box">-->
+<!--                    <li class="mb40">-->
+<!--                        <div class="li mb20">-->
+<!--                            <van-field v-model="ques" label="问：" placeholder="请输入问题" label-width="25px" />-->
+<!--                            <van-field-->
+<!--                                    v-model="ans"-->
+<!--                                    rows="2"-->
+<!--                                    autosize-->
+<!--                                    label-width="25px"-->
+<!--                                    label="答:"-->
+<!--                                    type="textarea"-->
+<!--                                    maxlength="200"-->
+<!--                                    placeholder="请输入回答内容"-->
+<!--                                    show-word-limit-->
+<!--                            />-->
+<!--                        </div>-->
+<!--                        <div class="btn">-->
+<!--                            <van-button type="default" size="small" plain hairline @click="addLearnPlan">添加</van-button>-->
+<!--                        </div>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--        </van-sticky>-->
         <div class="learnPlan_tag plr30 ptb20">
             <ul class="learnPlan_tag_box h900" v-if="messageList.length">
                 <li class="mb40" v-for="(item, index) of messageList" :key="'item' + index">

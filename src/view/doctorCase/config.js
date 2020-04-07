@@ -3,7 +3,7 @@ const navData = [
     //     txt: '常见病'
     // },
     {
-        txt: '分类'
+        txt: '医案'
     },
     // {
     //     txt: '名家'

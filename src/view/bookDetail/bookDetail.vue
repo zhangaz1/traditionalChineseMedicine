@@ -9,16 +9,18 @@
                 <van-icon :name="voiceData" class="voiceIcon mr20" />语音播报
                 <audio src="" ref="audios" @ended="audioGoOn"></audio>
             </div>
-            <div class="bookBox" ref="book" :class="{isHeight: !adv}">
-                <div class="bookDetail_book_article"
-                     @touchmove.stop="turnPage($event)"
-                     @touchstart.stop="startTurnPage($event)"
+            <ul class="bookBox" ref="book" :class="{isHeight: !adv}" @scroll.stop="getPull($event)">
+                <li class="bookDetail_book_pullArticle ptb20" @click.stop="getFirst">点击获取上一章<van-icon name="arrow-up" class="ml20" /></li>
+                <li class="bookDetail_book_article"
                      ref="article"
                      :class="{isNight: isNight}"
                      :style="[{ color: bookDetailColorConfig[current] }, { fontSize: fontConfig.size + 'px'}]" v-html="article">
-                </div>
-            </div>
-<!--            <div class="bookDetail_book_percent ptb10">0.0%</div>-->
+                </li>
+                <li class="bookDetail_book_pullArticle">上拉获取下一章<van-icon name="arrow-down" class="ml20" /></li>
+                <!--  @touchmove.stop="turnPage($event)"
+                      @touchstart.stop="startTurnPage($event)" -->
+            </ul>
+            <!-- <div class="bookDetail_book_percent ptb10">0.0%</div> -->
             <div class="bookDetail_book_adv" v-if="adv">
                 <video-player
                         class="video-player vjs-custom-skin"
@@ -27,21 +29,22 @@
                         :options="playerOptions"
                 />
             </div>
-            <div class="bookDetail_book_jump mtb20">
-                <div class="prev plr30 ptb10" @click="prev()">上一页</div>
-                <div class="next plr30 ptb10" @click="next()">下一页</div>
-            </div>
+<!--            <div class="bookDetail_book_jump mtb20">-->
+<!--                <div class="prev plr30 ptb10" @click="prev()">上一页</div>-->
+<!--                <div class="next plr30 ptb10" @click="next()">下一页</div>-->
+<!--            </div>-->
         </div>
         <div class="bookDetail_menu">
             <div class="menu ptb10 plr10" @click="openMenu($event)">{{menuTitle}}</div>
         </div>
         <div class="bookDetail_back" :class="{back: isMenu, _isNight: isNight}">
             <van-icon name="arrow-left" class="left" @click.stop="arrowLeft($event)"/>
-<!--            <div class="title">{{title}}</div> 书名标题-->
+            <van-icon :name="bookmark" class="right" @click.stop="addTag($event)"/>
         </div>
         <div class="bookDetail_footer ptb10" :class="{footer: isMenu, _isNight: isNight}">
+            <div class="bookDetail_footer_nav" @click.stop="arrowLeft($event)"><img :src="require('../../assets/img/back.png')" class="icon mb20 iconImg" alt=""><span class="txt">返回</span></div>
             <div class="bookDetail_footer_nav" @click.stop="directory(0, $event)"><van-icon name="bars" class="icon mb20"/><span class="txt">目录</span></div>
-<!--            <div class="bookDetail_footer_nav" @click="directory(1, $event)"><van-icon name="bookmark-o" class="icon mb20"/><span class="txt">书签</span></div>-->
+            <!--            <div class="bookDetail_footer_nav" @click="directory(1, $event)"><van-icon name="bookmark-o" class="icon mb20"/><span class="txt">书签</span></div>-->
             <div class="bookDetail_footer_nav" @click.stop="isSetting = !isSetting"><van-icon name="setting-o" class="icon mb20"/><span class="txt">设置</span></div>
         </div>
         <div class="bookDetail_settingBox" :class="{setting: isSetting, _isNight: isNight}">
@@ -50,11 +53,6 @@
                     <van-switch v-model="isNight" size="18" active-color="#07c160" inactive-color="#eee"/>
                 </template>
             </van-cell>
-<!--            <div class="bookDetail_settingBox_size mtb20">-->
-<!--                <button type="button" class="minus" @click.stop="minus($event)" :disabled="fontConfig.isFontMinus" :class="{isDisable: fontConfig.isFontMinus}">A-</button>-->
-<!--                <div class="nowSize">{{fontConfig.size}}</div>-->
-<!--                <button type="button" class="add" @click.stop="_add($event)" :disabled="fontConfig.isFontAdd" :class="{isDisable: fontConfig.isFontAdd}">A+</button>-->
-<!--            </div>-->
             <ul class="bookDetail_settingBox_bgColor ptb20">
                 <li class="bgColor"
                     v-for="(bg, index) of bookDetailConfig"
@@ -82,18 +80,6 @@
             <div class="bookDetail_directory_list">
                 <ul class="_one" v-if="curDirectory === 0">
                     <li class="_one_li" @click.stop="openBook(dir)" v-for="(dir, index) of directoryData.bookitem" :key="'idr' + index" >{{dir.title}}</li>
-<!--                    <li class="_one_li">重广补注黄帝内经素问·序</li>-->
-<!--                    <li class="_one_li">重广补注黄帝内经素问·序</li>-->
-<!--                    <li class="_one_li">目录</li>-->
-<!--                    <li class="_one_li">-->
-<!--                        卷第一-->
-<!--                        <ul class="_two">-->
-<!--                            <li class="_two_li plr30">上古天真论篇第一</li>-->
-<!--                            <li class="_two_li plr30">上古天真论篇第一</li>-->
-<!--                            <li class="_two_li plr30">上古天真论篇第一</li>-->
-<!--                            <li class="_two_li plr30">上古天真论篇第一</li>-->
-<!--                        </ul>-->
-<!--                    </li>-->
                 </ul>
                 <ul class="bookmark" v-else>
                     <li class="li plr30 ptb20" @click.stop="getBookMark(mark, $event)" v-for="(mark, index) of bookmarkData" :key="'mark' + index">
@@ -120,7 +106,7 @@
 <script>
     import { EventBus } from "@/utils/event-bus";
     import { bookDetailConfig, bookDetailColorConfig, navItem } from './config';
-    import { getItemContent, getBookItem } from '@/api/content';
+    import { getItemContent, getBookItem, addtobookshelf } from '@/api/content';
     import { Toast } from 'vant';
     export default {
         name: 'bookDetail',
@@ -177,18 +163,7 @@
                     endPageY: 0 // 结束触摸位置
                 },
                 navItem,
-                bookmarkData: [
-                    {
-                        id: 1,
-                        title: '重广补注黄帝内经素问·序',
-                        txt: '教》以先针，诸如此流，不可胜数。且将升岱岳，非径奚为，欲诣扶...23213大撒大撒阿斯顿发射点啥撒旦撒旦撒就大声的'
-                    },
-                    {
-                        id: 2,
-                        title: '重广补注黄帝内经素问·序',
-                        txt: '教》以先针，诸如此流，不可胜数。且将升岱岳，非径奚为，欲诣扶...23213大撒大撒阿斯顿发射点啥撒旦撒旦撒就大声的'
-                    }
-                ],
+                bookmarkData: [],
                 voiceData: 'volume-o',
                 isTurnBook: false, //  启动翻书特效
                 adv: false, // 是否有广告
@@ -207,6 +182,8 @@
                 closeHelp: true, // 是否弹出帮助框
                 curId: '', // 当前小说id
                 lastPage: '', // 存储当前页数
+                bookmark: 'bookmark-o',
+                timer: null, // 计时器
             };
         },
         watch: {
@@ -215,19 +192,19 @@
         },
         updated() {
             /** 2020/3/31
-            * 作者：王青高
-            * 功能：{text} article: 由于初始化渲染为空所以执行两次进行补充渲染
-            * 参数：{}
-            */
-            if (this.initStatus < 2) {
-                this.$nextTick(function () {
-                    this.initPage(this.article);
-                });
-                this.initStatus++;
-            } else {
-                localStorage.removeItem('pagePrev');
-                return;
-            }
+             * 作者：王青高
+             * 功能：{text} article: 由于初始化渲染为空所以执行两次进行补充渲染
+             * 参数：{}
+             */
+            // if (this.initStatus < 2) {
+            //     this.$nextTick(function () {
+            //         this.initPage(this.article);
+            //     });
+            //     this.initStatus++;
+            // } else {
+            //     localStorage.removeItem('pagePrev');
+            //     return;
+            // }
         },
         mounted() {
             this.init();
@@ -235,28 +212,28 @@
         },
         methods: {
             /** 2020/3/31
-            * 作者：王青高
-            * 功能：{} 弹出帮助指南
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{} 弹出帮助指南
+             * 参数：{}
+             */
             alertHelp() {
                 this.closeHelp = false;
                 localStorage.setItem('Help', this.closeHelp);
             },
             /** 2020/3/31
-            * 作者：王青高
-            * 功能：{} 打开指定目录
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{} 打开指定目录
+             * 参数：{}
+             */
             openBook(book) {
                 this.isDirectory = false;
                 this.$router.push({ path: '/bookDetail', query: { id: book.id } });
             },
             /** 2020/3/30
-            * 作者：王青高
-            * 功能：{} 初始化数据
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{} 初始化数据
+             * 参数：{}
+             */
             init() {
                 if (this.$route.query.id) {
                     this.curId = this.$route.query.id;
@@ -324,13 +301,18 @@
                     if (res.state === '1') {
                         this.bookitem = result.bookitem;
                         this.article = this.bookitem.content;
+                        this.article = this.article.replace(/<[^>]+>/g, ''); // 去除html标签
                         this.next_ = result.nextid;
                         this.prev_ = result.preid;
-                        if (localStorage.getItem('curPagebook' + id)) {
-                            this.Index_ = localStorage.getItem('curPagebook' + id);
-                        } else {
-                            localStorage.setItem('curPagebook' + id, this.Index_);
-                        }
+                        this.$refs.book.scrollTop = 0;
+                        this.initAudio();
+                        if (this.voiceData === 'volume') this.voiceData = 'volume-o';
+                        // document.documentElement.scrollTop = 0;
+                        // if (localStorage.getItem('curPagebook' + id)) {
+                        //     this.Index_ = localStorage.getItem('curPagebook' + id);
+                        // } else {
+                        //     localStorage.setItem('curPagebook' + id, this.Index_);
+                        // }
                     }
                 });
             },
@@ -429,7 +411,18 @@
              * 参数：{}
              */
             addTag(event) {
-                event.preventDefault();
+                let bookitemid = this.curId;
+                if (this.bookmark === 'bookmark-o') {
+                    addtobookshelf({ bookitemid }).then(res => {
+                        if (res.state === '1') {
+                            Toast(res.msg);
+                            this.bookmark = 'bookmark';
+                        }
+                    });
+                } else {
+                    Toast('已经添加到书架了！');
+                    return;
+                }
             },
             /** 2020/3/20
              * 作者：王青高
@@ -455,10 +448,10 @@
                 this.getBookItem(this.bookitem.bookid);
             },
             /** 2020/3/30
-            * 作者：王青高
-            * 功能：{} 获取目录
-            * 参数：{String} 书籍id
-            */
+             * 作者：王青高
+             * 功能：{} 获取目录
+             * 参数：{String} 书籍id
+             */
             getBookItem(id) {
                 getBookItem({ id }).then(res => {
                     if (res.state === '1') {
@@ -620,6 +613,41 @@
                     let str = writeStr.substr(j, pageStrNum);
                     this.articleData.push(str);
                 }
+            },
+            /** 2020/4/7
+            * 作者：王青高
+            * 功能：{} 获取下一章内容
+            * 参数：{}
+            */
+            getPull(event) {
+                let scrollTop = event.target.scrollTop;
+                let clientHeight = event.target.clientHeight;
+                let scrollHeight = event.target.scrollHeight;
+                if (scrollTop + clientHeight >= (scrollHeight)) {
+                    console.log('触发了我');
+                    if (this.timer) clearTimeout(this.timer);
+                    this.timer = setTimeout(() => {
+                        let id = this.next_;
+                        if (!this.next_) {
+                            Toast('已经是最后一页了');
+                            return;
+                        };
+                        this.getItemContent(id);
+                    }, 200);
+                }
+            },
+            /** 2020/4/7
+             * 作者：王青高
+             * 功能：{} 获取上一章内容
+             * 参数：{}
+             */
+            getFirst(event) {
+                let id = this.prev_;
+                if (!this.prev_) {
+                    Toast('已经是第一页了');
+                    return;
+                };
+                this.getItemContent(id);
             }
         }
     };
@@ -663,8 +691,8 @@
             width: 100%;
             height: 100%;
             .bookBox {
-                height: 60%; // 有视频的高度
-                overflow: hidden;
+                height: 88vh; // 有视频的高度
+                overflow-y: scroll;
             }
             &_title {
                 height: 40px;
@@ -699,6 +727,11 @@
                 color: $color_999;
                 font-size: 28px;
             }
+            &_pullArticle {
+                width: 100%;
+                text-align: center;
+                color: $color_999;
+            }
         }
         &_menu {
             position: fixed;
@@ -729,6 +762,12 @@
                 top: calc(50% - 30px);
                 font-size: 60px;
                 color: $color_666;
+            }
+            .right {
+                position: absolute;
+                right: 30px;
+                top: calc(50% - 30px);
+                font-size: 60px;
             }
             .title {
                 @include flex-center();
@@ -767,6 +806,10 @@
                 .icon {
                     font-size: 48px;
                     color: $color_666;
+                }
+                .iconImg {
+                    width: 48px;
+                    height: 48px;
                 }
                 .txt {
                     color: $color_666;
@@ -1003,8 +1046,8 @@
             background: $color;
         }
     }
-    .isHeight {
-        max-height: 85%!important;
-        min-height: 82%!important;
-    }
+    /*.isHeight {*/
+    /*    max-height: 100%!important;*/
+    /*    min-height: 82%!important;*/
+    /*}*/
 </style>

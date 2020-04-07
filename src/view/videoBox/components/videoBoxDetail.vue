@@ -9,6 +9,7 @@
                 class="videoBoxDetail_title"
         />
         <div class="videoBoxDetail_top plr30 ptb30" v-if="vedio">
+            <div class="videoBoxDetail_top_bg" :style="[{ backgroundImage: 'url(' + vedio.cover + ')' }]"></div>
             <div class="videoBoxDetail_top_img mr30">
                 <img :src="vedio.cover" alt="" class="img">
             </div>
@@ -111,7 +112,7 @@
             * 参数：{}
             */
             onGoBack() {
-                this.$router.go(-1);
+                this.$router.push('/videoBox');
             },
             /** 2020/3/20
             * 作者：王青高
@@ -151,13 +152,25 @@
         }
         &_top {
             display: flex;
-            background: url('http://www.51pptmoban.com/d/file/2014/01/24/a21ac1a1034f071c458b05ff431e5d6d.jpg') no-repeat;
-            background-size: 200% 200%;
+            position: relative;
+            &_bg {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-size: cover;
+                background-position: center;
+                filter: blur(15px);
+                z-index: 1;
+            }
             &_img {
+                position: relative;
                 width: 350px;
                 height: 320px;
                 box-shadow: 10px 2px 20px 5px rgba(3, 3, 3, .4);
                 border-radius: 10px;
+                z-index: 9;
                 .img {
                     width: 100%;
                     height: 100%;
@@ -165,10 +178,12 @@
                 }
             }
             &_desc {
+                position: relative;
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
                 width: 100%;
+                z-index: 9;
                 .title {
                     color: $color-default;
                     font-size: 48px;

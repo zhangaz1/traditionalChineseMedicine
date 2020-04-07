@@ -7,7 +7,9 @@
       </div>
     </div>
     <commonFooter v-if="isDisplay"/>
-    <router-view></router-view>
+<!--    <keep-alive>-->
+      <router-view></router-view>
+<!--    </keep-alive>-->
   </div>
 </template>
 

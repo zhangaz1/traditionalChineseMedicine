@@ -8,7 +8,6 @@
                         class="mb20"
                 >
                     <template #title>
-<!--                        <img src="/attachment/userimg/20200331/20200331131129_674.jpeg" alt="" class="titleImg">-->
                          <img :src="titleImg" alt="" class="titleImg">
                     </template>
                 </van-nav-bar>
@@ -21,33 +20,6 @@
                         :isCancel="isCancel"
                 >
                     <div slot="searchContent" class="searchContent" v-if="isCancel">
-                        <!--                        <div v-if="!searchResultData.length" class="hot plr30">-->
-                        <!--                            <div class="title ptb20">热搜</div>-->
-                        <!--                            <ul class="content ptb20">-->
-                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-                        <!--                            </ul>-->
-                        <!--                        </div>-->
-                        <!--                        <div v-if="!searchResultData.length" class="history plr30">-->
-                        <!--                            <div class="title ptb20">-->
-                        <!--                                搜索历史-->
-                        <!--                                <van-icon name="delete" class="title_icon" @click="_delete"/>-->
-                        <!--                            </div>-->
-                        <!--                            <ul class="content ptb20">-->
-                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-                        <!--                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-                        <!--                            </ul>-->
-                        <!--                        </div>-->
                         <div class="searchResult" @scroll.stop="addScroll($event)">
                             <ul class="ul" v-if="searchResultData.length">
                                 <li class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" @click="openDetail(search)">{{search.title}}</li>
@@ -74,40 +46,46 @@
             </ul>
         </subMenu>
         <subMenu class="plr30 bg_f ptb10" title="书籍推荐榜" toRouter="/book">
-            <swiper class="swiper_common" :options="swiperBook" slot="content">
-                <swiper-slide  class="swiper_common_item" v-for="(book, index) of booklist" :key="'book' + index">
-                    <router-link tag="div" :to="{path: '/bookContentFeed', query: { id: book.id }}" :style="{backgroundImage: 'url(' + book.cover + ')', backgroundSize: '100% 100%' }" class="content_img">
+<!--            <swiper class="swiper_common" :options="swiperBook" slot="content">-->
+<!--                <swiper-slide  class="swiper_common_item" v-for="(book, index) of booklist" :key="'book' + index">-->
+<!--                    <router-link tag="div" :to="{path: '/bookContentFeed', query: { id: book.id }}" :style="{backgroundImage: 'url(' + book.cover + ')', backgroundSize: '100% 100%' }" class="content_img">-->
+<!--                        <div class="content_img_free" v-if="book.isfree === '1'"></div>-->
+<!--                    </router-link>-->
+<!--                    <p class="content_img_title pl10">{{book.title}}</p>-->
+<!--                </swiper-slide>-->
+<!--            </swiper>-->
+            <ul class="swiper_common" slot="content">
+                <li class="swiper_common_item mr10 mb20" v-for="(book, index) of booklist" :key="'book' + index">
+                    <router-link class="content_img mb10" :to="{path: '/bookContentFeed', query: { id: book.id }}" :style="{backgroundImage: 'url(' + book.cover + ')', backgroundSize: '100% 100%' }">
                         <div class="content_img_free" v-if="book.isfree === '1'"></div>
-<!--                        <div class="content_img_txt">-->
-<!--                            <div class="title">-->
-<!--                                <span class="name">{{book.title}}</span>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <ul class="content_img_line">-->
-<!--                            <li class="li"></li>-->
-<!--                            <li class="li"></li>-->
-<!--                            <li class="li"></li>-->
-<!--                            <li class="li"></li>-->
-<!--                            <li class="li"></li>-->
-<!--                        </ul>-->
                     </router-link>
-                    <p class="content_img_title pl10">{{book.title}}</p>
-                </swiper-slide>
-            </swiper>
+                    <p class="content_img_title">{{book.title}}</p>
+                </li>
+            </ul>
         </subMenu>
         <subMenu class="plr30 bg_f ptb10" title="视频推荐榜" toRouter="/videoBox">
-            <swiper class="swiper_common" :options="swiperVideo" slot="content">
-                <swiper-slide v-for="(video, index) in videoData" :key="index  + 'videoData'"  class="swiper_common_item">
+<!--            <swiper class="swiper_common" :options="swiperVideo" slot="content">-->
+<!--                <swiper-slide v-for="(video, index) in videoData" :key="index  + 'videoData'"  class="swiper_common_item">-->
+<!--                    <router-link :to="{path: '/videoBox/components/videoBoxDetail', query: {id: video.id}}" class="swiper_common_item_link">-->
+<!--                        <div class="item_img">-->
+<!--                             <img :src="video.cover" class="_img mb20"/>-->
+<!--                            <span class="_txt">{{video.title}}</span>-->
+<!--                        </div>-->
+<!--                        <p class="txt_title ptb20">{{video.title}}</p>-->
+<!--                    </router-link>-->
+<!--                </swiper-slide>-->
+<!--            </swiper>-->
+            <ul class="swiper_common" slot="content">
+                <li class="swiper_common_item mr10 w30 mb20 _mr0" v-for="(video, index) of videoData" :key="'videoData' + index">
                     <router-link :to="{path: '/videoBox/components/videoBoxDetail', query: {id: video.id}}" class="swiper_common_item_link">
                         <div class="item_img">
-<!--                            <img src="http://www.rkswzx.cn/routing/userimg/20180426/20180426164140_427.jpg" class="_img mb20"/>-->
                              <img :src="video.cover" class="_img mb20"/>
                             <span class="_txt">{{video.title}}</span>
                         </div>
                         <p class="txt_title ptb20">{{video.title}}</p>
                     </router-link>
-                </swiper-slide>
-            </swiper>
+                </li>
+            </ul>
         </subMenu>
         <copyright/>
     </div>
@@ -181,10 +159,11 @@
                 getHomeInfo().then(res => {
                     if (res.state === '1') {
                         let result = res.data;
-                        this.doctorData = result.yalist;
+                        this.doctorData = result.yalist.slice(0, 8);
                         this.bannerData = result.banners;
-                        this.videoData = result.vediolist;
-                        this.booklist = result.booklist;
+                        this.videoData = result.vediolist.slice(0, 6);
+                        this.booklist = result.booklist.slice(0, 8);
+
                         this.titleImg = result.logo;
                     }
                 });
@@ -446,13 +425,24 @@
             }
         }
         .swiper_common {
-            height: 280px;
+            /*height: 280px;*/
+            position: relative;
+            display: flex;
+            flex-wrap: wrap;
             &_item {
+                width: 23%;
+                display: flex;
+                flex-direction: column;
+                box-sizing: border-box;
+                &._mr0:nth-child(3n),
+                &:nth-child(4n) {
+                    margin-right: 0;
+                }
+                &.w30 {
+                    width: 32%;
+                }
                 .content_img {
-                    position: absolute;
-                    left: 10px;
-                    top: 20px;
-                    width: 150px;
+                    width: 100%;
                     height: 200px;
                     &_free {
                         display: block;
@@ -522,12 +512,10 @@
                 }
                 .content_img_title {
                     @include multiline-ellipsis(2);
-                    position: absolute;
-                    bottom: 0;
-                    left: 0;
                     font-size: 24px;
                     color: $color_666;
                     width: 100%;
+                    text-align: center;
                 }
                 &_link {
                     display: flex;
@@ -556,17 +544,18 @@
                     /* 视频推荐 start */
                     .item_img {
                         position: relative;
-                        flex-grow: 1;
-                        width: 220px;
+                        width: 100%;
                         height: 240px;
                         ._img {
                             width: 100%;
                             height: 100%;
                         }
                         ._txt {
+                            @include ellipsis();
                             position: absolute;
                             right: 0;
                             bottom: 0;
+                            width: 100%;
                             background: rgba(3, 3, 3, .1);
                         }
                     }

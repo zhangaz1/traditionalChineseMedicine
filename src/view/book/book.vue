@@ -4,6 +4,7 @@
                 :navData="navData"
                 @getCurrent="getCurrent"
                 route="/home"
+                :_active="true"
         >
             <div
                     slot="publicTitleRight"
@@ -22,33 +23,6 @@
                 :isCancel="isCancel"
         >
             <div slot="searchContent" class="searchContent" v-if="isCancel">
-<!--                <div v-if="!searchResultData.length" class="hot plr30">-->
-<!--                    <div class="title ptb20">热搜</div>-->
-<!--                    <ul class="content ptb20">-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                    </ul>-->
-<!--                </div>-->
-<!--                <div v-if="!searchResultData.length" class="history plr30">-->
-<!--                    <div class="title ptb20">-->
-<!--                        搜索历史-->
-<!--                        <van-icon name="delete" class="title_icon" @click="_delete"/>-->
-<!--                    </div>-->
-<!--                    <ul class="content ptb20">-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                    </ul>-->
-<!--                </div>-->
                 <div class="searchResult" @scroll.stop="addScroll($event)">
                     <ul class="ul" v-if="searchResultData.length">
                         <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/bookContentFeed', query: { id: search.id, title: search.title}}">{{search.title}}</router-link>
@@ -59,19 +33,35 @@
             </div>
         </headSearch>
         <div class="mask" v-if="isCancel"></div>
-        <!--  热门  start -->
-        <div class="book_box plr30 mt20" v-if="hotData">
-            <div class="book_box_menu">
-                <div class="title ptb10">热门</div>
-                <pupblicPanel :listData="hotData" @switchTab="switchTap" :isActive="false"/>
+        <div v-if="current === 0">
+            <!--  热门  start -->
+            <div class="book_box plr30 mt20" v-if="hotData">
+                <div class="book_box_menu">
+                    <div class="title ptb10">热门</div>
+                    <pupblicPanel :listData="hotData" @switchTab="switchTap" :isActive="false"/>
+                </div>
+            </div>
+            <!--  热门  end -->
+            <div class="book_box plr30 mt20" v-if="menuData.typelist">
+                <div class="book_box_menu" v-for="(item, index) of menuData.typelist" :key="'item' + index" >
+                    <div class="title ptb10">{{item.title}}</div>
+                    <pupblicPanel :listData="item.list" @switchTab="switchTap" :isActive="false"/>
+                </div>
             </div>
         </div>
-        <!--  热门  end -->
-        <div class="book_box plr30 mt20" v-if="menuData.typelist">
-            <div class="book_box_menu" v-for="(item, index) of menuData.typelist" :key="'item' + index" >
-                <div class="title ptb10">{{item.title}}</div>
-                <pupblicPanel :listData="item.list" @switchTab="switchTap" :isActive="false"/>
+        <div v-if="current === 1">
+            <div class="book_case mb20 plr30">
+                <span class="title">我的书架</span>
+                <!--                <span class="">管理书架</span>-->
             </div>
+            <ul class="swiper_common plr30" v-if="bookCase.length">
+                <li class="swiper_common_item mr20 mb20" v-for="(book, index) of bookCase" :key="'book' + index">
+                    <div class="content_img mb10" @click="toDetail(book)" :style="{backgroundImage: 'url(' + book.cover + ')', backgroundSize: '100% 100%' }">
+                        <div class="content_img_free" v-if="book.isfree === '1'"></div>
+                    </div>
+                    <p class="content_img_title">{{book.title}}</p>
+                </li>
+            </ul>
         </div>
     </div>
 </template>
@@ -81,7 +71,7 @@
     import headSearch from '@/components/headSearch/';
     import pupblicPanel from '@/components/publicPanel';
     import { EventBus } from "@/utils/event-bus";
-    import { getAllBook, getHotBook, getSearch } from '@/api/content';
+    import { getAllBook, getHotBook, getSearch, getShelflist } from '@/api/content';
     import { navData } from './config';
     export default {
         name: 'book',
@@ -95,13 +85,14 @@
                 isCancel: false,
                 isSearch: false, // 是否显示搜索
                 isNum: 0,
+                bookCase: [], // 书架
                 searchOption: {
                     pageSize: 20,
                     page: 1,
                     searchtype: 1
                 },
                 searchValue: '', // 搜索关键字
-                totalcount: '0', // 数据长度
+                totalcount: '0' // 数据长度
             };
         },
         mounted() {
@@ -128,6 +119,18 @@
             EventBus.$emit("isDisplay", { data: true });
         },
         methods: {
+            /** 2020/4/7
+            * 作者：王青高
+            * 功能：{} 跳转相应的小说
+            * 参数：{}
+            */
+            toDetail(book) {
+                if (book.bookitemid) {
+                    this.$router.push({ path: '/bookDetail', query: { id: book.bookitemid } });
+                } else {
+                    this.$router.push({ path: '/bookContentFeed', query: { id: book.bookid } });
+                }
+            },
             /** 2020/3/30
              * 作者：王青高
              * 功能：{} 监听滚动条是否触底
@@ -149,6 +152,14 @@
              */
             getCurrent(index) {
                 this.current = index;
+                if (index === 1) {
+                    getShelflist().then(res => {
+                        if (res.state === '1') {
+                            let result = res.data;
+                            this.bookCase = result.shelflist;
+                        }
+                    });
+                }
             },
             /** 2020/3/19
              * 作者：王青高
@@ -342,6 +353,102 @@
                     }
                 }
             }
+        }
+        .swiper_common {
+            position: relative;
+            display: flex;
+            flex-wrap: wrap;
+            &_item {
+                width: 22.8%;
+                display: flex;
+                flex-direction: column;
+                box-sizing: border-box;
+                &:nth-child(4n) {
+                    margin-right: 0;
+                }
+                .content_img {
+                    width: 100%;
+                    height: 200px;
+                    &_free {
+                        display: block;
+                        width: 28px;
+                        height: 28px;
+                        background: url(../../assets/img/free_icon.png) center center no-repeat;
+                        background-size: 28px 28px;
+                        background: none\9;
+                        position: absolute;
+                        right: 8px;
+                        top: -8px;
+                        z-index: 1;
+                        border: 1px solid transparent;
+                        box-sizing: border-box;
+                    }
+                    &_txt {
+                        position: absolute;
+                        left: 10px;
+                        top: 20px;
+                        max-width: 190px;
+                        min-height: 110px;
+                        max-height: 166px;
+                        padding: 4px;
+                        background-color: #fffbf5;
+                        writing-mode: vertical-rl;
+                        direction: rtl;
+                        .title {
+                            width: 100%;
+                            cursor: pointer;
+                            padding: 6px 0;
+                            font-size: 28px;
+                            text-align: center;
+                            color: $coloe_3;
+                            writing-mode: vertical-rl;
+                            writing-mode: tb-rl;
+                            direction: rtl;
+                            border: 1px solid $color_999;
+                            .name {
+                                color: $coloe_3;
+                            }
+                        }
+                    }
+                    &_line {
+                        width: 24px;
+                        height: 100%;
+                        list-style-type: none;
+                        box-sizing: border-box;
+                        border-left: 1px solid #fffbf5;
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        .li {
+                            border-bottom: 1px solid #eee;
+                            width: 100%;
+                            height: 25%;
+                            box-sizing: border-box;
+                            &:first-child,
+                            &:last-child {
+                                height: 12.5%;
+                            }
+                            &:last-child {
+                                border-bottom: 0;
+                            }
+
+                        }
+                    }
+                }
+                .content_img_title {
+                    @include multiline-ellipsis(2);
+                    font-size: 24px;
+                    color: $color_666;
+                    width: 100%;
+                    text-align: center;
+                }
+            }
+        }
+        &_case {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
         }
     }
     .title {

@@ -8,8 +8,8 @@
         <div class="me_login mb20 ptb10" @click="openUser" v-else>
             <div class="me_login_name">{{userInfo.nickname}}</div>
             <div class="me_login_money">
-                <img :src="moneyImg" alt="" class="img">
-                <span class="money ml20">金币：500</span>
+                <!--<img :src="moneyImg" alt="" class="img">-->
+                <span class="money">欢迎您回来</span>
             </div>
             <img  v-if="userInfo.headimg" :src="baseUrl + userInfo.headimg" alt="" class="me_login_img">
             <img  v-else :src="headImg" alt="" class="me_login_img">
@@ -117,7 +117,7 @@
                         bdText: '',
                         bdDesc: '',
                         bdUrl: window.location.hostname,
-                        bdPic: 'https://www.zk120.com/zixun/wp-content/uploads/2018/07/p.zk120.net_.cn_2018-07-05_17-59-10.png',
+                        bdPic: 'https://www.zk120.com/zixun/wp-content/uploads/2018/07/p.zk120.net_.cn_2018-07-05_17-59-10.png'
                     },
                     share: [{
                         bdSize: 32
@@ -235,7 +235,6 @@
                 logout().then(res => {
                     if (res.state === '1') {
                         localStorage.removeItem('user');
-                        // localStorage.clear();
                         this.$router.push('/login');
                     }
                 });
@@ -381,6 +380,7 @@
                     padding-bottom: 10px;
                 }
                 .money {
+                    font-size: 36px;
                     color: $color_666;
                 }
             }

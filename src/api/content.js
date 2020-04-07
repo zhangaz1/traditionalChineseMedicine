@@ -92,6 +92,14 @@ const addToCollectionVedio = id => {
 const getBookListByChannel = options => {
     return axios.get('/shuku/getBookListByChannel?' + qs.stringify(options));
 };
+// 获取书架的书
+const getShelflist = () => {
+    return axios.get('/shuku/getShelflist');
+};
+// 添加到书架
+const addtobookshelf = bookitemid => {
+    return axios.get('/shuku/addtobookshelf?' + qs.stringify(bookitemid));
+};
 export {
     getFoot,
     clearFoot,
@@ -115,5 +123,7 @@ export {
     getBookItem,
     getItemContent,
     addToCollectionVedio,
-    getBookListByChannel
+    getBookListByChannel,
+    getShelflist,
+    addtobookshelf
 };

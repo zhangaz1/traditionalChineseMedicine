@@ -23,6 +23,8 @@
                         ref="videoPlayer"
                         :playsinline="true"
                         :options="playerOptions"
+                        @player="onPlayerPlay($event)"
+                        @ended="onPlayerEnded($event)"
                 />
             </div>
             <div class="videoBoxTxt_content_meta">
@@ -83,17 +85,35 @@
                     }
                 },
                 vedio: null, // 视频内容
+                nextid: 1, // 下一集视频id
             };
         },
-        mounted() {
-            let id = this.$route.query.id;
-            if (id) {
-                this.getVedioContent(id);
-            } else {
-                this.$router.push('/videoBox');
+        watch: {
+            // 如果路由有变化，会再次执行该方法
+            '$route': 'init'
+        },
+        computed: {
+            player() {
+                return this.$refs.videoPlayer.player;
             }
         },
+        mounted() {
+            this.init();
+        },
         methods: {
+            /** 2020/4/7
+            * 作者：王青高
+            * 功能：{} 初始化视频
+            * 参数：{}
+            */
+            init() {
+                let id = this.$route.query.id;
+                if (id) {
+                    this.getVedioContent(id);
+                } else {
+                    this.$router.push('/videoBox');
+                }
+            },
             /** 2020/3/26
             * 作者：王青高
             * 功能：{} 获取视频播放内容
@@ -104,6 +124,7 @@
                     let result = res.data;
                     if (res.state === '1') {
                         this.vedio = result.vedio;
+                        this.nextid = result.nextid;
                         this.$set(this.playerOptions.sources[0], 'src', result.vedio.url);
                     }
                 });
@@ -114,7 +135,7 @@
              * 参数：{}
              */
             onGoBack() {
-                this.$router.go(-1);
+                this.$router.push({ path: '/videoBox/components/videoBoxDetail', query: { id: this.vedio.vedioid } });
             },
             /** 2020-3-19 0019
              *作者:王青高
@@ -147,6 +168,14 @@
              */
             getNext() {
                 console.log('获取下一集');
+            },
+            /** 2020/4/7
+            * 作者：王青高
+            * 功能：{} 切换到下一集
+            * 参数：{}
+            */
+            onPlayerEnded(event) {
+                this.$router.push({ path: '/videoBox/components/videoBoxTxt', query: { id: this.nextid } });
             }
         }
     };
