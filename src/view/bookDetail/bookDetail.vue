@@ -9,9 +9,9 @@
                 <van-icon :name="voiceData" class="voiceIcon mr20" />语音播报
                 <audio src="" ref="audios" @ended="audioGoOn"></audio>
             </div>
-            <ul class="bookBox" ref="book" :class="{isHeight: !adv}" @scroll.stop="getPull($event)">
+            <ul class="bookBox" ref="book" :class="{isHeight: !adv}" @scroll.stop="getPull($event)" oncontextmenu="return false" onselectstart="return false">
                 <li class="bookDetail_book_pullArticle ptb20" @click.stop="getFirst">点击获取上一章<van-icon name="arrow-up" class="ml20" /></li>
-                <li class="bookDetail_book_article"
+                <li class="bookDetail_book_article pb50 mb60"
                      ref="article"
                      :class="{isNight: isNight}"
                      :style="[{ color: bookDetailColorConfig[current] }, { fontSize: fontConfig.size + 'px'}]" v-html="article">
@@ -624,7 +624,6 @@
                 let clientHeight = event.target.clientHeight;
                 let scrollHeight = event.target.scrollHeight;
                 if (scrollTop + clientHeight >= (scrollHeight)) {
-                    console.log('触发了我');
                     if (this.timer) clearTimeout(this.timer);
                     this.timer = setTimeout(() => {
                         let id = this.next_;
@@ -633,7 +632,7 @@
                             return;
                         };
                         this.getItemContent(id);
-                    }, 200);
+                    }, 500);
                 }
             },
             /** 2020/4/7
@@ -709,6 +708,7 @@
                 line-height: 2;
                 font-size: 30px;
                 text-indent: 50px;
+                min-height: 95%;
             }
             &_jump {
                 display: flex;

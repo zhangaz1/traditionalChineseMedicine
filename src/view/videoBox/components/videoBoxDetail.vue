@@ -9,9 +9,9 @@
                 class="videoBoxDetail_title"
         />
         <div class="videoBoxDetail_top plr30 ptb30" v-if="vedio">
-            <div class="videoBoxDetail_top_bg" :style="[{ backgroundImage: 'url(' + vedio.cover + ')' }]"></div>
+            <div class="videoBoxDetail_top_bg" :style="[{ backgroundImage: 'url(' + isImg(vedio.cover) + ')' }]"></div>
             <div class="videoBoxDetail_top_img mr30">
-                <img :src="vedio.cover" alt="" class="img">
+                <img :src="isImg(vedio.cover)" alt="" class="img">
             </div>
             <div class="videoBoxDetail_top_desc ptb20">
                 <div class="title mb20">{{vedio.title}}</div>
@@ -31,7 +31,7 @@
             </div>
             <ul class="videoBoxDetail_content_obj">
                 <router-link tag="li" v-for="(video, index) of vediolist" :key="'video' + index" :to="{path: '/videoBox/components/videoBoxTxt', query: {id: video.id}}" class="videoBoxDetail_content_obj_li ptb20 plr30 mb20">
-                    <span class="num">第{{video.id}}集</span>
+                    <span class="num">第{{(index + 1)}}集</span>
                     <span class="txt plr30">• • • {{video.title}} • • •</span>
                 </router-link>
             </ul>
@@ -51,7 +51,19 @@
                 vediolist: [], // 当前视频目录
                 title: '', // 导航栏标题
                 icon: 'like-o',
+                defaultImg: require('../../../assets/img/no_img.jpg')
             };
+        },
+        computed: {
+            isImg() {
+                return function (img) {
+                    if (img) {
+                        return img;
+                    } else {
+                        return this.defaultImg;
+                    }
+                };
+            }
         },
         mounted() {
             let id = this.$route.query.id;

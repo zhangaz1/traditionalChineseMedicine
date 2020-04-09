@@ -39,7 +39,7 @@
             <ul class="videoBox_content_item ptb10" @scroll="handleScroll($event)">
                 <router-link v-for="(video, index) of videoData"  :key="'video' + index" :to="{path: '/videoBox/components/videoBoxDetail', query: {id: video.id}}" tag="li" class="videoBox_content_item_li mr20">
                     <div class="item_img">
-                        <img :src="video.cover" class="_img mb20"/>
+                        <img :src="isImg(video.cover)" class="_img mb20"/>
                         <span class="_txt p8">{{video.title}}</span>
                     </div>
                     <p class="txt_title ptb20">{{video.title}}</p>
@@ -79,10 +79,22 @@
                     page: 1,
                     searchtype: 2
                 },
+                defaultImg: require('../../assets/img/no_img.jpg')
             };
         },
         components: {
             headSearch
+        },
+        computed: {
+            isImg() {
+                return function (img) {
+                    if (img) {
+                        return img;
+                    } else {
+                        return this.defaultImg;
+                    }
+                };
+            }
         },
         mounted() {
             this.getVideoData();

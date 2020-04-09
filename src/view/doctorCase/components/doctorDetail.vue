@@ -1,5 +1,5 @@
 <template>
-    <div class="doctorDetail ptb108 plr30" v-if="article">
+    <div class="doctorDetail ptb108 plr30" v-if="article" oncontextmenu="return false" onselectstart="return false">
         <van-nav-bar
             :fixed="true"
             :title="article.title"
@@ -37,7 +37,11 @@
         </div>
         <div class="mask" v-if="isShare">
             <div class="card plr30 ptb30">
-                <div class="card_img" @touchstart="gtouchstart($event)" @touchend="gtouchend($event)" @touchmove="gtouchmove()" id="card_img">
+                <div class="card_img"
+                     id="card_img"
+                     @touchstart="gtouchstart($event)"
+                     @touchend="gtouchend($event)"
+                     @touchmove="gtouchmove()">
                     <img :src="require('../../../assets/image/0001.jpg')" alt="" class="img">
                 </div>
                 <div class="bottom">
@@ -61,12 +65,12 @@
 
 <script>
     import QRCode from 'qrcodejs2';
+    import html2canvas from 'html2canvas';
     import { getDoctorArticleDetail, addToCollectionInfo } from '@/api/content';
     import { EventBus } from "@/utils/event-bus";
     import { Toast } from 'vant';
-    import html2canvas from 'html2canvas';
     // import vshare from 'vshare';
-    import { baseUrl } from '@/utils/';
+    import { baseUrl } from '@/utils';
     export default {
         name: 'doctorDetail',
         data() {
@@ -96,7 +100,7 @@
                 codeUrl: window.location.href,
                 firstFlag: true,
                 dataURL: '',
-                timer: 0, // 计时器
+                timer: 0 // 计时器
             };
         },
         // beforeCreate(to, from , next) {
@@ -160,7 +164,7 @@
                     this.isShare = false;
                 } else {
                     this.isShare = true;
-                    this.$nextTick(function () {
+                    this.$nextTick(() => {
                         this.qrcode();
                     });
                 }
@@ -178,8 +182,8 @@
                     text: that.codeUrl // 二维码内容
                 });
                 let qrcode2 = new QRCode('qrcode2', {
-                    width: 200,
-                    height: 200, // 高度
+                    width: 300,
+                    height: 300, // 高度
                     text: that.codeUrl // 二维码内容
                 });
             },
@@ -189,10 +193,9 @@
              * 参数：{}
              */
             gtouchstart(event) {
-                let self = this;
-                this.timer = setTimeout(function () {
-                    self.$nextTick(() => {
-                        self._copy();
+                this.timer = setTimeout(() => {
+                    this.$nextTick(() => {
+                        this._copy();
                     });
                 }, 500); // 这里设置定时器，定义长按500毫秒触发长按事件，时间可以自己改，个人感觉500毫秒非常合适
                 return false;
@@ -225,8 +228,23 @@
              * 参数：{}
              */
             _copy() {
+                let self = this;
                 this.timer = 0;
-                html2canvas(document.getElementById('qrcode2')).then(canvas => {
+                let qrcode2 = document.getElementById('qrcode2');
+                html2canvas(qrcode2, {
+                    width: window.document.body.offsetWidth, // 获取当前网页的宽度
+                    height: 320, // 获取当前网页的高度
+                    allowTaint: true,
+                    taintTest: false,
+                    dpi: window.devicePixelRatio,
+                    windowWidth: document.body.scrollWidth, // 获取X方向滚动条内容
+                    windowHeight: document.body.scrollHeight, // 获取Y方向滚动条内容
+                    onrendered: function (canvas) {
+                        self.dataURL = canvas.toDataURL('image/png');// 生成的格式
+                    },
+                    x: 0,
+                    y: window.pageYOffset,
+                }).then(canvas => {
                     let imgUrl = canvas.toDataURL('image/png');
                     this.dataURL = imgUrl;
                     var a = document.createElement('a'); // 生成一个a元素
@@ -256,9 +274,15 @@
         }
     };
 </script>
-
+<style>
+    .doctorDetail_box_content img {
+        width: 100%;
+        /*height: 100%;*/
+    }
+</style>
 <style lang="scss" scoped>
     @import "~@/assets/css/_mixins";
+
     .van-nav-bar__arrow {
         font-size: 48px;
         color: $coloe_3;
@@ -322,6 +346,9 @@
                 }
             }
             &_code {
+                position: fixed;
+                left: 0;
+                top: 60px;
                 opacity: 0;
                 @include flex-center();
                 width: 100%;
@@ -354,6 +381,7 @@
         flex-direction: column;
         align-items: center;
         z-index: 9999;
+        user-select: auto !important;
         &_img {
             width: 100%;
             height: 400px;

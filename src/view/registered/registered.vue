@@ -17,12 +17,14 @@
         <div class="plr30 mtb50">
             <van-form @submit="onSubmit">
                 <van-field
+                        type="tel"
                         v-model="phone"
                         name="phone"
                         placeholder="手机号"
                         :rules="[{ validator, message: '请输入正确格式的手机号' }]"
                         class="validator"
                         maxlength="11"
+                        :disabled="false"
                 />
                 <van-field v-model="nickname" maxlength="6" name="nickname" placeholder="昵称" class="validator" :rules="[{ required: true, message: '请填写昵称' }]" />
                 <van-field
@@ -32,6 +34,7 @@
                         placeholder="密码"
                         :rules="[{ required: true, message: '请填写密码' }]"
                         class="validator"
+                        :disabled="false"
                 />
                 <div style="margin: 16px;">
                     <van-button round block type="info" native-type="submit">
@@ -39,6 +42,16 @@
                     </van-button>
                 </div>
             </van-form>
+<!--            <div class="form">-->
+<!--                <input type="tel" placeholder="手机号" v-model="phone" maxlength="11" class="validator plr30 ptb20">-->
+<!--                <input type="text" placeholder="昵称" v-model="nickname" maxlength="6" class="validator plr30 ptb20">-->
+<!--                <input type="password" placeholder="密码" v-model="password" maxlength="11" class="validator plr30 ptb20">-->
+<!--                <div style="margin: 16px;">-->
+<!--                    <van-button round block type="info" native-type="submit" @click="onSubmit">-->
+<!--                        注册并登陆-->
+<!--                    </van-button>-->
+<!--                </div>-->
+<!--            </div>-->
         </div>
         <div class="registered_agreement ptb20">
             <van-checkbox v-model="checked" @click="getChecke" class="registered_agreement_group" checked-color="#333">
@@ -73,6 +86,7 @@
                 isTrue: true, // 是否隐藏
                 headImgUrl: '', // 存储图片地址.
                 isImg: false, // 是否显示协议
+                text: '',
             };
         },
         methods: {
@@ -98,6 +112,10 @@
              * 参数：{}
              */
             onSubmit(values) {
+                if (!this.validator(this.phone) || !this.password || !this.nickname) {
+                    Toast('请输入完整信息');
+                    return;
+                }
                 // 注册手机
                 const tips1 = Toast('正在登录中...');
                 axios.post('/login/registByPhone', qs.stringify({
@@ -111,7 +129,7 @@
                         tips1.clear();
                         this.login(values);
                     } else {
-                        Toast('注册失败！ 请重新注册!');
+                        Toast(data.msg);
                     }
                 }).catch(err => {
                     Toast('系统错误', err);
@@ -215,6 +233,10 @@
 
 <style lang="scss" scoped>
     @import "~@/assets/css/_mixins";
+    input {
+        user-select: text;
+        -webkit-user-select: text; //部分浏览器已经不适用
+    }
     .van-nav-bar .van-icon {
         font-size: 48px;
         color: $coloe_3;
@@ -346,5 +368,13 @@
         .van-icon-close {
             font-size: 100px;
         }
+    }
+    .form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .validator {
+        border-bottom: 1px solid $ccc-color;
     }
 </style>

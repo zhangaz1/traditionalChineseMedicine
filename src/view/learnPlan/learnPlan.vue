@@ -33,7 +33,7 @@
 <!--            </div>-->
 <!--        </van-sticky>-->
         <div class="learnPlan_tag plr30 ptb20">
-            <ul class="learnPlan_tag_box h900" v-if="messageList.length">
+            <ul class="learnPlan_tag_box" v-if="messageList.length">
                 <li class="mb40" v-for="(item, index) of messageList" :key="'item' + index">
                     <div class="li mb20">
                         <div class="title ptb30 plr30">问：<span>{{item.ques}}</span></div>
@@ -119,14 +119,11 @@
         line-height: 108px;
     }
     .learnPlan {
-        /*position: relative;*/
-
         &_title {
             height: 108px;
         }
         &_tag {
             background: $bgColor;
-            /*height: 100vh;*/
             box-sizing: border-box;
             .h900 {
                 height: 900px;

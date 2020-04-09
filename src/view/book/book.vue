@@ -56,7 +56,7 @@
             </div>
             <ul class="swiper_common plr30" v-if="bookCase.length">
                 <li class="swiper_common_item mr20 mb20" v-for="(book, index) of bookCase" :key="'book' + index">
-                    <div class="content_img mb10" @click="toDetail(book)" :style="{backgroundImage: 'url(' + book.cover + ')', backgroundSize: '100% 100%' }">
+                    <div class="content_img mb10" @click="toDetail(book)" :style="{backgroundImage: 'url(' + isImg(book.cover) + ')', backgroundSize: '100% 100%' }">
                         <div class="content_img_free" v-if="book.isfree === '1'"></div>
                     </div>
                     <p class="content_img_title">{{book.title}}</p>
@@ -92,8 +92,20 @@
                     searchtype: 1
                 },
                 searchValue: '', // 搜索关键字
-                totalcount: '0' // 数据长度
+                totalcount: '0', // 数据长度
+                defaultImg: require('../../assets/img/no_img.jpg')
             };
+        },
+        computed: {
+            isImg() {
+                return function (img) {
+                    if (img) {
+                        return img;
+                    } else {
+                        return this.defaultImg;
+                    }
+                };
+            }
         },
         mounted() {
             /** 2020/3/25

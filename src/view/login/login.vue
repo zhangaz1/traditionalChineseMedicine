@@ -40,6 +40,15 @@
                     </van-button>
                 </div>
             </van-form>
+<!--            <div class="form">-->
+<!--                <input type="tel" placeholder="手机号" v-model="phone" maxlength="11" class="validator plr30 ptb20">-->
+<!--                <input type="password" placeholder="密码" v-model="password" maxlength="11" class="validator plr30 ptb20 mb40">-->
+<!--                <div style="margin: 16px;">-->
+<!--                    <van-button round block type="info" native-type="submit" @click="onSubmit">-->
+<!--                        登 陆-->
+<!--                    </van-button>-->
+<!--                </div>-->
+<!--            </div>-->
             <router-link tag="div" class="mtb50 forget" to="/forget">忘记密码</router-link>
         </div>
 <!--        <div class="login_otherWay">-->
@@ -102,6 +111,10 @@
             * 参数：{}
             */
             onSubmit(values) {
+                if (!this.validator(this.phone) || !this.password) {
+                    Toast('手机或密码输入不完整');
+                    return;
+                }
                 axios.post('/login/normallogin', qs.stringify({
                     phone: values.phone,
                     password: values.password
@@ -113,9 +126,10 @@
                         } catch (err) {
                             console.log('err', err);
                         }
+                        Toast(data.msg);
                         this.$router.push('/me');
                     } else {
-                        Toast('登录失败！');
+                        Toast(data.msg);
                         this.phone = '';
                         this.password = '';
                     }

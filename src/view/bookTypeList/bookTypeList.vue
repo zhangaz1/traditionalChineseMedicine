@@ -26,7 +26,7 @@
             <div class="tips ptb20" >共有{{searchResultData.length}}条结果</div>
             <div class="title ptb20">{{title}}</div>
             <div class="content pl160 ptb20" v-for="(book, index) of searchResultData" :key="'book' + index">
-                <router-link tag="div" :to="{path: '/bookContentFeed', query: {id: book.id}}" :style="{backgroundImage: 'url(' + book.cover + ')', backgroundSize: '100% 100%' }" class="content_img sprite-book-cover0">
+                <router-link tag="div" :to="{path: '/bookContentFeed', query: {id: book.id}}" :style="{backgroundImage: 'url(' + isImg(book.cover) + ')', backgroundSize: '100% 100%' }" class="content_img sprite-book-cover0">
                     <div class="content_img_free" v-if="book.isfree === '1'"></div>
 <!--                    <div class="content_img_txt">-->
 <!--                        <div class="title">-->
@@ -70,8 +70,20 @@
                 pageOption: {
                     pagesize: 20,
                     page: 1
-                }
+                },
+                defaultImg: require('../../assets/img/no_img.jpg')
             };
+        },
+        computed: {
+            isImg() {
+                return function (img) {
+                    if (img) {
+                        return img;
+                    } else {
+                        return this.defaultImg;
+                    }
+                };
+            }
         },
         created() {
             let params = this.$route.query;

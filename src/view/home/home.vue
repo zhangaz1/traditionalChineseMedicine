@@ -34,7 +34,7 @@
         <publicSwipe heightVal="200">
             <van-swipe-item v-for="(imgItem, index) of bannerData" :key="index + 'imgItem'"  class="home_swiper_item" slot="swiperItem">
                 <a :href="imgItem.url">
-                    <img :src="imgItem.img" class="img"/>
+                    <img :src="isImg(imgItem.img)" class="img"/>
                 </a>
             </van-swipe-item>
         </publicSwipe>
@@ -56,7 +56,7 @@
 <!--            </swiper>-->
             <ul class="swiper_common" slot="content">
                 <li class="swiper_common_item mr10 mb20" v-for="(book, index) of booklist" :key="'book' + index">
-                    <router-link class="content_img mb10" :to="{path: '/bookContentFeed', query: { id: book.id }}" :style="{backgroundImage: 'url(' + book.cover + ')', backgroundSize: '100% 100%' }">
+                    <router-link class="content_img mb10" :to="{path: '/bookContentFeed', query: { id: book.id }}" :style="{backgroundImage: 'url(' + isImg(book.cover) + ')', backgroundSize: '100% 100%' }">
                         <div class="content_img_free" v-if="book.isfree === '1'"></div>
                     </router-link>
                     <p class="content_img_title">{{book.title}}</p>
@@ -79,7 +79,7 @@
                 <li class="swiper_common_item mr10 w30 mb20 _mr0" v-for="(video, index) of videoData" :key="'videoData' + index">
                     <router-link :to="{path: '/videoBox/components/videoBoxDetail', query: {id: video.id}}" class="swiper_common_item_link">
                         <div class="item_img">
-                             <img :src="video.cover" class="_img mb20"/>
+                             <img :src="isImg(video.cover)" class="_img mb20"/>
                             <span class="_txt">{{video.title}}</span>
                         </div>
                         <p class="txt_title ptb20">{{video.title}}</p>
@@ -121,6 +121,7 @@
                 searchValue: '', // 搜索关键字
                 totalcount: '0', // 数据长度
                 titleImg: '', // 页面标题
+                defaultImg: require('../../assets/img/no_img.jpg')
             };
         },
         components: {
@@ -130,6 +131,17 @@
             swiper,
             swiperSlide,
             copyright
+        },
+        computed: {
+            isImg() {
+                return function (img) {
+                    if (img) {
+                        return img;
+                    } else {
+                        return this.defaultImg;
+                    }
+                };
+            }
         },
         mounted() {
             this.getHomeInfo();
