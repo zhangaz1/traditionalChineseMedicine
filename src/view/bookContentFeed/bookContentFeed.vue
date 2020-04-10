@@ -39,9 +39,9 @@
 <!--                        </ul>-->
                     </router-link>
                     <router-link tag="div" :to="{path: '/bookDetail', query: {id: curArticle.id}}" class="content_txt">
-                        <div class="title mb20">{{curArticle.title}}</div>
-                        <p class="author mb10">{{curArticle.author}}</p>
-                        <p class="description">{{curArticle.description}}</p>
+                        <div class="title mb20" v-html="ruleTitle(curArticle.title, keyword)">{{curArticle.title}}</div>
+                        <p class="author mb10"  v-html="ruleTitle(curArticle.author, keyword)">{{curArticle.author}}</p>
+                        <p class="description" v-html="ruleTitle(curArticle.description, keyword)">{{curArticle.description}}</p>
                     </router-link>
                 </div>
             </div>
@@ -52,12 +52,12 @@
                     v-for="(nav, index) of navItem">{{nav.name}}</li>
             </ul>
             <div class="article plr30 ptb40 mb20" :class="{pull: isPull}" v-if="current === 0">
-                <p class="article_p" :class="{pull: isPull}">{{curArticle.summary}}</p>
+                <p class="article_p" :class="{pull: isPull}" v-html="ruleTitle(curArticle.summary, keyword)"></p>
                 <span class="article_arrow" @click="pullArrow" :class="{arrowDeg: isPull}"></span>
             </div>
             <div class="directory plr30 ptb40 mb20" v-else-if="current === 1">
                 <ul class="_one" v-if="directory.length">
-                    <router-link tag="li" :to="{path: '/bookDetail', query: { id: item.id }}" class="_one_li pl20 ptb20" v-for="(item, index) of directory" :key="'item' + index">{{item.title}}
+                    <router-link tag="li" :to="{path: '/bookDetail', query: { id: item.id }}" class="_one_li pl20 ptb20" v-for="(item, index) of directory" :key="'item' + index" v-html="ruleTitle(item.title, keyword)">
 <!--                        <ul class="_two">-->
 <!--                            <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="_two_li pl20 ptb20">重广补注黄帝内经素问•序</router-link>-->
 <!--                            <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="_two_li pl20 ptb20">重广补注黄帝内经素问•序</router-link>-->
@@ -79,7 +79,7 @@
                 <swiper class="swiper" :options="bookContentFeedConfig" slot="content" v-if="booklist.length">
                     <swiper-slide class="swiper_common" v-for="(book, index) of booklist" :key="'book' + index">
                         <div class="content ptb20">
-                            <router-link tag="div" :to="{path: '/bookContentFeed', query: { id: book.id }}" :style="{backgroundImage: 'url(' + isImg(book.cover) + ')', backgroundSize: '100% 100%' }" class="content_img sprite-book-cover0">
+                            <router-link tag="div" :to="{path: '/bookContentFeed', query: { id: book.id }}" :style="{backgroundImage: 'url(' + isImg(book.cover) + ')', backgroundSize: '100% 100%' }" class="content_img">
                                 <div class="content_img_free" v-if="book.isfree === '1'"></div>
 <!--                                <div class="content_img_txt">-->
 <!--                                    <div class="title">-->
@@ -113,6 +113,7 @@
     import { EventBus } from "@/utils/event-bus";
     import { getBookItem } from '@/api/content';
     import { Toast } from 'vant';
+    import { ruleTitle } from '@/utils/searchVal';
     export default {
         name: 'bookContentFeed',
         data() {
@@ -133,7 +134,9 @@
                 isPull: false, // 向下、向上
                 curArticle: '', // 当前文章
                 directory: [], // 存储目录
-                defaultImg: require('../../assets/img/no_img.jpg')
+                defaultImg: require('../../assets/img/no_img.jpg'),
+                historyBookitemid: '', // 阅读记录
+                keyword: '', // 关键字
             };
         },
         computed: {
@@ -145,7 +148,8 @@
                         return this.defaultImg;
                     }
                 };
-            }
+            },
+            ruleTitle
         },
         components: {
             subMenu,
@@ -165,12 +169,14 @@
             getBookItem() {
                 if (this.$route.query.id) {
                     let id = this.$route.query.id;
+                    if (this.$route.query.title) this.keyword = this.$route.query.title;
                     getBookItem({ id }).then(res => {
                         let result = res.data;
                         if (res.state === '1') {
                             this.curArticle = result.book;
                             this.booklist = result.tuijian;
                             this.directory = result.bookitem;
+                            this.historyBookitemid = result.history_bookitemid; // 存储记录
                         }
                     });
                 }
@@ -230,7 +236,7 @@
             */
             toRouter() {
                 if (this.directory.length) {
-                    this.$router.push({ path: '/bookDetail', query: { id: this.directory[0].id } });
+                    this.$router.push({ path: '/bookDetail', query: { id: this.historyBookitemid || this.directory[0].id, title: this.keyword } });
                 } else {
                     Toast('此书籍暂无目录');
                 }

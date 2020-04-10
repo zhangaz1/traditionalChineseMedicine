@@ -1,5 +1,5 @@
 <template>
-    <div class="searchResult pb100">
+    <div class="searchResult">
         <van-sticky>
             <div class="searchResult_sticky">
                 <van-nav-bar
@@ -17,59 +17,12 @@
                         @focus="_focus"
                         @_clear="_clear"
                         :isCancel="isCancel"
+                        :_searchVal="searchValue"
                 >
-                    <div slot="searchContent" class="searchContent" v-if="isCancel">
-                        <div v-if="!searchResultData.length" class="hot plr30">
-                            <div class="title ptb20">热搜</div>
-                            <ul class="content ptb20">
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                            </ul>
-                        </div>
-                        <div v-if="!searchResultData.length" class="history plr30">
-                            <div class="title ptb20">
-                                搜索历史
-                                <van-icon name="delete" class="title_icon" @click="_delete"/>
-                            </div>
-                            <ul class="content ptb20">
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                                <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>
-                            </ul>
-                        </div>
-                        <div class="searchResult">
-                            <ul class="ul" v-if="searchResultData.length">
-                                <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/searchResult', query: {name: search}}">{{search}}</router-link>
-                            </ul>
-                        </div>
-                    </div>
                 </headSearch>
-                <ul class="searchResult_title_dropDown" v-show="isShow">
-                    <li class="searchResult_title_dropDown_item pl100">
-                        <van-icon name="browsing-history-o" />
-                        <span class="txt">我的足迹</span>
-                    </li>
-                    <li class="searchResult_title_dropDown_item pl100">
-                        <van-icon name="star-o" />
-                        <span class="txt">我的收藏</span>
-                    </li>
-                    <li class="searchResult_title_dropDown_item pl100">
-                        <van-icon name="share" />
-                        <span class="txt ">分享好友</span>
-                    </li>
-                </ul>
             </div>
         </van-sticky>
-        <div class="mask" v-if="isCancel"></div>
+        <!--        <div class="mask" v-if="isCancel"></div>-->
         <div class="searchResult_nav">
             <swiper class="swiper" :options="swiperNav">
                 <swiper-slide v-for="(nav, index) of navData" :key="'nav' + index" :class="{active: current === index}"  class="swiper_item">
@@ -78,7 +31,15 @@
             </swiper>
         </div>
         <!-- 动态组件 -->
-        <component :is="componentName"></component>
+        <component
+                :is="componentName"
+                :searchData="searchResultData"
+                @isScroll="isScroll"
+                :searchValue="searchValue"
+                :totalcount="totalcount">
+            <div class="li noData ptb30 plr30" v-if="!searchResultData.length && totalcount === 0">暂无数据</div>
+            <div class="li noData ptb30 plr30" v-else-if="searchResultData.length === totalcount">没有更多数据</div>
+        </component>
     </div>
 </template>
 
@@ -86,12 +47,14 @@
     import headSearch from '@/components/headSearch/';
     import books from "./components/books";
     import doctorBook from "./components/doctorBook";
-    import prescriptions from "./components/prescriptions";
-    import askDisease from "./components/askDisease";
-    import wikipedia from "./components/wikipedia";
-    import articleList from "./components/articleList";
+    // import prescriptions from "./components/prescriptions";
+    // import askDisease from "./components/askDisease";
+    // import wikipedia from "./components/wikipedia";
+    import videoList from "./components/videoList";
     import { swiper, swiperSlide } from 'vue-awesome-swiper';
     import { navData, swiperNav } from './config';
+    import { getSearch } from '@/api/content';
+    import { EventBus } from "@/utils/event-bus";
     export default {
         name: 'searchResult',
         data() {
@@ -104,22 +67,34 @@
                 componentName: 'books', // 组件名
                 searchResultData: [], // 存储搜索结果
                 isCancel: false,
+                searchOption: {
+                    pageSize: 20,
+                    page: 1,
+                    searchtype: 0
+                },
+                totalcount: 0
             };
         },
         components: {
             headSearch,
             books,
             doctorBook,
-            prescriptions,
-            askDisease,
-            wikipedia,
-            articleList,
+            // prescriptions,
+            // askDisease,
+            // wikipedia,
+            videoList,
             swiper,
             swiperSlide
         },
         created() {
-            let obj = this.$route.query;
-            this.searchValue = obj.name;
+            let obj = this.$route.params;
+            if (obj.data) {
+                this.searchValue = obj.data.title;
+                this.searchOption.searchtype = obj.data.type;
+                this.current = obj.data.type - 1;
+                if (this.searchValue) this.searchVal(this.searchValue);
+                this.componentName = this.navData[this.current].component;
+            }
         },
         methods: {
             /** 2020/3/20
@@ -136,11 +111,12 @@
              *参数:
              */
             onClickRight() {
-                if (this.isShow) {
-                    this.isShow = false;
-                } else {
-                    this.isShow = true;
-                }
+                this.$router.push('/footPrint');
+                // if (this.isShow) {
+                //     this.isShow = false;
+                // } else {
+                //     this.isShow = true;
+                // }
             },
             /** 2020/3/19
              * 作者：王青高
@@ -150,6 +126,10 @@
             getCurrent(index, component) {
                 this.current = index;
                 this.componentName = component;
+                this.searchOption.searchtype = (this.current + 1);
+                this.searchResultData = [];
+                this.searchOption.page = 1;
+                this.searchVal(this.searchValue);
             },
             /** 2020/3/24
              * 作者：王青高
@@ -160,6 +140,7 @@
                 if (this.isCancel) {
                     this.isCancel = false;
                     this.searchResultData = [];
+                    this.searchOption.page = 1;
                 }
             },
             /** 2020/3/24
@@ -190,13 +171,48 @@
                     this.searchResultData = [];
                 }
             },
+            /** 2020/4/10
+             * 作者：王青高
+             * 功能：{} 发起搜索请求
+             * 参数：{}
+             */
             searchVal(val) {
                 if (val) {
-                    this.searchResultData.push(val);
+                    if (!val && this.searchValue === '') {
+                        this.searchResultData = [];
+                        this.searchOption.page = 1;
+                        return;
+                    }
+                    if (!val || val !== this.searchValue) {
+                        this.searchResultData = [];
+                        this.searchOption.page = 1;
+                    }
                     this.searchValue = val;
+                    getSearch({
+                        pagesize: this.searchOption.pageSize,
+                        page: this.searchOption.page++,
+                        keyword: this.searchValue,
+                        searchtype: this.searchOption.searchtype
+                    }).then(res => {
+                        let result = res.data;
+                        if (res.state === '1') {
+                            this.totalcount = result.totalcount;
+                            this.searchResultData = this.searchResultData.concat(result.list);
+                        }
+                    });
                 }
-
+            },
+            /** 2020/4/10
+             * 作者：王青高
+             * 功能：{} 监听子组件滚动, 触发请求
+             * 参数：{}
+             */
+            isScroll() {
+                this.searchVal(this.searchValue);
             }
+        },
+        mounted() {
+            EventBus.$emit("isDisplay", { data: false });
         }
     };
 </script>
@@ -473,5 +489,10 @@
         width: 50%;
         background: $color;
         height: 6px;
+    }
+    .noData {
+        text-align: center;
+        color: $ccc-color;
+        font-size: 28px;
     }
 </style>

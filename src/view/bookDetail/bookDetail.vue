@@ -14,7 +14,7 @@
                 <li class="bookDetail_book_article pb50 mb60"
                      ref="article"
                      :class="{isNight: isNight}"
-                     :style="[{ color: bookDetailColorConfig[current] }, { fontSize: fontConfig.size + 'px'}]" v-html="article">
+                     :style="[{ color: bookDetailColorConfig[current] }, { fontSize: fontConfig.size + 'px'}]" v-html="ruleTitle(article, keyword)">
                 </li>
                 <li class="bookDetail_book_pullArticle">上拉获取下一章<van-icon name="arrow-down" class="ml20" /></li>
                 <!--  @touchmove.stop="turnPage($event)"
@@ -108,6 +108,7 @@
     import { bookDetailConfig, bookDetailColorConfig, navItem } from './config';
     import { getItemContent, getBookItem, addtobookshelf } from '@/api/content';
     import { Toast } from 'vant';
+    import { ruleTitle } from '@/utils/searchVal';
     export default {
         name: 'bookDetail',
         data() {
@@ -184,11 +185,18 @@
                 lastPage: '', // 存储当前页数
                 bookmark: 'bookmark-o',
                 timer: null, // 计时器
+                keyword: '', // 搜索关键字
             };
         },
         watch: {
             // 如果路由有变化，会再次执行该方法
             '$route': 'init'
+        },
+        computed: {
+            ruleTitle
+        },
+        created() {
+            this.keyword = this.$route.query.title;
         },
         updated() {
             /** 2020/3/31

@@ -48,7 +48,7 @@
 <!--                </div>-->
                 <div class="searchResult" @scroll.stop="addScroll($event)">
                     <ul class="ul" v-if="searchResultData.length">
-                        <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/doctorCase/components/doctorDetail', query: { id: search.id, title: search.title}}">{{search.title}}</router-link>
+                        <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/doctorCase/components/doctorDetail', query: { id: search.id, title: search.title}}" v-html="ruleTitle(search.title, searchValue)"></router-link>
                         <li class="li noData ptb30 plr30" v-if="searchResultData.length === totalcount">没有更多数据</li>
                     </ul>
                     <div class="li noData ptb30 plr30" v-if="!searchResultData.length">暂无数据</div>
@@ -90,6 +90,7 @@
     import { navData, menuData } from './config';
     import { EventBus } from "@/utils/event-bus";
     import { getChildrenDoctor, getIndexData, getSearch } from '@/api/content';
+    import { ruleTitle } from '@/utils/searchVal';
     export default {
         name: 'doctorCase',
         data() {
@@ -111,6 +112,9 @@
                 searchValue: '', // 搜索关键字
                 totalcount: '0', // 数据长度
             };
+        },
+        computed: {
+            ruleTitle
         },
         mounted() {
             this.getIndexData();
@@ -206,6 +210,7 @@
                     this.isCancel = false;
                     this.searchResultData = [];
                     this.isSearch = false;
+                    this.searchOption.page = 1;
                 }
             },
             /** 2020/3/24

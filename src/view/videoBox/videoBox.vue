@@ -15,7 +15,7 @@
             <div slot="searchContent" class="searchContent" v-if="isCancel">
                 <div class="searchResult" @scroll.stop="addScroll($event)">
                     <ul class="ul" v-if="searchResultData.length">
-                        <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/videoBox/components/videoBoxDetail', query: { id: search.id, title: search.title}}">{{search.title}}</router-link>
+                        <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/videoBox/components/videoBoxDetail', query: { id: search.id, title: search.title}}"  v-html="ruleTitle(search.title, searchValue)">{{search.title}}</router-link>
                         <li class="li noData ptb30 plr30" v-if="searchResultData.length === totalcount">没有更多数据</li>
                     </ul>
                     <div class="li noData ptb30 plr30" v-if="!searchResultData.length">暂无数据</div>
@@ -55,6 +55,7 @@
     import headSearch from '@/components/headSearch/';
     import { getVideoData, getVediolistByChannel, getSearch } from '@/api/content';
     import { EventBus } from "@/utils/event-bus";
+    import { ruleTitle } from '@/utils/searchVal';
     export default {
         name: 'videoBox',
         data() {
@@ -77,7 +78,7 @@
                 searchOption: {
                     pageSize: 20,
                     page: 1,
-                    searchtype: 2
+                    searchtype: 3
                 },
                 defaultImg: require('../../assets/img/no_img.jpg')
             };
@@ -86,6 +87,7 @@
             headSearch
         },
         computed: {
+            ruleTitle,
             isImg() {
                 return function (img) {
                     if (img) {
@@ -224,6 +226,7 @@
                     this.isCancel = false;
                     this.searchResultData = [];
                     this.isSearch = false;
+                    this.searchOption.page = 1;
                 }
             },
             /** 2020/3/24
@@ -252,6 +255,7 @@
             _clear() {
                 if (this.searchResultData.length) {
                     this.searchResultData = [];
+                    this.searchOption.page = 1;
                 }
             },
             /** `2020/3/26`
@@ -410,7 +414,7 @@
                 height: 70vh;
                 &_li {
                     position: relative;
-                    width: 31%;
+                    width: 31% !important;
                     height: 300px;
                     display: inline-block;
                     &:last-child {

@@ -42,10 +42,10 @@
 <!--                    </ul>-->
                 </router-link>
                 <div  class="content_txt pl20">
-                    <div class="title mb20">{{book.title}}</div>
-                    <p class="author mb10">{{book.author}}</p>
-                    <p class="description">{{book.description}}</p>
-                    <router-link :to="{path: '/bookContentFeed', query: {id: book.id}}" tag="button" type="button" class="resultsBtns">详情</router-link>
+                    <div class="title mb20" v-html="ruleTitle(book.title, isDefaultVal)">{{book.title}}</div>
+                    <p class="author mb10" v-html="ruleTitle(book.author, isDefaultVal)">{{book.author}}</p>
+                    <p class="description" v-html="ruleTitle(book.description, isDefaultVal)">{{book.description}}</p>
+                    <router-link :to="{path: '/bookContentFeed', query: { id: book.id, title: isDefaultVal }}" tag="button" type="button" class="resultsBtns">详情</router-link>
                 </div>
             </div>
         </div>
@@ -56,6 +56,7 @@
     import headSearch from '@/components/headSearch/';
     import { getSearch, getBookListByChannel } from '@/api/content';
     import { EventBus } from "@/utils/event-bus";
+    import { ruleTitle } from '@/utils/searchVal';
     export default {
         name: 'bookTypeList',
         data() {
@@ -71,10 +72,12 @@
                     pagesize: 20,
                     page: 1
                 },
-                defaultImg: require('../../assets/img/no_img.jpg')
+                defaultImg: require('../../assets/img/no_img.jpg'),
+                keyword: '', // 搜索关键字
             };
         },
         computed: {
+            ruleTitle,
             isImg() {
                 return function (img) {
                     if (img) {
@@ -87,6 +90,7 @@
         },
         created() {
             let params = this.$route.query;
+            if (params.title) this.isDefaultVal = params.title;
             this.getBookListByChannel(params.id);
         },
         mounted() {
@@ -174,6 +178,7 @@
                     this.isCancel = false;
                     this.searchResultData = [];
                     this.isSearch = false;
+                    this.searchOption.page = 1;
                 }
             },
             /** 2020/3/24

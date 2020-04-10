@@ -16,8 +16,8 @@
                 <span class="txt">{{currchannelname}}</span>
             </div>
             <div class="doctorDetail_box_content">
-                <h2 class="title ptb20">{{article.description}}</h2>
-                <p class="content ptb10" v-html="article.content"></p>
+                <h2 class="title ptb20" v-html="ruleTitle(article.description, title)"></h2>
+                <p class="content ptb10" v-html="ruleTitle(article.content, title)"></p>
             </div>
             <div class="doctorDetail_box_share ptb30 mtb100">
                 <div class="collection ptb20 plr30 mb20">
@@ -71,6 +71,7 @@
     import { Toast } from 'vant';
     // import vshare from 'vshare';
     import { baseUrl } from '@/utils';
+    import { ruleTitle } from '@/utils/searchVal';
     export default {
         name: 'doctorDetail',
         data() {
@@ -100,6 +101,7 @@
                 codeUrl: window.location.href,
                 firstFlag: true,
                 dataURL: '',
+                title: '', // 搜索关键字
                 timer: 0 // 计时器
             };
         },
@@ -108,6 +110,9 @@
         // },
         components: {
             // vshare
+        },
+        computed: {
+            ruleTitle
         },
         methods: {
             onClickLeft() {
@@ -267,6 +272,7 @@
             EventBus.$emit("isDisplay", { data: false });
             if (this.$route.query) {
                 let obj = this.$route.query;
+                if (obj.title) this.title = obj.title;
                 this.getDoctorArticleDetail(obj.id);
             } else {
                 this.$router.push('/doctorCase');

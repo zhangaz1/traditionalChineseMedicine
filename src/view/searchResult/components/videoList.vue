@@ -1,11 +1,15 @@
 <template>
-    <div class="doctorBook_item"  @scroll.stop="addScroll($event)">
-        <div class="tips ptb20 plr30">找到 {{searchData.length}} 条结果</div>
+    <div class="article_item plr30"  @scroll.stop="addScroll($event)">
+        <div class="tips ptb20">找到 {{searchData.length}} 条结果</div>
         <div v-if="searchData.length">
-            <router-link tag="div" :to="{path: '/doctorCase/components/doctorDetail', query: { id: item.id, title: searchValue }}" class="plr30 ptb20 content" v-for="(item, index) of searchData" :key="'item' + index" >
-                <div class="title ptb10" v-html="ruleTitle(item.title, searchValue)"></div>
-                <div class="desc ptb10" v-html="ruleTitle(item.description, searchValue)"></div> <!--<span class="desc_t">【证候表现】</span>-->
-                <!--            <div class="provenance ptb10"><span class="provenance_t">【出处】</span>《世中联名老中医典型医案》</div>-->
+            <router-link tag="div" :to="{path: '/videoBox/components/videoBoxDetail', query: { id: item.id, title: searchValue }}" class="content pl250 ptb20" v-for="(item, index) of searchData" :key="'item' + index">
+                <div class="content_img">
+                    <img class="img" :src="isImg(item.cover)" alt="">
+                </div>
+                <div class="content_txt pl20">
+                    <p class="digest" v-html="ruleTitle(item.title, searchValue)"></p>
+                    <p class="time ptb20">{{item.updatetime}}</p>
+                </div>
             </router-link>
         </div>
         <slot></slot>
@@ -15,7 +19,12 @@
 <script>
     import { ruleTitle } from '@/utils/searchVal';
     export default {
-        name: 'dockerBook',
+        name: 'videoList',
+        data() {
+            return {
+                defaultImg: require('../../../assets/img/no_img.jpg')
+            };
+        },
         props: {
             searchData: {
                 type: [Array, Object],
@@ -33,6 +42,15 @@
             }
         },
         computed: {
+            isImg() {
+                return function (img) {
+                    if (img) {
+                        return img;
+                    } else {
+                        return this.defaultImg;
+                    }
+                };
+            },
             ruleTitle
         },
         methods: {
@@ -56,7 +74,7 @@
 
 <style lang="scss" scoped>
     @import "~@/assets/css/_mixins";
-    .doctorBook {
+    .article {
         &_item {
             background: $bgc-theme;
             position: relative;
@@ -64,11 +82,12 @@
             overflow-y: scroll;
             .tips {
                 position: relative;
+                width: 100%;
                 text-align: center;
                 &:after {
                     content: '';
                     position: absolute;
-                    left: 30px;
+                    left: 0%;
                     top: 50%;
                     border: 1px dotted $ccc-color;
                     width: 30%;
@@ -76,7 +95,7 @@
                 &:before {
                     content: '';
                     position: absolute;
-                    right: 30px;
+                    right: 0%;
                     top: 50%;
                     border: 1px dotted $ccc-color;
                     width: 30%;
@@ -84,40 +103,30 @@
             }
             .content {
                 position: relative;
-                &:after {
-                    content: '';
-                    width: 100%;
-                    height: 1px;
-                    background: $ccc-color;
+                border-bottom: 1px solid #eee;
+                height: 150px;
+                &_img {
                     position: absolute;
-                    left: 0;
-                    bottom: 0;
+                    left: 10px;
+                    top: 20px;
+                    width: 240px;
+                    height: 150px;
+                    .img {
+                        width: 100%;
+                        height: 100%;
+                    }
                 }
-                &:before {
-                    content: '';
-                    position: absolute;
-                    font-size: 48px;
-                    color: $coloe_3;
-                    right: 30px;
-                    top: calc(50% - .07rem);
-                    width: 14px;
-                    height: 14px;
-                    border-top: 4px solid #ccc;
-                    border-right: 4px solid #ccc;
-                    transform: rotate(45deg);
-                }
-                .title {
-                    @include ellipsis();
-                    font-size: 28px;
-                    color: $coloe_3;
-                }
-                .provenance,
-                .desc {
-                    @include ellipsis();
-                    font-size: 28px;
-                    color: $coloe_3;
-                    &_t {
+                &_txt {
+                    position: relative;
+                    .digest {
+                        @include multiline-ellipsis(2);
+                        font-size: 28px;
+                        color: $coloe_3;
+                        line-height: 1.5;
+                    }
+                    .time {
                         color: $color_999;
+                        font-size: 24px;
                     }
                 }
             }

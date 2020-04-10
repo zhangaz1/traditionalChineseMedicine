@@ -26,8 +26,8 @@
             <div class="tips ptb20 plr30">找到 {{searchResultData.length ? searchResultData.length : 0}} 条结果</div>
             <div v-if="searchResultData.length"  @scroll="addScroll($event)" class="box">
                 <div class="plr30 ptb20 content" v-for="(item, index) of searchResultData" :key="'item' + index" @click="switchDetail(item.id)">
-                    <div class="title ptb10">{{item.title}}</div>
-                    <div class="desc ptb10"><span class="desc_t">{{item.description}}</span></div>
+                    <div class="title ptb10" v-html="ruleTitle(item.title, searchValue)">{{item.title}}</div>
+                    <div class="desc ptb10"><span class="desc_t" v-html="ruleTitle(item.description, searchValue)"></span></div>
 <!--                    <div class="provenance ptb10"><span class="provenance_t">【出处】</span>《世中联名老中医典型医案》</div>-->
                 </div>
                 <div class="noData plr30 ptb20 content" v-if="searchResultData.length === totalcount">没有更多数据</div>
@@ -41,6 +41,7 @@
     import headSearch from '@/components/headSearch/';
     import { getSearch, getDoctorArticle } from '@/api/content';
     import { EventBus } from "@/utils/event-bus";
+    import { ruleTitle } from '@/utils/searchVal';
     export default {
         name: 'doctorTypeList',
         data() {
@@ -58,6 +59,9 @@
                 searchValue: '', // 搜索关键字
                 totalcount: '0', // 数据长度
             };
+        },
+        computed: {
+            ruleTitle
         },
         components: {
             headSearch
@@ -139,7 +143,7 @@
              *参数:
              */
             switchDetail(articleId) {
-                this.$router.push({ path: '/doctorCase/components/doctorDetail', query: { id: articleId } });
+                this.$router.push({ path: '/doctorCase/components/doctorDetail', query: { id: articleId, title: this.searchValue } });
             },
             /** 2020-3-26 0026
              *作者:青型科技
@@ -184,6 +188,7 @@
                 if (this.isCancel) {
                     this.isCancel = false;
                     this.searchResultData = [];
+                    this.searchOption.page = 1;
                 }
             },
             /** 2020/3/24

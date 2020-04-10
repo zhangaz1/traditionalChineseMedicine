@@ -15,21 +15,21 @@ const navData = [
         'name': '医案',
         component: 'doctorBook'
     },
+    // {
+    //     'name': '视频',
+    //     component: 'prescriptions'
+    // },
+    // {
+    //     'name': '问病',
+    //     component: 'askDisease'
+    // },
+    // {
+    //     'name': '百科',
+    //     component: 'wikipedia'
+    // },
     {
-        'name': '方剂',
-        component: 'prescriptions'
-    },
-    {
-        'name': '问病',
-        component: 'askDisease'
-    },
-    {
-        'name': '百科',
-        component: 'wikipedia'
-    },
-    {
-        'name': '文章',
-        component: 'articleList'
+        'name': '视频',
+        component: 'videoList'
     }
 ];
 export {

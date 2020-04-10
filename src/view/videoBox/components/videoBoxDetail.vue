@@ -14,7 +14,7 @@
                 <img :src="isImg(vedio.cover)" alt="" class="img">
             </div>
             <div class="videoBoxDetail_top_desc ptb20">
-                <div class="title mb20">{{vedio.title}}</div>
+                <div class="title mb20" v-html="ruleTitle(vedio.title, keyword)"></div>
                 <div class="txt ptb40">主讲：{{vedio.author}}</div>
                 <div class="btnBox">
                     <button type="button" class="btn ptb10 mr20 plr30" @click="_play">立即播放</button>
@@ -32,7 +32,7 @@
             <ul class="videoBoxDetail_content_obj">
                 <router-link tag="li" v-for="(video, index) of vediolist" :key="'video' + index" :to="{path: '/videoBox/components/videoBoxTxt', query: {id: video.id}}" class="videoBoxDetail_content_obj_li ptb20 plr30 mb20">
                     <span class="num">第{{(index + 1)}}集</span>
-                    <span class="txt plr30">• • • {{video.title}} • • •</span>
+                    <span class="txt plr30">• • • <span v-html="ruleTitle(video.title, keyword)"></span> • • •</span>
                 </router-link>
             </ul>
         </div>
@@ -40,8 +40,9 @@
 </template>
 
 <script>
-    import { getVedioList, addToCollectionVedio  } from '@/api/content';
+    import { getVedioList, addToCollectionVedio } from '@/api/content';
     import { EventBus } from "@/utils/event-bus";
+    import { ruleTitle } from '@/utils/searchVal';
     import { Toast } from 'vant';
     export default {
         name: 'videoBoxDetail',
@@ -51,10 +52,12 @@
                 vediolist: [], // 当前视频目录
                 title: '', // 导航栏标题
                 icon: 'like-o',
-                defaultImg: require('../../../assets/img/no_img.jpg')
+                defaultImg: require('../../../assets/img/no_img.jpg'),
+                keyword: '', // 关键字
             };
         },
         computed: {
+            ruleTitle,
             isImg() {
                 return function (img) {
                     if (img) {
@@ -67,6 +70,7 @@
         },
         mounted() {
             let id = this.$route.query.id;
+            if (this.$route.query.title) this.keyword = this.$route.query.title;
             if (id) {
                 this.getVedioList(id);
             } else {

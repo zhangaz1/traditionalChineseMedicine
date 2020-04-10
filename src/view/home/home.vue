@@ -22,7 +22,7 @@
                     <div slot="searchContent" class="searchContent" v-if="isCancel">
                         <div class="searchResult" @scroll.stop="addScroll($event)">
                             <ul class="ul" v-if="searchResultData.length">
-                                <li class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" @click="openDetail(search)">{{search.title}}</li>
+                                <li class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" @click="openDetail(search)" v-html="ruleTitle(search.title, searchValue)"></li>
                                 <li class="li noData ptb30 plr30" v-if="searchResultData.length === totalcount">没有更多数据</li>
                             </ul>
                             <div class="li noData ptb30 plr30" v-if="!searchResultData.length">暂无数据</div>
@@ -100,6 +100,7 @@
     import { swiper, swiperSlide } from 'vue-awesome-swiper';
     import { getHomeInfo, getSearch } from '@/api/content';
     import { EventBus } from "@/utils/event-bus";
+    import { ruleTitle } from '@/utils/searchVal';
     export default {
         name: 'home',
         data() {
@@ -141,7 +142,8 @@
                         return this.defaultImg;
                     }
                 };
-            }
+            },
+            ruleTitle
         },
         mounted() {
             this.getHomeInfo();
@@ -175,7 +177,6 @@
                         this.bannerData = result.banners;
                         this.videoData = result.vediolist.slice(0, 6);
                         this.booklist = result.booklist.slice(0, 8);
-
                         this.titleImg = result.logo;
                     }
                 });
@@ -187,17 +188,18 @@
              */
             openDetail(obj) {
                 if (obj) {
-                    switch (obj.type) {
-                        case 1:
-                            this.$router.push({ path: '/bookContentFeed', query: { id: obj.id } });
-                            break;
-                        case 2:
-                            this.$router.push({ path: '/doctorCase/components/doctorDetail', query: { id: obj.id } });
-                            break;
-                        case 3:
-                            this.$router.push({ path: '/videoBox/components/videoBoxDetail', query: { id: obj.id } });
-                            break;
-                    }
+                    this.$router.push({ name: 'searchResult', params: { data: obj } });
+                    // switch (obj.type) {
+                    //     case 1:
+                    //         this.$router.push({ path: '/bookContentFeed', query: { id: obj.id } });
+                    //         break;
+                    //     case 2:
+                    //         this.$router.push({ path: '/doctorCase/components/doctorDetail', query: { id: obj.id } });
+                    //         break;
+                    //     case 3:
+                    //         this.$router.push({ path: '/videoBox/components/videoBoxDetail', query: { id: obj.id } });
+                    //         break;
+                    // }
                 }
             },
             /** 2020/3/30

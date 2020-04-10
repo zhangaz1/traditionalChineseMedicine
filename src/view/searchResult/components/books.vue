@@ -1,58 +1,76 @@
 <template>
-    <div class="searchResult_item plr30">
-        <div class="tips ptb20">找到 5 条结果</div>
-        <div class="content pl160 ptb20">
-            <router-link tag="div" :to="{path: '/bookContentFeed', query: {id: '1'}}" class="content_img sprite-book-cover0">
-                <div class="content_img_free"></div>
-                <div class="content_img_txt">
-                    <div class="title">
-                        <span class="name">景岳全书</span>一
-                    </div>
-                </div>
-                <ul class="content_img_line">
-                    <li class="li"></li>
-                    <li class="li"></li>
-                    <li class="li"></li>
-                    <li class="li"></li>
-                    <li class="li"></li>
-                </ul>
-            </router-link>
-            <router-link tag="div" :to="{path: '/bookDetail', query: {id: '1'}}" class="content_txt pl20">
-                <div class="title mb20">景岳全书(一)</div>
-                <p class="author mb10">明·张景岳</p>
-                <p class="description">首创方药八阵法的医学全书。</p>
-                <p class="digest">全文：素问 重广补注黄帝内经素问·序 启玄子王冰撰夫释缚脱艰，全 ...</p>
-            </router-link>
-        </div>
-        <div class="content pl160 ptb20">
-            <div class="content_img sprite-book-cover1">
-                <div class="content_img_free"></div>
-                <div class="content_img_txt">
-                    <div class="title">
-                        <span class="name">景岳全书</span>一
-                    </div>
-                </div>
-                <ul class="content_img_line">
-                    <li class="li"></li>
-                    <li class="li"></li>
-                    <li class="li"></li>
-                    <li class="li"></li>
-                    <li class="li"></li>
-                </ul>
-            </div>
-            <div class="content_txt pl20">
-                <div class="title mb20">景岳全书(一)</div>
-                <p class="author mb10">明·张景岳</p>
-                <p class="description">首创方药八阵法的医学全书。</p>
-                <p class="digest">全文：素问 重广补注黄帝内经素问·序 启玄子王冰撰夫释缚脱艰，全 ...</p>
+    <div class="searchResult_item plr30" @scroll.stop="addScroll($event)">
+        <div class="tips ptb20">找到 {{searchData.length}} 条结果</div>
+        <div v-if="searchData.length">
+            <div class="content pl160 ptb20" v-for="(item, index) of searchData" :key="'item' + index">
+                <router-link tag="div" :to="{path: '/bookContentFeed', query: { id: item.id }}" class="content_img mb10" :style="{backgroundImage: 'url(' + isImg(item.cover) + ')', backgroundSize: '100% 100%' }">
+                    <div class="content_img_free" v-if="item.isfree === '1'"></div>
+                </router-link>
+                <router-link tag="div" :to="{path: '/bookContentFeed', query: { id: item.id, title: searchValue }}" class="content_txt pl20"> <!-- :to="{path: '/bookDetail', query: {id: item.id }}" -->
+                    <div class="title mb20" v-html="ruleTitle(item.title, searchValue)">{{item.title || '无名'}}</div>
+                    <p class="author mb10" v-html="ruleTitle(item.author, searchValue)">{{item.author || '无名'}}</p>
+                    <p class="description" v-html="ruleTitle(item.description, searchValue)">{{item.description || '暂无描述'}}</p>
+                    <p class="digest">{{item.updatetime || '暂无时间'}}</p>
+                </router-link>
             </div>
         </div>
+        <slot></slot>
     </div>
 </template>
 
 <script>
+    import { ruleTitle } from '@/utils/searchVal';
     export default {
-        name: 'books'
+        name: 'books',
+        data() {
+            return {
+                defaultImg: require('../../../assets/img/no_img.jpg')
+            };
+        },
+        props: {
+            searchData: {
+                type: [Array, Object],
+                default() {
+                    return [];
+                }
+            },
+            totalcount: {
+                type: Number,
+                default: 0
+            },
+            searchValue: {
+                type: String,
+                default: ''
+            }
+        },
+        computed: {
+            isImg() {
+                return function (img) {
+                    if (img) {
+                        return img;
+                    } else {
+                        return this.defaultImg;
+                    }
+                };
+            },
+            ruleTitle
+        },
+        methods: {
+            /** 2020/3/30
+             * 作者：王青高
+             * 功能：{} 监听滚动条是否触底
+             * 参数：{}
+             */
+            addScroll(event) {
+                if (this.totalcount === this.searchData.length) return;
+                let scrollTop = event.target.scrollTop;
+                let clientHeight = event.target.clientHeight;
+                let scrollHeight = event.target.scrollHeight;
+                if (scrollTop + clientHeight >= scrollHeight) {
+                    this.$emit('isScroll');
+                }
+            }
+        },
     };
 </script>
 
@@ -62,6 +80,8 @@
         &_item {
             background: $bgc-theme;
             position: relative;
+            height: 100vh;
+            overflow-y: scroll;
             .tips {
                 position: relative;
                 width: 100%;
@@ -86,6 +106,8 @@
             .content {
                 position: relative;
                 border-bottom: 1px solid #eee;
+                /*width: 100%;*/
+                height: 200px;
                 &_img {
                     position: absolute;
                     left: 10px;
@@ -174,16 +196,15 @@
                         color: $color_999;
                     }
                     .description {
-                        @include ellipsis();
-                        font-size: 24px;
-                        line-height: 44px;
+                        @include multiline-ellipsis(2);
+                        font-size: 28px;
+                        line-height: 1.5;
                         color: $color_666;
                     }
                     .digest {
-                        @include multiline-ellipsis(2);
-                        font-size: 28px;
+                        @include ellipsis();
+                        font-size: 24px;
                         color: $coloe_3;
-                        line-height: 1.5;
                     }
                 }
             }
