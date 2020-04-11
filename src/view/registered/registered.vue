@@ -42,16 +42,6 @@
                     </van-button>
                 </div>
             </van-form>
-<!--            <div class="form">-->
-<!--                <input type="tel" placeholder="手机号" v-model="phone" maxlength="11" class="validator plr30 ptb20">-->
-<!--                <input type="text" placeholder="昵称" v-model="nickname" maxlength="6" class="validator plr30 ptb20">-->
-<!--                <input type="password" placeholder="密码" v-model="password" maxlength="11" class="validator plr30 ptb20">-->
-<!--                <div style="margin: 16px;">-->
-<!--                    <van-button round block type="info" native-type="submit" @click="onSubmit">-->
-<!--                        注册并登陆-->
-<!--                    </van-button>-->
-<!--                </div>-->
-<!--            </div>-->
         </div>
         <div class="registered_agreement ptb20">
             <van-checkbox v-model="checked" @click="getChecke" class="registered_agreement_group" checked-color="#333">
@@ -68,8 +58,6 @@
 </template>
 
 <script>
-    // import { reg, upHeadImg } from '@/api/login';
-    // import Cookies from "js-cookie";
     import axios from 'axios';
     import qs from 'qs';
     import { Toast } from 'vant';
@@ -85,8 +73,7 @@
                 headImg: [],
                 isTrue: true, // 是否隐藏
                 headImgUrl: '', // 存储图片地址.
-                isImg: false, // 是否显示协议
-                text: '',
+                isImg: false // 是否显示协议
             };
         },
         methods: {

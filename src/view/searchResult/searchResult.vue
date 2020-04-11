@@ -25,7 +25,11 @@
         <!--        <div class="mask" v-if="isCancel"></div>-->
         <div class="searchResult_nav">
             <swiper class="swiper" :options="swiperNav">
-                <swiper-slide v-for="(nav, index) of navData" :key="'nav' + index" :class="{active: current === index}"  class="swiper_item">
+                <swiper-slide
+                        v-for="(nav, index) of navData"
+                        :key="'nav' + index"
+                        :class="{active: current === index}"
+                        class="swiper_item">
                     <span @click.stop="getCurrent(index, nav.component)">{{nav.name}}</span>
                 </swiper-slide>
             </swiper>
@@ -63,7 +67,6 @@
                 navData,
                 swiperNav,
                 current: 0, // 当前下标
-                searchValue: '', // 搜索关键字
                 componentName: 'books', // 组件名
                 searchResultData: [], // 存储搜索结果
                 isCancel: false,
@@ -72,7 +75,8 @@
                     page: 1,
                     searchtype: 0
                 },
-                totalcount: 0
+                totalcount: 0,
+                searchValue: '', // 搜索关键字
             };
         },
         components: {
@@ -89,7 +93,7 @@
         created() {
             let obj = this.$route.params;
             if (obj.data) {
-                this.searchValue = obj.data.title;
+                this.searchValue = obj.keyword;
                 this.searchOption.searchtype = obj.data.type;
                 this.current = obj.data.type - 1;
                 if (this.searchValue) this.searchVal(this.searchValue);

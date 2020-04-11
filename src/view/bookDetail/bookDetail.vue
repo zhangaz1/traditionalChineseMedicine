@@ -9,30 +9,30 @@
                 <van-icon :name="voiceData" class="voiceIcon mr20" />语音播报
                 <audio src="" ref="audios" @ended="audioGoOn"></audio>
             </div>
-            <ul class="bookBox" ref="book" :class="{isHeight: !adv}" @scroll.stop="getPull($event)" oncontextmenu="return false" onselectstart="return false">
+            <ul class="bookBox" ref="book" @scroll.stop="getPull($event)" oncontextmenu="return false" onselectstart="return false">
                 <li class="bookDetail_book_pullArticle ptb20" @click.stop="getFirst">点击获取上一章<van-icon name="arrow-up" class="ml20" /></li>
                 <li class="bookDetail_book_article pb50 mb60"
-                     ref="article"
-                     :class="{isNight: isNight}"
-                     :style="[{ color: bookDetailColorConfig[current] }, { fontSize: fontConfig.size + 'px'}]" v-html="ruleTitle(article, keyword)">
+                    ref="article"
+                    :class="{isNight: isNight}"
+                    :style="[{ color: bookDetailColorConfig[current] }, { fontSize: fontConfig.size + 'px'}]" v-html="ruleTitle(article, keyword)">
                 </li>
                 <li class="bookDetail_book_pullArticle">上拉获取下一章<van-icon name="arrow-down" class="ml20" /></li>
                 <!--  @touchmove.stop="turnPage($event)"
                       @touchstart.stop="startTurnPage($event)" -->
             </ul>
             <!-- <div class="bookDetail_book_percent ptb10">0.0%</div> -->
-            <div class="bookDetail_book_adv" v-if="adv">
-                <video-player
-                        class="video-player vjs-custom-skin"
-                        ref="videoPlayer"
-                        :playsinline="true"
-                        :options="playerOptions"
-                />
-            </div>
-<!--            <div class="bookDetail_book_jump mtb20">-->
-<!--                <div class="prev plr30 ptb10" @click="prev()">上一页</div>-->
-<!--                <div class="next plr30 ptb10" @click="next()">下一页</div>-->
-<!--            </div>-->
+            <!--            <div class="bookDetail_book_adv" v-if="adv">-->
+            <!--                <video-player-->
+            <!--                        class="video-player vjs-custom-skin"-->
+            <!--                        ref="videoPlayer"-->
+            <!--                        :playsinline="true"-->
+            <!--                        :options="playerOptions"-->
+            <!--                />-->
+            <!--            </div>-->
+            <!--            <div class="bookDetail_book_jump mtb20">-->
+            <!--                <div class="prev plr30 ptb10" @click="prev()">上一页</div>-->
+            <!--                <div class="next plr30 ptb10" @click="next()">下一页</div>-->
+            <!--            </div>-->
         </div>
         <div class="bookDetail_menu">
             <div class="menu ptb10 plr10" @click="openMenu($event)">{{menuTitle}}</div>
@@ -113,34 +113,34 @@
         name: 'bookDetail',
         data() {
             return {
-                playerOptions: {
-                    playbackRates: [ 0.5, 1.0, 1.5, 2.0 ], // 可选择的播放速度
-                    autoplay: true, // 如果true,浏览器准备好时开始回放。
-                    muted: false, // 默认情况下将会消除任何音频。
-                    loop : false, // 视频一结束就重新开始。
-                    preload: 'auto', // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
-                    language: 'zh-CN',
-                    aspectRatio: '16:9', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
-                    fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
-                    sources: [ {
-                        // type: 'video/mp4',
-                        // type: 'video/ogg',
-                        // type: 'video/webm',
-                        type: 'video/webm',
-                        // type: 'video/3gp',
-                        src: ''// url地址
-                    } ],
-                    poster: require('../../assets/image/0001.jpg'), // 你的封面地址
-                    // width: document.documentElement.clientWidth,
-                    notSupportedMessage: '此视频暂无法播放，请稍后再试', // 允许覆盖Video.js无法播放媒体源时显示的默认信息。
-                    controlBar: {
-                        timeDivider: true, // 当前时间和持续时间的分隔符
-                        durationDisplay: true, // 显示持续时间
-                        remainingTimeDisplay: false, // 是否显示剩余时间功能
-                        fullscreenToggle: true // 全屏按钮
-                    }
-                },
-                vedio: null, // 视频内容
+                // playerOptions: {
+                //     playbackRates: [ 0.5, 1.0, 1.5, 2.0 ], // 可选择的播放速度
+                //     autoplay: true, // 如果true,浏览器准备好时开始回放。
+                //     muted: false, // 默认情况下将会消除任何音频。
+                //     loop : false, // 视频一结束就重新开始。
+                //     preload: 'auto', // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
+                //     language: 'zh-CN',
+                //     aspectRatio: '16:9', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
+                //     fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
+                //     sources: [ {
+                //         // type: 'video/mp4',
+                //         // type: 'video/ogg',
+                //         // type: 'video/webm',
+                //         type: 'video/webm',
+                //         // type: 'video/3gp',
+                //         src: ''// url地址
+                //     } ],
+                //     poster: require('../../assets/image/0001.jpg'), // 你的封面地址
+                //     // width: document.documentElement.clientWidth,
+                //     notSupportedMessage: '此视频暂无法播放，请稍后再试', // 允许覆盖Video.js无法播放媒体源时显示的默认信息。
+                //     controlBar: {
+                //         timeDivider: true, // 当前时间和持续时间的分隔符
+                //         durationDisplay: true, // 显示持续时间
+                //         remainingTimeDisplay: false, // 是否显示剩余时间功能
+                //         fullscreenToggle: true // 全屏按钮
+                //     }
+                // },
+                // vedio: null, // 视频内容
                 isMenu: false, // 默认关闭菜单
                 articleTitle: '标题',
                 isNight: false, // 是否夜间模式
@@ -167,7 +167,6 @@
                 bookmarkData: [],
                 voiceData: 'volume-o',
                 isTurnBook: false, //  启动翻书特效
-                adv: false, // 是否有广告
                 articleData: [], // 存储一张内容数据
                 articleLen: 500, // 限制语音播报文字的长度
                 articleVar: 0, // 初始化播报文字开始
@@ -185,7 +184,7 @@
                 lastPage: '', // 存储当前页数
                 bookmark: 'bookmark-o',
                 timer: null, // 计时器
-                keyword: '', // 搜索关键字
+                keyword: '' // 搜索关键字
             };
         },
         watch: {
@@ -623,10 +622,10 @@
                 }
             },
             /** 2020/4/7
-            * 作者：王青高
-            * 功能：{} 获取下一章内容
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{} 获取下一章内容
+             * 参数：{}
+             */
             getPull(event) {
                 let scrollTop = event.target.scrollTop;
                 let clientHeight = event.target.clientHeight;

@@ -15,7 +15,13 @@
             <div slot="searchContent" class="searchContent" v-if="isCancel">
                 <div class="searchResult" @scroll.stop="addScroll($event)">
                     <ul class="ul" v-if="searchResultData.length">
-                        <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/videoBox/components/videoBoxDetail', query: { id: search.id, title: search.title}}"  v-html="ruleTitle(search.title, searchValue)">{{search.title}}</router-link>
+                        <router-link
+                                tag="li"
+                                class="li ptb30 plr30"
+                                v-for="(search, index) of searchResultData"
+                                :key="'search' + index"
+                                :to="{path: '/videoBox/components/videoBoxDetail', query: { id: search.id, title: searchValue}}"
+                                v-html="ruleTitle(search.title, searchValue)"></router-link>
                         <li class="li noData ptb30 plr30" v-if="searchResultData.length === totalcount">没有更多数据</li>
                     </ul>
                     <div class="li noData ptb30 plr30" v-if="!searchResultData.length">暂无数据</div>
@@ -26,7 +32,11 @@
         <div class="videoBox_nav mt20 mb20 plr30">
             <transition name="slide-fade">
                 <ul class="videoBox_nav_ul ptb20 mb40" :class="{_move: isMove}">
-                    <li class="videoBox_nav_ul_li mlr10 mb20" v-for="(item, index) of parentTypes" :class="{active: current === index}" :key="'item' + index" @click="switchTap(item, index, true)">{{item.title}}</li>
+                    <li
+                        class="videoBox_nav_ul_li mlr10 mb20"
+                        v-for="(item, index) of parentTypes"
+                        :class="{active: current === index}" :key="'item' + index"
+                        @click="switchTap(item, index, true)">{{item.title}}</li>
                 </ul>
             </transition>
             <span class="videoBox_nav_icon" @click="_animation" :class="{isDeg: isMove}"></span>
@@ -37,12 +47,17 @@
                 <div class="videoBox_content_num">共有{{totalcount}}部</div>
             </div>
             <ul class="videoBox_content_item ptb10" @scroll="handleScroll($event)">
-                <router-link v-for="(video, index) of videoData"  :key="'video' + index" :to="{path: '/videoBox/components/videoBoxDetail', query: {id: video.id}}" tag="li" class="videoBox_content_item_li mr20">
+                <router-link
+                        v-for="(video, index) of videoData"
+                        :key="'video' + index"
+                        :to="{path: '/videoBox/components/videoBoxDetail', query: {id: video.id, title: searchValue}}"
+                        tag="li"
+                        class="videoBox_content_item_li mr20">
                     <div class="item_img">
                         <img :src="isImg(video.cover)" class="_img mb20"/>
-                        <span class="_txt p8">{{video.title}}</span>
+                        <span class="_txt p8" v-html="ruleTitle(video.title, searchValue)"></span>
                     </div>
-                    <p class="txt_title ptb20">{{video.title}}</p>
+                    <p class="txt_title ptb20" v-html="ruleTitle(video.title, searchValue)"></p>
                 </router-link>
                 <li class="videoBox_content_item_li mr20" v-if="videoData.length === totalcount">没有更多数据</li>
             </ul>
@@ -418,7 +433,7 @@
                     height: 300px;
                     display: inline-block;
                     &:last-child {
-                        width: 100%;
+                        width: 100% !important;
                         text-align: center;
                         font-size: 28px;
                         color: $ccc-color;
@@ -451,7 +466,6 @@
                             width: 90%;
                         }
                     }
-
                     .txt_title {
                         @include ellipsis();
                         font-size: 24px;

@@ -8,7 +8,7 @@
                         class="mb20"
                 >
                     <template #title>
-                         <img :src="titleImg" alt="" class="titleImg">
+                        <img :src="titleImg" alt="" class="titleImg">
                     </template>
                 </van-nav-bar>
                 <headSearch
@@ -46,14 +46,14 @@
             </ul>
         </subMenu>
         <subMenu class="plr30 bg_f ptb10" title="书籍推荐榜" toRouter="/book">
-<!--            <swiper class="swiper_common" :options="swiperBook" slot="content">-->
-<!--                <swiper-slide  class="swiper_common_item" v-for="(book, index) of booklist" :key="'book' + index">-->
-<!--                    <router-link tag="div" :to="{path: '/bookContentFeed', query: { id: book.id }}" :style="{backgroundImage: 'url(' + book.cover + ')', backgroundSize: '100% 100%' }" class="content_img">-->
-<!--                        <div class="content_img_free" v-if="book.isfree === '1'"></div>-->
-<!--                    </router-link>-->
-<!--                    <p class="content_img_title pl10">{{book.title}}</p>-->
-<!--                </swiper-slide>-->
-<!--            </swiper>-->
+            <!--            <swiper class="swiper_common" :options="swiperBook" slot="content">-->
+            <!--                <swiper-slide  class="swiper_common_item" v-for="(book, index) of booklist" :key="'book' + index">-->
+            <!--                    <router-link tag="div" :to="{path: '/bookContentFeed', query: { id: book.id }}" :style="{backgroundImage: 'url(' + book.cover + ')', backgroundSize: '100% 100%' }" class="content_img">-->
+            <!--                        <div class="content_img_free" v-if="book.isfree === '1'"></div>-->
+            <!--                    </router-link>-->
+            <!--                    <p class="content_img_title pl10">{{book.title}}</p>-->
+            <!--                </swiper-slide>-->
+            <!--            </swiper>-->
             <ul class="swiper_common" slot="content">
                 <li class="swiper_common_item mr10 mb20" v-for="(book, index) of booklist" :key="'book' + index">
                     <router-link class="content_img mb10" :to="{path: '/bookContentFeed', query: { id: book.id }}" :style="{backgroundImage: 'url(' + isImg(book.cover) + ')', backgroundSize: '100% 100%' }">
@@ -64,22 +64,22 @@
             </ul>
         </subMenu>
         <subMenu class="plr30 bg_f ptb10" title="视频推荐榜" toRouter="/videoBox">
-<!--            <swiper class="swiper_common" :options="swiperVideo" slot="content">-->
-<!--                <swiper-slide v-for="(video, index) in videoData" :key="index  + 'videoData'"  class="swiper_common_item">-->
-<!--                    <router-link :to="{path: '/videoBox/components/videoBoxDetail', query: {id: video.id}}" class="swiper_common_item_link">-->
-<!--                        <div class="item_img">-->
-<!--                             <img :src="video.cover" class="_img mb20"/>-->
-<!--                            <span class="_txt">{{video.title}}</span>-->
-<!--                        </div>-->
-<!--                        <p class="txt_title ptb20">{{video.title}}</p>-->
-<!--                    </router-link>-->
-<!--                </swiper-slide>-->
-<!--            </swiper>-->
+            <!--            <swiper class="swiper_common" :options="swiperVideo" slot="content">-->
+            <!--                <swiper-slide v-for="(video, index) in videoData" :key="index  + 'videoData'"  class="swiper_common_item">-->
+            <!--                    <router-link :to="{path: '/videoBox/components/videoBoxDetail', query: {id: video.id}}" class="swiper_common_item_link">-->
+            <!--                        <div class="item_img">-->
+            <!--                             <img :src="video.cover" class="_img mb20"/>-->
+            <!--                            <span class="_txt">{{video.title}}</span>-->
+            <!--                        </div>-->
+            <!--                        <p class="txt_title ptb20">{{video.title}}</p>-->
+            <!--                    </router-link>-->
+            <!--                </swiper-slide>-->
+            <!--            </swiper>-->
             <ul class="swiper_common" slot="content">
                 <li class="swiper_common_item mr10 w30 mb20 _mr0" v-for="(video, index) of videoData" :key="'videoData' + index">
                     <router-link :to="{path: '/videoBox/components/videoBoxDetail', query: {id: video.id}}" class="swiper_common_item_link">
                         <div class="item_img">
-                             <img :src="isImg(video.cover)" class="_img mb20"/>
+                            <img :src="isImg(video.cover)" class="_img mb20"/>
                             <span class="_txt">{{video.title}}</span>
                         </div>
                         <p class="txt_title ptb20">{{video.title}}</p>
@@ -188,7 +188,7 @@
              */
             openDetail(obj) {
                 if (obj) {
-                    this.$router.push({ name: 'searchResult', params: { data: obj } });
+                    this.$router.push({ name: 'searchResult', params: { data: obj, keyword: this.searchValue } });
                     // switch (obj.type) {
                     //     case 1:
                     //         this.$router.push({ path: '/bookContentFeed', query: { id: obj.id } });
@@ -203,10 +203,10 @@
                 }
             },
             /** 2020/3/30
-            * 作者：王青高
-            * 功能：{} 根据关键字搜索内容
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{} 根据关键字搜索内容
+             * 参数：{}
+             */
             searchVal(val) {
                 if (!val && this.searchValue === '') {
                     this.searchResultData = [];

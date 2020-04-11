@@ -154,7 +154,7 @@
             }
             &_code {
                 @include flex-center();
-                width: 100%;
+                width: $size;
                 height: 500px;
                 user-select: auto !important;
             }

@@ -27,7 +27,6 @@
 
 <script>
     import publicTitle from '@/components/publicTitle';
-    import loadMore from '@/components/loadMore/loadMore.vue';
     import { navData } from './config';
     import { getFoot, clearFoot } from '@/api/content';
     import { Toast } from 'vant';

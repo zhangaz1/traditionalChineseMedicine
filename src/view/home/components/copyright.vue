@@ -1,7 +1,7 @@
 <template>
     <div class="copyright">
-        <p class="copyright_top">Copyright©2012-2020人身通考保障所有权</p>
-        <p class="copyright_bottom">版权号: 20000000000</p>
+        <p class="copyright_top">Copyright©2012-2020书库与医案保障所有权</p>
+        <p class="copyright_bottom">版权号: 00000000000</p>
     </div>
 </template>
 

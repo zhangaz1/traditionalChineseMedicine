@@ -38,7 +38,7 @@
 <!--                            <li class="li"></li>-->
 <!--                        </ul>-->
                     </router-link>
-                    <router-link tag="div" :to="{path: '/bookDetail', query: {id: curArticle.id}}" class="content_txt">
+                    <router-link tag="div" :to="{path: '/bookDetail', query: { id: curArticle.id, title: keyword }}" class="content_txt">
                         <div class="title mb20" v-html="ruleTitle(curArticle.title, keyword)">{{curArticle.title}}</div>
                         <p class="author mb10"  v-html="ruleTitle(curArticle.author, keyword)">{{curArticle.author}}</p>
                         <p class="description" v-html="ruleTitle(curArticle.description, keyword)">{{curArticle.description}}</p>
@@ -57,21 +57,13 @@
             </div>
             <div class="directory plr30 ptb40 mb20" v-else-if="current === 1">
                 <ul class="_one" v-if="directory.length">
-                    <router-link tag="li" :to="{path: '/bookDetail', query: { id: item.id }}" class="_one_li pl20 ptb20" v-for="(item, index) of directory" :key="'item' + index" v-html="ruleTitle(item.title, keyword)">
-<!--                        <ul class="_two">-->
-<!--                            <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="_two_li pl20 ptb20">重广补注黄帝内经素问•序</router-link>-->
-<!--                            <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="_two_li pl20 ptb20">重广补注黄帝内经素问•序</router-link>-->
-<!--                            <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="_two_li pl20 ptb20">目录</router-link>-->
-<!--                            <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="_two_li pl20 ptb20">卷第一-->
-<!--                                <ul class="_three">-->
-<!--                                    <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="_three_li pl20 ptb20">上古天真论篇第一</router-link>-->
-<!--                                    <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="_three_li pl20 ptb20">上古天真论篇第一</router-link>-->
-<!--                                    <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="_three_li pl20 ptb20">上古天真论篇第一</router-link>-->
-<!--                                    <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="_three_li pl20 ptb20">上古天真论篇第一</router-link>-->
-<!--                                    <router-link tag="li" :to="{path: '/', query: {id: 1}}" class="_three_li pl20 ptb20">上古天真论篇第一</router-link>-->
-<!--                                </ul>-->
-<!--                            </router-link>-->
-<!--                        </ul>-->
+                    <router-link
+                            tag="li"
+                            :to="{path: '/bookDetail', query: { id: item.id, title: keyword }}"
+                            class="_one_li pl20 ptb20"
+                            v-for="(item, index) of directory"
+                            :key="'item' + index"
+                            v-html="ruleTitle(item.title, keyword)">
                     </router-link>
                 </ul>
             </div>
@@ -79,20 +71,12 @@
                 <swiper class="swiper" :options="bookContentFeedConfig" slot="content" v-if="booklist.length">
                     <swiper-slide class="swiper_common" v-for="(book, index) of booklist" :key="'book' + index">
                         <div class="content ptb20">
-                            <router-link tag="div" :to="{path: '/bookContentFeed', query: { id: book.id }}" :style="{backgroundImage: 'url(' + isImg(book.cover) + ')', backgroundSize: '100% 100%' }" class="content_img">
+                            <router-link
+                                    tag="div"
+                                    :to="{path: '/bookContentFeed', query: { id: book.id }}"
+                                    :style="{backgroundImage: 'url(' + isImg(book.cover) + ')', backgroundSize: '100% 100%' }"
+                                    class="content_img">
                                 <div class="content_img_free" v-if="book.isfree === '1'"></div>
-<!--                                <div class="content_img_txt">-->
-<!--                                    <div class="title">-->
-<!--                                        <span class="name">{{book.title}}</span>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <ul class="content_img_line">-->
-<!--                                    <li class="li"></li>-->
-<!--                                    <li class="li"></li>-->
-<!--                                    <li class="li"></li>-->
-<!--                                    <li class="li"></li>-->
-<!--                                    <li class="li"></li>-->
-<!--                                </ul>-->
                             </router-link>
                             <p class="content_img_title">{{book.title}}</p>
                         </div>

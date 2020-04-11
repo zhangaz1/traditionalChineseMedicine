@@ -26,26 +26,22 @@
             <div class="tips ptb20" >共有{{searchResultData.length}}条结果</div>
             <div class="title ptb20">{{title}}</div>
             <div class="content pl160 ptb20" v-for="(book, index) of searchResultData" :key="'book' + index">
-                <router-link tag="div" :to="{path: '/bookContentFeed', query: {id: book.id}}" :style="{backgroundImage: 'url(' + isImg(book.cover) + ')', backgroundSize: '100% 100%' }" class="content_img sprite-book-cover0">
+                <router-link
+                        tag="div"
+                        :to="{path: '/bookContentFeed', query: {id: book.id, title: isDefaultVal}}"
+                        :style="{backgroundImage: 'url(' + isImg(book.cover) + ')', backgroundSize: '100% 100%' }"
+                        class="content_img sprite-book-cover0">
                     <div class="content_img_free" v-if="book.isfree === '1'"></div>
-<!--                    <div class="content_img_txt">-->
-<!--                        <div class="title">-->
-<!--                            <span class="name">{{book.title}}</span>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <ul class="content_img_line">-->
-<!--                        <li class="li"></li>-->
-<!--                        <li class="li"></li>-->
-<!--                        <li class="li"></li>-->
-<!--                        <li class="li"></li>-->
-<!--                        <li class="li"></li>-->
-<!--                    </ul>-->
                 </router-link>
                 <div  class="content_txt pl20">
-                    <div class="title mb20" v-html="ruleTitle(book.title, isDefaultVal)">{{book.title}}</div>
-                    <p class="author mb10" v-html="ruleTitle(book.author, isDefaultVal)">{{book.author}}</p>
-                    <p class="description" v-html="ruleTitle(book.description, isDefaultVal)">{{book.description}}</p>
-                    <router-link :to="{path: '/bookContentFeed', query: { id: book.id, title: isDefaultVal }}" tag="button" type="button" class="resultsBtns">详情</router-link>
+                    <div class="title mb20" v-html="ruleTitle(book.title, isDefaultVal)"></div>
+                    <p class="author mb10" v-html="ruleTitle(book.author, isDefaultVal)"></p>
+                    <p class="description" v-html="ruleTitle(book.description, isDefaultVal)"></p>
+                    <router-link
+                            :to="{path: '/bookContentFeed', query: { id: book.id, title: isDefaultVal }}"
+                            tag="button"
+                            type="button"
+                            class="resultsBtns">详情</router-link>
                 </div>
             </div>
         </div>
@@ -73,7 +69,6 @@
                     page: 1
                 },
                 defaultImg: require('../../assets/img/no_img.jpg'),
-                keyword: '', // 搜索关键字
             };
         },
         computed: {
@@ -124,6 +119,7 @@
              *参数:
              */
             getSearch(val) {
+                this.isDefaultVal = val;
                 getSearch({
                     pagesize: this.pageOption.pagesize,
                     page: this.pageOption.page,

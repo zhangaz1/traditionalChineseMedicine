@@ -38,13 +38,6 @@
             isTop() {
                 let self = this;
                 document.body.scrollTop = 0;
-                // this.timer = setInterval(function () {
-                //     document.body.scrollTop = document.body.scrollTop - 50;
-                //     console.log('点击了我', document.body.scrollTop);
-                //     if (document.body.scrollTop === 0) {
-                //         clearInterval(self.timer);
-                //     }
-                // }, 1);
             }
         },
         mounted() {

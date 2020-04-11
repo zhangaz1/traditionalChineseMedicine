@@ -15,7 +15,7 @@
             </div>
             <div class="videoBoxDetail_top_desc ptb20">
                 <div class="title mb20" v-html="ruleTitle(vedio.title, keyword)"></div>
-                <div class="txt ptb40">主讲：{{vedio.author}}</div>
+                <div class="txt ptb40">主讲：<span v-html="ruleTitle(vedio.author, keyword)"></span></div>
                 <div class="btnBox">
                     <button type="button" class="btn ptb10 mr20 plr30" @click="_play">立即播放</button>
                     <button type="button" class="btn ptb10 plr30"  @click="_collection"><van-icon :name="icon" class="icon pr10" /> | 收藏</button>
@@ -30,7 +30,7 @@
                 <div class="videoBoxDetail_content_title_txt">选集播放</div>
             </div>
             <ul class="videoBoxDetail_content_obj">
-                <router-link tag="li" v-for="(video, index) of vediolist" :key="'video' + index" :to="{path: '/videoBox/components/videoBoxTxt', query: {id: video.id}}" class="videoBoxDetail_content_obj_li ptb20 plr30 mb20">
+                <router-link tag="li" v-for="(video, index) of vediolist" :key="'video' + index" :to="{path: '/videoBox/components/videoBoxTxt', query: {id: video.id, title: keyword}}" class="videoBoxDetail_content_obj_li ptb20 plr30 mb20">
                     <span class="num">第{{(index + 1)}}集</span>
                     <span class="txt plr30">• • • <span v-html="ruleTitle(video.title, keyword)"></span> • • •</span>
                 </router-link>

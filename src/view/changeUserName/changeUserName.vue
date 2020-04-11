@@ -34,9 +34,6 @@
                 this.nickname = this.$route.query.title;
             }
         },
-        mounted() {
-
-        },
         methods: {
             /** 2020/3/20
              * 作者：王青高
@@ -61,7 +58,7 @@
              */
             onGoBack() {
                 this.$router.go(-1);
-            },
+            }
         }
     };
 </script>

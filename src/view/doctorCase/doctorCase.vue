@@ -48,7 +48,7 @@
 <!--                </div>-->
                 <div class="searchResult" @scroll.stop="addScroll($event)">
                     <ul class="ul" v-if="searchResultData.length">
-                        <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/doctorCase/components/doctorDetail', query: { id: search.id, title: search.title}}" v-html="ruleTitle(search.title, searchValue)"></router-link>
+                        <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/doctorCase/components/doctorDetail', query: { id: search.id, title: searchValue}}" v-html="ruleTitle(search.title, searchValue)"></router-link>
                         <li class="li noData ptb30 plr30" v-if="searchResultData.length === totalcount">没有更多数据</li>
                     </ul>
                     <div class="li noData ptb30 plr30" v-if="!searchResultData.length">暂无数据</div>

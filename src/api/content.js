@@ -89,6 +89,7 @@ const getItemContent = id => {
 const addToCollectionVedio = id => {
     return axios.get('/vedio/addToCollectionVedio?' + qs.stringify(id));
 };
+// 点击分类获取书籍列表
 const getBookListByChannel = options => {
     return axios.get('/shuku/getBookListByChannel?' + qs.stringify(options));
 };
