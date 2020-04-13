@@ -6,11 +6,11 @@
                 <router-link tag="div" :to="{path: '/bookContentFeed', query: { id: item.id }}" class="content_img mb10" :style="{backgroundImage: 'url(' + isImg(item.cover) + ')', backgroundSize: '100% 100%' }">
                     <div class="content_img_free" v-if="item.isfree === '1'"></div>
                 </router-link>
-                <router-link tag="div" :to="{path: '/bookContentFeed', query: { id: item.id, title: searchValue }}" class="content_txt pl20"> <!-- :to="{path: '/bookDetail', query: {id: item.id }}" -->
+                <router-link tag="div" :to="{path: '/bookContentFeed', query: { id: item.id, title: searchValue }}" class="content_txt pl20 ptb10"> <!-- :to="{path: '/bookDetail', query: {id: item.id }}" -->
                     <div class="title mb20" v-html="ruleTitle(item.title, searchValue)">{{item.title || '无名'}}</div>
                     <p class="author mb10" v-html="ruleTitle(item.author, searchValue)">{{item.author || '无名'}}</p>
                     <p class="description" v-html="ruleTitle(item.description, searchValue)">{{item.description || '暂无描述'}}</p>
-                    <p class="digest">{{item.updatetime || '暂无时间'}}</p>
+<!--                    <p class="digest">{{item.updatetime || '暂无时间'}}</p>-->
                 </router-link>
             </div>
         </div>

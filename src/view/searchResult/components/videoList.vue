@@ -6,7 +6,7 @@
                 <div class="content_img">
                     <img class="img" :src="isImg(item.cover)" alt="">
                 </div>
-                <div class="content_txt pl20">
+                <div class="content_txt pl20 ptb10">
                     <p class="digest" v-html="ruleTitle(item.title, searchValue)"></p>
                     <p class="time ptb20">{{item.updatetime}}</p>
                 </div>
@@ -118,6 +118,10 @@
                 }
                 &_txt {
                     position: relative;
+                    display: flex;
+                    justify-content: space-between;
+                    flex-direction: column;
+                    height: 100%;
                     .digest {
                         @include multiline-ellipsis(2);
                         font-size: 28px;
