@@ -94,7 +94,7 @@
     import subMenu from './components/subMenu';
     import { swiper, swiperSlide } from 'vue-awesome-swiper';
     import { bookContentFeedConfig } from './config';
-    import { EventBus } from "@/utils/event-bus";
+    import { EventBus } from '@/utils/event-bus';
     import { getBookItem } from '@/api/content';
     import { Toast } from 'vant';
     import { ruleTitle } from '@/utils/searchVal';
@@ -107,10 +107,10 @@
                 bookContentFeedConfig,
                 navItem: [
                     {
-                        "name": '内容提要'
+                        'name': '内容提要'
                     },
                     {
-                        "name": '目录'
+                        'name': '目录'
                     }
                 ],
                 booklist: [], // 存储推荐数据
@@ -139,6 +139,10 @@
             subMenu,
             swiper,
             swiperSlide
+        },
+        watch: {
+            // 如果路由有变化，会再次执行该方法
+            '$route': 'getBookItem'
         },
         mounted() {
             EventBus.$emit("isDisplay", { data: false });
@@ -644,20 +648,5 @@
     }
     .arrowDeg {
         transform: rotate(-45deg) !important;
-    }
-    .sprite-book-cover0 {
-        background-color: #405370;
-    }
-    .sprite-book-cover1 {
-        background-color: #6898a7;
-    }
-    .sprite-book-cover2 {
-        background-color: #746174;
-    }
-    .sprite-book-cover3 {
-        background-color: #a98463;
-    }
-    .sprite-book-cover4 {
-        background-color: #b25d43;
     }
 </style>

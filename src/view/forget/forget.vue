@@ -110,23 +110,24 @@
              * 参数：{}
              */
             onSubmit(values) {
-                const tips1 = Toast('正在登录中...');
-                axios.post('/login/registByPhone', qs.stringify({
-                    phone: values.phone,
-                    password: values.password,
-                    nickname: values.nickname,
-                    headimgurl: this.headImgUrl
-                })).then(res => {
-                    let data = res.data;
-                    console.log('res', res);
-                    if (res.data.state === '1') {
-                        console.log(data.data.user);
-                        tips1.clear();
-                        this.login(values);
-                    } else {
-                        Toast('注册失败！ 请重新注册!');
-                    }
-                });
+                Toast('请联系客服修改密码!');
+                // const tips1 = Toast('请联系客服修改密码!');
+                // axios.post('/login/registByPhone', qs.stringify({
+                //     phone: values.phone,
+                //     password: values.password,
+                //     nickname: values.nickname,
+                //     headimgurl: this.headImgUrl
+                // })).then(res => {
+                //     let data = res.data;
+                //     console.log('res', res);
+                //     if (res.data.state === '1') {
+                //         console.log(data.data.user);
+                //         tips1.clear();
+                //         this.login(values);
+                //     } else {
+                //         Toast('注册失败！ 请重新注册!');
+                //     }
+                // });
             },
             login(userInfo) {
                 axios.post('/login/normallogin', qs.stringify({

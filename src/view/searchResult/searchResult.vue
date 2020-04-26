@@ -57,7 +57,7 @@
     import videoList from "./components/videoList";
     import { swiper, swiperSlide } from 'vue-awesome-swiper';
     import { navData, swiperNav } from './config';
-    import { getSearch } from '@/api/content';
+    import { getSearch, searchInfoByKeyWords } from '@/api/content';
     import { EventBus } from "@/utils/event-bus";
     export default {
         name: 'searchResult',
@@ -73,7 +73,7 @@
                 searchOption: {
                     pageSize: 20,
                     page: 1,
-                    searchtype: 0
+                    searchtype: 1
                 },
                 totalcount: 0,
                 searchValue: '', // 搜索关键字
@@ -92,10 +92,13 @@
         },
         created() {
             let obj = this.$route.params;
-            if (obj.data) {
-                this.searchValue = obj.keyword;
-                this.searchOption.searchtype = obj.data.type;
-                this.current = obj.data.type - 1;
+            if (Object.keys(obj).length) {
+                // 正则匹配汉字，
+                let reg = /[\u4e00-\u9fa5]/g;
+                // 保证提取到绝对汉字，防止取到转义字符
+                this.searchValue = obj.keyword.match(reg).join('');
+                this.searchOption.searchtype = obj.type;
+                this.current = obj.type - 1;
                 if (this.searchValue) this.searchVal(this.searchValue);
                 this.componentName = this.navData[this.current].component;
             }
@@ -192,19 +195,29 @@
                         this.searchOption.page = 1;
                     }
                     this.searchValue = val;
-                    getSearch({
-                        pagesize: this.searchOption.pageSize,
-                        page: this.searchOption.page++,
-                        keyword: this.searchValue,
-                        searchtype: this.searchOption.searchtype
-                    }).then(res => {
-                        let result = res.data;
-                        if (res.state === '1') {
-                            this.totalcount = result.totalcount;
-                            this.searchResultData = this.searchResultData.concat(result.list);
-                        }
-                    });
+                    if (this.searchValue) {
+                        this.getSearch();
+                    }
                 }
+            },
+            /** 2020-4-15 0015
+             *作者:王青高
+             *功能: 搜索内容
+             *参数:
+             */
+            getSearch() {
+                getSearch({
+                    pagesize: this.searchOption.pageSize,
+                    page: this.searchOption.page++,
+                    keyword: this.searchValue,
+                    searchtype: this.searchOption.searchtype
+                }).then(res => {
+                    let result = res.data;
+                    if (res.state === '1') {
+                        this.totalcount = result.totalcount;
+                        this.searchResultData = this.searchResultData.concat(result.list);
+                    }
+                });
             },
             /** 2020/4/10
              * 作者：王青高

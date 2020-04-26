@@ -12,18 +12,19 @@
 </script>
 
 <style lang="scss" scoped>
+    @import "~@/assets/css/_mixins";
     .copyright {
         display: flex;
         justify-content: space-around;
         align-items: center;
         flex-direction: column;
-        width: 100%;
+        width: $size;
         height: 100px;
-        background: #ded7ca;
+        background: $bg_ddcdaf;
         &_bottom,
         &_top {
             font-size: 24px;
-            color: #909394;
+            color: $color_999;
         }
     }
 </style>

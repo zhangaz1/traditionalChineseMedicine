@@ -18,11 +18,17 @@
                         @focus="_focus"
                         @_clear="_clear"
                         :isCancel="isCancel"
+                        @openDetail="openDetail"
                 >
                     <div slot="searchContent" class="searchContent" v-if="isCancel">
                         <div class="searchResult" @scroll.stop="addScroll($event)">
                             <ul class="ul" v-if="searchResultData.length">
-                                <li class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" @click="openDetail(search)" v-html="ruleTitle(search.title, searchValue)"></li>
+                                <li
+                                        class="li ptb30 plr30"
+                                        v-for="(search, index) of searchResultData"
+                                        :key="'search' + index"
+                                        @click="openDetail(search.title)"
+                                        v-html="ruleTitle(search.title, searchValue)"></li>
                                 <li class="li noData ptb30 plr30" v-if="searchResultData.length === totalcount">没有更多数据</li>
                             </ul>
                             <div class="li noData ptb30 plr30" v-if="!searchResultData.length">暂无数据</div>
@@ -31,7 +37,7 @@
                 </headSearch>
             </div>
         </van-sticky>
-        <publicSwipe heightVal="200">
+        <publicSwipe heightVal="200" class="home_swiper">
             <van-swipe-item v-for="(imgItem, index) of bannerData" :key="index + 'imgItem'"  class="home_swiper_item" slot="swiperItem">
                 <a :href="imgItem.url">
                     <img :src="isImg(imgItem.img)" class="img"/>
@@ -55,7 +61,7 @@
             <!--                </swiper-slide>-->
             <!--            </swiper>-->
             <ul class="swiper_common" slot="content">
-                <li class="swiper_common_item mr10 mb20" v-for="(book, index) of booklist" :key="'book' + index">
+                <li class="swiper_common_item mb20" v-for="(book, index) of booklist" :key="'book' + index">
                     <router-link class="content_img mb10" :to="{path: '/bookContentFeed', query: { id: book.id }}" :style="{backgroundImage: 'url(' + isImg(book.cover) + ')', backgroundSize: '100% 100%' }">
                         <div class="content_img_free" v-if="book.isfree === '1'"></div>
                     </router-link>
@@ -76,7 +82,7 @@
             <!--                </swiper-slide>-->
             <!--            </swiper>-->
             <ul class="swiper_common" slot="content">
-                <li class="swiper_common_item mr10 w30 mb20 _mr0" v-for="(video, index) of videoData" :key="'videoData' + index">
+                <li class="swiper_common_item w30 mb20 _mr0" v-for="(video, index) of videoData" :key="'videoData' + index">
                     <router-link :to="{path: '/videoBox/components/videoBoxDetail', query: {id: video.id}}" class="swiper_common_item_link">
                         <div class="item_img">
                             <img :src="isImg(video.cover)" class="_img mb20"/>
@@ -98,7 +104,7 @@
     import copyright from './components/copyright';
     import { swiperVideo, swiperBook } from './config';
     import { swiper, swiperSlide } from 'vue-awesome-swiper';
-    import { getHomeInfo, getSearch } from '@/api/content';
+    import { getHomeInfo, getSearch, searchHotWords } from '@/api/content';
     import { EventBus } from "@/utils/event-bus";
     import { ruleTitle } from '@/utils/searchVal';
     export default {
@@ -147,7 +153,7 @@
         },
         mounted() {
             this.getHomeInfo();
-            EventBus.$emit("isDisplay", { data: true });
+            EventBus.$emit('isDisplay', { data: true });
         },
         methods: {
             /** 2020/3/30
@@ -183,12 +189,14 @@
             },
             /** 2020/3/30
              * 作者：王青高
-             * 功能：{} 根据类型跳转不同的详情页
+             * 功能：{} 根据类型跳转不同的搜索结果页
              * 参数：{}
              */
             openDetail(obj) {
                 if (obj) {
-                    this.$router.push({ name: 'searchResult', params: { data: obj, keyword: this.searchValue } });
+                    this.$router.push({ name: 'searchResult', params: { type: 1, keyword: obj } });
+                    // this.$router.push({ path: '/searchResult', query: { type: 1, keyword: obj } });
+                    // this.$router.push({ name: 'searchResult', params: { data: obj, keyword: this.searchValue } });
                     // switch (obj.type) {
                     //     case 1:
                     //         this.$router.push({ path: '/bookContentFeed', query: { id: obj.id } });
@@ -218,18 +226,28 @@
                     this.searchOption.page = 1;
                 }
                 this.searchValue = val;
-                getSearch({
-                    pagesize: this.searchOption.pageSize,
-                    page: this.searchOption.page++,
-                    keyword: this.searchValue,
-                    searchtype: this.searchOption.searchtype
-                }).then(res => {
-                    let result = res.data;
-                    if (res.state === '1') {
-                        this.totalcount = result.totalcount;
-                        this.searchResultData = this.searchResultData.concat(result.list);
-                    }
-                });
+                if (this.searchValue) {
+                    searchHotWords({
+                        keyword: this.searchValue
+                    }).then(res => {
+                        let result = res.data;
+                        if (res.state === '1') {
+                            this.searchResultData = result.hotword;
+                        }
+                    });
+                }
+                // getSearch({
+                //     pagesize: this.searchOption.pageSize,
+                //     page: this.searchOption.page++,
+                //     keyword: this.searchValue,
+                //     searchtype: this.searchOption.searchtype
+                // }).then(res => {
+                //     let result = res.data;
+                //     if (res.state === '1') {
+                //         this.totalcount = result.totalcount;
+                //         this.searchResultData = this.searchResultData.concat(result.list);
+                //     }
+                // });
             },
             /** 2020-3-19 0019
              *作者:王青高
@@ -439,21 +457,18 @@
             }
         }
         .swiper_common {
-            /*height: 280px;*/
             position: relative;
             display: flex;
             flex-wrap: wrap;
             &_item {
-                width: 23%;
+                width: 25%;
                 display: flex;
                 flex-direction: column;
                 box-sizing: border-box;
-                &._mr0:nth-child(3n),
-                &:nth-child(4n) {
-                    margin-right: 0;
-                }
+                padding: 0 2px;
                 &.w30 {
-                    width: 32%;
+                    width: 33.3%;
+                    padding: 0 8px;
                 }
                 .content_img {
                     width: 100%;
@@ -583,26 +598,17 @@
                 }
             }
         }
+        /* 轮播图 start */
+        &_swiper {
+            width: 100%;
+            margin: 0 auto;
+        }
+        /* 轮播图 end */
     }
     .fade-enter-active, .fade-leave-active {
         transition: opacity .5s;
     }
     .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
         opacity: 0;
-    }
-    .sprite-book-cover0 {
-        background-color: #405370;
-    }
-    .sprite-book-cover1 {
-        background-color: #6898a7;
-    }
-    .sprite-book-cover2 {
-        background-color: #746174;
-    }
-    .sprite-book-cover3 {
-        background-color: #a98463;
-    }
-    .sprite-book-cover4 {
-        background-color: #b25d43;
     }
 </style>

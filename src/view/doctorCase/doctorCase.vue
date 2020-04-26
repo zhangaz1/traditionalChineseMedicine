@@ -17,38 +17,44 @@
                 @focus="_focus"
                 @_clear="_clear"
                 :isCancel="isCancel"
+                @openDetail="openDetail"
         >
             <div slot="searchContent" class="searchContent" v-if="isCancel">
-<!--                <div v-if="!searchResultData.length" class="hot plr30">-->
-<!--                    <div class="title ptb20">热搜</div>-->
-<!--                    <ul class="content ptb20">-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                    </ul>-->
-<!--                </div>-->
-<!--                <div v-if="!searchResultData.length" class="history plr30">-->
-<!--                    <div class="title ptb20">-->
-<!--                        搜索历史-->
-<!--                        <van-icon name="delete" class="title_icon" @click="_delete"/>-->
-<!--                    </div>-->
-<!--                    <ul class="content ptb20">-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
-<!--                    </ul>-->
-<!--                </div>-->
+                <!--                <div v-if="!searchResultData.length" class="hot plr30">-->
+                <!--                    <div class="title ptb20">热搜</div>-->
+                <!--                    <ul class="content ptb20">-->
+                <!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                <!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                <!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                <!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                <!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                <!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                <!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                <!--                    </ul>-->
+                <!--                </div>-->
+                <!--                <div v-if="!searchResultData.length" class="history plr30">-->
+                <!--                    <div class="title ptb20">-->
+                <!--                        搜索历史-->
+                <!--                        <van-icon name="delete" class="title_icon" @click="_delete"/>-->
+                <!--                    </div>-->
+                <!--                    <ul class="content ptb20">-->
+                <!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                <!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                <!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                <!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                <!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                <!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                <!--                        <li class="li plr20 ptb20 mb20 mr20">黄帝内经</li>-->
+                <!--                    </ul>-->
+                <!--                </div>-->
                 <div class="searchResult" @scroll.stop="addScroll($event)">
                     <ul class="ul" v-if="searchResultData.length">
-                        <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/doctorCase/components/doctorDetail', query: { id: search.id, title: searchValue}}" v-html="ruleTitle(search.title, searchValue)"></router-link>
+                        <li
+                            class="li ptb30 plr30"
+                            v-for="(search, index) of searchResultData"
+                            :key="'search' + index"
+                            @click="openDetail(search.title)"
+                            v-html="ruleTitle(search.title, searchValue)"></li>
                         <li class="li noData ptb30 plr30" v-if="searchResultData.length === totalcount">没有更多数据</li>
                     </ul>
                     <div class="li noData ptb30 plr30" v-if="!searchResultData.length">暂无数据</div>
@@ -89,7 +95,7 @@
     import headSearch from '@/components/headSearch/';
     import { navData, menuData } from './config';
     import { EventBus } from "@/utils/event-bus";
-    import { getChildrenDoctor, getIndexData, getSearch } from '@/api/content';
+    import { getChildrenDoctor, getIndexData, getSearch, searchHotWords } from '@/api/content';
     import { ruleTitle } from '@/utils/searchVal';
     export default {
         name: 'doctorCase',
@@ -118,9 +124,19 @@
         },
         mounted() {
             this.getIndexData();
-            EventBus.$emit("isDisplay", { data: true });
+            EventBus.$emit('isDisplay', { data: true });
         },
         methods: {
+            /** 2020/3/30
+             * 作者：王青高
+             * 功能：{} 根据类型跳转不同的搜索结果页
+             * 参数：{}
+             */
+            openDetail(obj) {
+                if (obj) {
+                    this.$router.push({ name: 'searchResult', params: { type: 2, keyword: obj } });
+                }
+            },
             /** 2020/3/30
              * 作者：王青高
              * 功能：{} 监听滚动条是否触底
@@ -151,10 +167,10 @@
                 });
             },
             /** 2020/3/25
-            * 作者：王青高
-            * 功能：{} 获取二级分类
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{} 获取二级分类
+             * 参数：{}
+             */
             getChildrenDoctor(pid) {
                 getChildrenDoctor({ pid }).then(res => {
                     let result = res.data;
@@ -172,10 +188,10 @@
                 this.getChildrenDoctor(data.id);
             },
             /** 2020/3/19
-            * 作者：王青高
-            * 功能：{Function} @getCurrent 获取当前下标索引，显示相关内容
-            * 参数：{}
-            */
+             * 作者：王青高
+             * 功能：{Function} @getCurrent 获取当前下标索引，显示相关内容
+             * 参数：{}
+             */
             getCurrent(index) {
                 this.current = index;
             },
@@ -252,20 +268,30 @@
                     this.searchOption.page = 1;
                 }
                 this.searchValue = val;
-                getSearch({
-                    pagesize: this.searchOption.pageSize,
-                    page: this.searchOption.page++,
-                    keyword: this.searchValue,
-                    searchtype: this.searchOption.searchtype
-                }).then(res => {
-                    let result = res.data;
-                    if (res.state === '1') {
-                        if (result && result.list.length) {
-                            this.totalcount = result.totalcount;
-                            this.searchResultData = this.searchResultData.concat(result.list);
+                if (this.searchValue) {
+                    searchHotWords({
+                        keyword: this.searchValue
+                    }).then(res => {
+                        let result = res.data;
+                        if (res.state === '1') {
+                            this.searchResultData = this.searchResultData.concat(result.hotword);
                         }
-                    }
-                });
+                    });
+                }
+                // getSearch({
+                //     pagesize: this.searchOption.pageSize,
+                //     page: this.searchOption.page++,
+                //     keyword: this.searchValue,
+                //     searchtype: this.searchOption.searchtype
+                // }).then(res => {
+                //     let result = res.data;
+                //     if (res.state === '1') {
+                //         if (result && result.list.length) {
+                //             this.totalcount = result.totalcount;
+                //             this.searchResultData = this.searchResultData.concat(result.list);
+                //         }
+                //     }
+                // });
             }
         },
         components: {

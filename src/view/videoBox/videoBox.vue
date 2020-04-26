@@ -11,17 +11,18 @@
                 @focus="_focus"
                 @_clear="_clear"
                 :isCancel="isCancel"
+                @openDetail="openDetail"
         >
             <div slot="searchContent" class="searchContent" v-if="isCancel">
                 <div class="searchResult" @scroll.stop="addScroll($event)">
                     <ul class="ul" v-if="searchResultData.length">
-                        <router-link
+                        <li
                                 tag="li"
                                 class="li ptb30 plr30"
                                 v-for="(search, index) of searchResultData"
                                 :key="'search' + index"
-                                :to="{path: '/videoBox/components/videoBoxDetail', query: { id: search.id, title: searchValue}}"
-                                v-html="ruleTitle(search.title, searchValue)"></router-link>
+                                @click="openDetail(search.title)"
+                                v-html="ruleTitle(search.title, searchValue)"></li>
                         <li class="li noData ptb30 plr30" v-if="searchResultData.length === totalcount">没有更多数据</li>
                     </ul>
                     <div class="li noData ptb30 plr30" v-if="!searchResultData.length">暂无数据</div>
@@ -52,14 +53,14 @@
                         :key="'video' + index"
                         :to="{path: '/videoBox/components/videoBoxDetail', query: {id: video.id, title: searchValue}}"
                         tag="li"
-                        class="videoBox_content_item_li mr20">
+                        class="videoBox_content_item_li">
                     <div class="item_img">
                         <img :src="isImg(video.cover)" class="_img mb20"/>
                         <span class="_txt p8" v-html="ruleTitle(video.title, searchValue)"></span>
                     </div>
                     <p class="txt_title ptb20" v-html="ruleTitle(video.title, searchValue)"></p>
                 </router-link>
-                <li class="videoBox_content_item_li mr20" v-if="videoData.length === totalcount">没有更多数据</li>
+                <li class="videoBox_content_item_li" v-if="videoData.length === totalcount">没有更多数据</li>
             </ul>
             <div class="li ptb30 plr30" v-if="!videoData.length">暂无数据</div>
         </div>
@@ -68,7 +69,7 @@
 
 <script>
     import headSearch from '@/components/headSearch/';
-    import { getVideoData, getVediolistByChannel, getSearch } from '@/api/content';
+    import { getVideoData, getVediolistByChannel, getSearch, searchHotWords } from '@/api/content';
     import { EventBus } from "@/utils/event-bus";
     import { ruleTitle } from '@/utils/searchVal';
     export default {
@@ -115,9 +116,31 @@
         },
         mounted() {
             this.getVideoData();
-            EventBus.$emit("isDisplay", { data: true });
+            EventBus.$emit('isDisplay', { data: true });
         },
         methods: {
+            /** 2020/3/30
+             * 作者：王青高
+             * 功能：{} 根据类型跳转不同的搜索结果页
+             * 参数：{}
+             */
+            openDetail(obj) {
+                if (obj) {
+                    this.$router.push({ name: 'searchResult', params: { type: 3, keyword: obj } });
+                    // this.$router.push({ name: 'searchResult', params: { data: obj, keyword: this.searchValue } });
+                    // switch (obj.type) {
+                    //     case 1:
+                    //         this.$router.push({ path: '/bookContentFeed', query: { id: obj.id } });
+                    //         break;
+                    //     case 2:
+                    //         this.$router.push({ path: '/doctorCase/components/doctorDetail', query: { id: obj.id } });
+                    //         break;
+                    //     case 3:
+                    //         this.$router.push({ path: '/videoBox/components/videoBoxDetail', query: { id: obj.id } });
+                    //         break;
+                    // }
+                }
+            },
             /** 2020/3/30
              * 作者：王青高
              * 功能：{} 监听滚动条是否触底
@@ -213,20 +236,30 @@
                     this.searchOption.page = 1;
                 }
                 this.searchValue = val;
-                getSearch({
-                    pagesize: this.searchOption.pageSize,
-                    page: this.searchOption.page++,
-                    keyword: this.searchValue,
-                    searchtype: this.searchOption.searchtype
-                }).then(res => {
-                    let result = res.data;
-                    if (res.state === '1') {
-                        if (result && result.list.length) {
-                            this.totalcount = result.totalcount;
-                            this.searchResultData = this.searchResultData.concat(result.list);
+                if (this.searchValue) {
+                    searchHotWords({
+                        keyword: this.searchValue
+                    }).then(res => {
+                        let result = res.data;
+                        if (res.state === '1') {
+                            this.searchResultData = this.searchResultData.concat(result.hotword);
                         }
-                    }
-                });
+                    });
+                }
+                // getSearch({
+                //     pagesize: this.searchOption.pageSize,
+                //     page: this.searchOption.page++,
+                //     keyword: this.searchValue,
+                //     searchtype: this.searchOption.searchtype
+                // }).then(res => {
+                //     let result = res.data;
+                //     if (res.state === '1') {
+                //         if (result && result.list.length) {
+                //             this.totalcount = result.totalcount;
+                //             this.searchResultData = this.searchResultData.concat(result.list);
+                //         }
+                //     }
+                // });
             },
             searchVal(val) {
                 this.getSearch(val);
@@ -429,9 +462,11 @@
                 height: 70vh;
                 &_li {
                     position: relative;
-                    width: 31% !important;
+                    width: 33.3% !important;
                     height: 300px;
                     display: inline-block;
+                    padding: 0 8px;
+                    box-sizing: border-box;
                     &:last-child {
                         width: 100% !important;
                         text-align: center;

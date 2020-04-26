@@ -39,6 +39,7 @@
         </div>
         <div class="bookDetail_back" :class="{back: isMenu, _isNight: isNight}">
             <van-icon name="arrow-left" class="left" @click.stop="arrowLeft($event)"/>
+            <van-icon name="search" class="searchRight" @click.stop="onSearch($event)"/>
             <van-icon :name="bookmark" class="right" @click.stop="addTag($event)"/>
         </div>
         <div class="bookDetail_footer ptb10" :class="{footer: isMenu, _isNight: isNight}">
@@ -62,6 +63,7 @@
                     @click.stop="changeBg(bg, index, $event)"></li>
             </ul>
         </div>
+        <!-- 目录 start -->
         <div class="bookDetail_directory" :class="{directory: isDirectory}">
             <van-sticky  v-show="isDirectory">
                 <van-nav-bar
@@ -89,6 +91,39 @@
                 </ul>
             </div>
         </div>
+        <!-- 目录 end -->
+        <!-- 搜索栏 start -->
+        <div class="bookDetail_search" :class="{search: isSearch}">
+            <van-sticky  v-show="isSearch">
+                <van-nav-bar
+                        :title="title"
+                        left-arrow
+                        @click-left="onGoBack($event)"
+                >
+                    <template #title>
+                        <van-search left-icon="" shape="round" v-model="keyword" placeholder="请输入搜索关键词" />
+                    </template>
+                    <template #right>
+                        <van-icon name="search" @click.stop="getSearchBookItem" />
+                    </template>
+                </van-nav-bar>
+
+            </van-sticky>
+            <div class="bookDetail_search_list">
+                <ul class="box">
+                    <li
+                            class="plr30 ptb30 li"
+                            v-for="(searchList, index) of searchData"
+                            :key="'searchList' + index"
+                            v-html="ruleTitle(searchList.content, keyword)"
+                            @click.stop="openBook(searchList, true)"
+                    ></li>
+                    <li class="li noData ptb30 plr30" v-if="!searchData.length">暂无数据</li>
+                    <li class="li noData ptb30 plr30" v-else>没有更多数据</li>
+                </ul>
+            </div>
+        </div>
+        <!-- 搜索栏 end -->
         <div class="bookDetail_help" @click.stop="alertHelp" v-if="closeHelp">
             <div class="left">
                 <img :src="require('../../assets/img/left_help.png')" alt="" class="img">
@@ -106,7 +141,7 @@
 <script>
     import { EventBus } from "@/utils/event-bus";
     import { bookDetailConfig, bookDetailColorConfig, navItem } from './config';
-    import { getItemContent, getBookItem, addtobookshelf } from '@/api/content';
+    import { getItemContent, getBookItem, addtobookshelf, getSearchBookItem } from '@/api/content';
     import { Toast } from 'vant';
     import { ruleTitle } from '@/utils/searchVal';
     export default {
@@ -146,6 +181,7 @@
                 isNight: false, // 是否夜间模式
                 isSetting: false, // 点击显示设置
                 isDirectory: false, // 是否显示目录
+                isSearch: false, // 是否显示搜索
                 bookDetailConfig,
                 bookDetailColorConfig,
                 current: 0, // 当前索引
@@ -180,11 +216,13 @@
                 next_: '', // 下一章
                 initStatus: 0, // 初始化状态
                 closeHelp: true, // 是否弹出帮助框
-                curId: '', // 当前小说id
+                curId: '', // 当前小说章节id
                 lastPage: '', // 存储当前页数
                 bookmark: 'bookmark-o',
                 timer: null, // 计时器
-                keyword: '' // 搜索关键字
+                keyword: '', // 搜索关键字
+                searchData: [], // 搜索数据
+                bookId: '' // 当前小说id
             };
         },
         watch: {
@@ -195,7 +233,15 @@
             ruleTitle
         },
         created() {
-            this.keyword = this.$route.query.title;
+            let obj = this.$route.query;
+            if (Object.keys(obj).length) {
+                this.keyword = this.$route.query.title;
+                if (this.$route.query.isSearch) {
+                    this.isSearch = this.$route.query.isSearch;
+                    this.bookId = this.$route.query.bookId;
+                    this.getSearchBookItem();
+                }
+            }
         },
         updated() {
             /** 2020/3/31
@@ -214,10 +260,32 @@
             // }
         },
         mounted() {
-            this.init();
-            EventBus.$emit("isDisplay", { data: false });
+            if (!this.isSearch) {
+                this.keyword = '';
+                this.init();
+            } else {
+                this.closeHelp = false;
+            }
+            EventBus.$emit('isDisplay', { data: false });
         },
         methods: {
+            /** 2020-4-15 0015
+             *作者:王青高
+             *功能: 搜索内容
+             *参数:
+             */
+            getSearchBookItem() {
+                if (!this.keyword) return;
+                getSearchBookItem({
+                    keyword: this.keyword,
+                    id: this.bookId
+                }).then(res => {
+                    let result = res.data;
+                    if (res.state === '1') {
+                        this.searchData = result.itemlist;
+                    }
+                });
+            },
             /** 2020/3/31
              * 作者：王青高
              * 功能：{} 弹出帮助指南
@@ -232,10 +300,16 @@
              * 功能：{} 打开指定目录
              * 参数：{}
              */
-            openBook(book) {
-                this.isDirectory = false;
-                this.$router.push({ path: '/bookDetail', query: { id: book.id } });
+            openBook(book, isChapter) {
+                if (!isChapter) {
+                    this.isDirectory = false;
+                    this.$router.push({ path: '/bookDetail', query: { id: book.id } });
+                } else {
+                    this.isSearch = false;
+                    this.$router.push({ path: '/bookDetail', query: { id: book.bookitemid, title: this.keyword } });
+                }
             },
+
             /** 2020/3/30
              * 作者：王青高
              * 功能：{} 初始化数据
@@ -262,7 +336,8 @@
              */
             initAudio() {
                 if (!this.article) this.$router.push({ path: '/bookContentFeed', id: this.curId });
-                this.$refs.audios.src = this.audioUrl + encodeURI(this.article.substring(0, this.articleLen));
+                let article = this.article.replace(/<[^>]+>/g, ''); // 去除html标签
+                this.$refs.audios.src = this.audioUrl + encodeURI(article.substring(0, this.articleLen));
                 this.articleVar = this.articleLen;
             },
             /** 2020-3-29 0029
@@ -272,7 +347,8 @@
              */
             audioGoOn() {
                 if (this.articleLen < this.article.length) {
-                    this.$refs.audios.src = this.audioUrl + encodeURI(this.article.substring(this.articleVar, (this.articleLen + this.articleVar)));
+                    let article = this.article.replace(/<[^>]+>/g, ''); // 去除html标签
+                    this.$refs.audios.src = this.audioUrl + encodeURI(article.substring(this.articleVar, (this.articleLen + this.articleVar)));
                     this.articleVar = (this.articleVar + this.articleLen);
                     this.$refs.audios.play();
                 }
@@ -308,7 +384,7 @@
                     if (res.state === '1') {
                         this.bookitem = result.bookitem;
                         this.article = this.bookitem.content;
-                        this.article = this.article.replace(/<[^>]+>/g, ''); // 去除html标签
+                        this.bookId = result.bookitem.bookid;
                         this.next_ = result.nextid;
                         this.prev_ = result.preid;
                         this.$refs.book.scrollTop = 0;
@@ -439,6 +515,19 @@
             onGoBack(event) {
                 event.preventDefault();
                 this.isDirectory = false;
+                this.isSearch = false;
+            },
+            /** 2020/3/27
+             * 作者：王青高
+             * 功能：{} 显示搜索
+             * 参数：{String}
+             */
+            onSearch(event) {
+                event.preventDefault();
+                document.documentElement.scrollTop = 0;
+                this.isSearch = true;
+                this.isMenu = false;
+                this.menuTitle = '菜单';
             },
             /** 2020/3/27
              * 作者：王青高
@@ -665,6 +754,16 @@
         color: $color_999;
         font-size: 60px;
     }
+    .bookDetail_search .van-nav-bar__title {
+        max-width: 80%;
+    }
+    .bookDetail_search .van-nav-bar__title .van-search {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .bookDetail_search .van-nav-bar .van-icon {
+        font-size: 50px;
+    }
     .bookDetail {
         background: $bgColor;
         position: relative;
@@ -770,6 +869,12 @@
                 font-size: 60px;
                 color: $color_666;
             }
+            .searchRight {
+                position: absolute;
+                right: 120px;
+                top: calc(50% - 30px);
+                font-size: 60px;
+            }
             .right {
                 position: absolute;
                 right: 30px;
@@ -866,6 +971,36 @@
                     height: 64px;
                     border-radius: 50%;
                     cursor: pointer;
+                }
+            }
+        }
+        &_search {
+            position: fixed;
+            width: 100%;
+            left: -100%;
+            top: 0;
+            height: 100%;
+            box-shadow: 0 3px 10px rgba(3, 3, 3, 0.1);
+            z-index: $navbar-z-index;
+            background: $color-default;
+            opacity: 0;
+            transition: all .5s;
+            overflow: hidden;
+            &_list {
+                height: 100%;
+                .box {
+                    height: 100%;
+                    overflow-y: scroll;
+                    .li {
+                        @include multiline-ellipsis(2);
+                        line-height: 1.5;
+                        height: 120px;
+                        box-sizing: border-box;
+                        border-bottom: 1px solid $ccc-color;
+                        &:last-child {
+                            border-bottom: unset;
+                        }
+                    }
                 }
             }
         }
@@ -1037,6 +1172,7 @@
     .isDisable{
         color: #cacaca !important;
     }
+    .search,
     .directory {
         left: 0;
         opacity: 1;
@@ -1053,8 +1189,9 @@
             background: $color;
         }
     }
-    /*.isHeight {*/
-    /*    max-height: 100%!important;*/
-    /*    min-height: 82%!important;*/
-    /*}*/
+    .noData {
+        text-align: center;
+        color: $ccc-color;
+        font-size: 28px;
+    }
 </style>

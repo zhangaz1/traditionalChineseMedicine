@@ -3,15 +3,16 @@
         <div class="tips ptb20">找到 {{searchData.length}} 条结果</div>
         <div v-if="searchData.length">
             <div class="content pl160 ptb20" v-for="(item, index) of searchData" :key="'item' + index">
-                <router-link tag="div" :to="{path: '/bookContentFeed', query: { id: item.id }}" class="content_img mb10" :style="{backgroundImage: 'url(' + isImg(item.cover) + ')', backgroundSize: '100% 100%' }">
+                <router-link tag="div" :to="{path: '/bookContentFeed', query: { id: item.id, title: searchValue }}" class="content_img mb10" :style="{backgroundImage: 'url(' + isImg(item.cover) + ')', backgroundSize: '100% 100%' }">
                     <div class="content_img_free" v-if="item.isfree === '1'"></div>
                 </router-link>
-                <router-link tag="div" :to="{path: '/bookContentFeed', query: { id: item.id, title: searchValue }}" class="content_txt pl20 ptb10"> <!-- :to="{path: '/bookDetail', query: {id: item.id }}" -->
-                    <div class="title mb20" v-html="ruleTitle(item.title, searchValue)">{{item.title || '无名'}}</div>
-                    <p class="author mb10" v-html="ruleTitle(item.author, searchValue)">{{item.author || '无名'}}</p>
-                    <p class="description" v-html="ruleTitle(item.description, searchValue)">{{item.description || '暂无描述'}}</p>
-<!--                    <p class="digest">{{item.updatetime || '暂无时间'}}</p>-->
-                </router-link>
+                <div @click.stop="openContentFeed(item.id)" class="content_txt pl20 ptb10">
+                    <div class="title mb20" v-html="ruleTitle(item.title, searchValue)"></div>
+                    <p class="author mb10" v-html="ruleTitle(item.author, searchValue)"></p>
+                    <p class="description" v-html="ruleTitle(item.description, searchValue)"></p>
+                    <p class="digest" @click.stop="openDetail(item.id)" v-html="ruleTitle(item.content, searchValue)" v-if="item.content"></p>
+                    <p class="digest" v-else style="color: #de181b;">此书籍内容有涉及'{{searchValue}}'</p>
+                </div>
             </div>
         </div>
         <slot></slot>
@@ -56,6 +57,22 @@
             ruleTitle
         },
         methods: {
+            /** 2020-4-15 0015
+             *作者:王青高
+             *功能: 跳转内容详情
+             *参数:
+             */
+            openDetail(id) {
+                this.$router.push({ path: '/bookDetail', query: { bookId: id, title: this.searchValue, isSearch: true } });
+            },
+            /** 2020-4-15 0015
+             *作者:王青高
+             *功能: 跳转内容提要
+             *参数:
+             */
+            openContentFeed(id) {
+                this.$router.push({ path: '/bookContentFeed', query: { id: id, title: this.searchValue } });
+            },
             /** 2020/3/30
              * 作者：王青高
              * 功能：{} 监听滚动条是否触底
@@ -202,7 +219,7 @@
                         color: $color_666;
                     }
                     .digest {
-                        @include ellipsis();
+                        @include multiline-ellipsis(2);
                         font-size: 24px;
                         color: $coloe_3;
                     }

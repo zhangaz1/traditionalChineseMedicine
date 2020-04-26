@@ -30,6 +30,7 @@
 </script>
 
 <style lang="scss" scoped>
+    @import "~@/assets/css/_mixins";
     .subMenu {
         &_title {
             display: flex;
@@ -39,7 +40,7 @@
         }
         &_left,
         &_more {
-            color: #a33823;
+            color: $color;
         }
     }
 </style>

@@ -3,7 +3,8 @@ const webpack = require('webpack');
 module.exports = {
     devServer: {
         // proxy: 'http://localhost:8080'
-        proxy: 'http://47.103.217.238:9002' // mockServer
+        // proxy: 'http://47.103.217.238:9002' // mockServer
+        proxy: 'http://www.renshentongkao.cn:8888/' // mockServer
     },
     chainWebpack: (config) => {
         config.module

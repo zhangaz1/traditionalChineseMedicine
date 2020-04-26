@@ -21,11 +21,17 @@
                 @focus="_focus"
                 @_clear="_clear"
                 :isCancel="isCancel"
+                @openDetail="openDetail"
         >
             <div slot="searchContent" class="searchContent" v-if="isCancel">
                 <div class="searchResult" @scroll.stop="addScroll($event)">
                     <ul class="ul" v-if="searchResultData.length">
-                        <router-link tag="li" class="li ptb30 plr30" v-for="(search, index) of searchResultData" :key="'search' + index" :to="{path: '/bookContentFeed', query: { id: search.id, title: searchValue}}" v-html="ruleTitle(search.title, searchValue)"></router-link>
+                        <li
+                                class="li ptb30 plr30"
+                                v-for="(search, index) of searchResultData"
+                                :key="'search' + index"
+                                @click="openDetail(search.title)"
+                                v-html="ruleTitle(search.title, searchValue)"></li>
                         <li class="li noData ptb30 plr30" v-if="searchResultData.length === totalcount">没有更多数据</li>
                     </ul>
                     <div class="li noData ptb30 plr30" v-if="!searchResultData.length">暂无数据</div>
@@ -71,7 +77,7 @@
     import headSearch from '@/components/headSearch/';
     import pupblicPanel from '@/components/publicPanel';
     import { EventBus } from "@/utils/event-bus";
-    import { getAllBook, getHotBook, getSearch, getShelflist } from '@/api/content';
+    import { getAllBook, getHotBook, getShelflist, searchHotWords } from '@/api/content';
     import { navData } from './config';
     import { ruleTitle } from '@/utils/searchVal';
     export default {
@@ -130,9 +136,19 @@
                     this.hotData = res.data.list;
                 }
             });
-            EventBus.$emit("isDisplay", { data: true });
+            EventBus.$emit('isDisplay', { data: true });
         },
         methods: {
+            /** 2020/3/30
+             * 作者：王青高
+             * 功能：{} 根据类型跳转不同的搜索结果页
+             * 参数：{}
+             */
+            openDetail(obj) {
+                if (obj) {
+                    this.$router.push({ name: 'searchResult', params: { type: 1, keyword: obj } });
+                }
+            },
             /** 2020/4/7
             * 作者：王青高
             * 功能：{} 跳转相应的小说
@@ -212,20 +228,30 @@
                     this.searchOption.page = 1;
                 }
                 this.searchValue = val;
-                getSearch({
-                    pagesize: this.searchOption.pageSize,
-                    page: this.searchOption.page++,
-                    keyword: this.searchValue,
-                    searchtype: this.searchOption.searchtype
-                }).then(res => {
-                    let result = res.data;
-                    if (res.state === '1') {
-                        if (result && result.list) {
-                            this.totalcount = result.totalcount;
-                            this.searchResultData = this.searchResultData.concat(result.list);
+                if (this.searchValue) {
+                    searchHotWords({
+                        keyword: this.searchValue
+                    }).then(res => {
+                        let result = res.data;
+                        if (res.state === '1') {
+                            this.searchResultData = result.hotword;
                         }
-                    }
-                });
+                    });
+                }
+                // getSearch({
+                //     pagesize: this.searchOption.pageSize,
+                //     page: this.searchOption.page++,
+                //     keyword: this.searchValue,
+                //     searchtype: this.searchOption.searchtype
+                // }).then(res => {
+                //     let result = res.data;
+                //     if (res.state === '1') {
+                //         if (result && result.list) {
+                //             this.totalcount = result.totalcount;
+                //             this.searchResultData = this.searchResultData.concat(result.list);
+                //         }
+                //     }
+                // });
             },
             /** 2020-3-19 0019
              *作者:王青高
@@ -469,22 +495,6 @@
         color: $color;
         text-align: left;
         font-size: 28px;
-    }
-    .library_list {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        align-items: center;
-        &_li {
-            width: 20%;
-            border: 1px solid $color;
-            background: #fefff9;
-            border-radius: 60px;
-            text-align: center;
-            &:nth-child(3n) {
-                margin-right: 0;
-            }
-        }
     }
     .mask {
         width: 100%;

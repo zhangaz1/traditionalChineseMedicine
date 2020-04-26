@@ -42,7 +42,8 @@
                      @touchstart="gtouchstart($event)"
                      @touchend="gtouchend($event)"
                      @touchmove="gtouchmove()">
-                    <img :src="require('../../../assets/image/0001.jpg')" alt="" class="img">
+                    <img :src="article.img" alt="" class="img" v-if="article.img">
+                    <img :src="require('../../../assets/img/no_img.jpg')" alt="" class="img" v-else>
                 </div>
                 <div class="bottom">
                     <div id="qrcode" class="mr20"></div>

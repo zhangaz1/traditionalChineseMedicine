@@ -1,7 +1,7 @@
 <template>
     <ul class="library_list ptb20">
         <li
-                class="library_list_li ptb10 mb30 plr20 mr30"
+                class="library_list_li ptb10 mb30 plr20 mlr10"
                 v-for="(list, index) of listData"
                 :key="'list' + index"
                 :class="{_active: currentColor === index && isActive}"
@@ -57,11 +57,13 @@
         justify-content: flex-start;
         align-items: center;
         &_li {
-            min-width: 20%;
+            @include ellipsis();
+            min-width: 30%;
             border: 1px solid $color;
             background: #fefff9;
             border-radius: 60px;
             text-align: center;
+            box-sizing: border-box;
             &:nth-child(3n) {
                 margin-right: 0;
             }

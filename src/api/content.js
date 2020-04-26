@@ -101,6 +101,18 @@ const getShelflist = () => {
 const addtobookshelf = bookitemid => {
     return axios.get('/shuku/addtobookshelf?' + qs.stringify(bookitemid));
 };
+// 搜索词库关联关键字
+const searchHotWords = keyword => {
+    return axios.get('/search/searchHotWords?' + qs.stringify(keyword));
+};
+// 搜索结果显示正文
+// const searchInfoByKeyWords = options => {
+//     return axios.get('/search/searchInfoByKeyWords?' + qs.stringify(options));
+// };
+// 搜索书籍相关章节关联关键字
+const getSearchBookItem = options => {
+    return axios.get('/shuku/getSearchBookItem?' + qs.stringify(options));
+};
 export {
     getFoot,
     clearFoot,
@@ -126,5 +138,7 @@ export {
     addToCollectionVedio,
     getBookListByChannel,
     getShelflist,
-    addtobookshelf
+    addtobookshelf,
+    searchHotWords,
+    getSearchBookItem
 };

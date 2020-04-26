@@ -12,6 +12,7 @@
                 @cancel="onCancel"
                 @focus="focus"
                 @clear="_clear"
+                @search="openSearchResult"
         />
         <slot name="searchContent"></slot>
     </div>
@@ -35,6 +36,14 @@
             },
             onCancel() {
                 this.$emit('cancel');
+            },
+            /** 2020-4-15 0015
+             *作者:王青高
+             *功能: 确定搜索时触发
+             *参数:
+             */
+            openSearchResult() {
+                if (this.searchVal) this.$emit('openDetail', this.searchVal);
             },
             /** 2020/3/24
             * 作者：王青高

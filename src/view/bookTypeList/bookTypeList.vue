@@ -37,6 +37,8 @@
                     <div class="title mb20" v-html="ruleTitle(book.title, isDefaultVal)"></div>
                     <p class="author mb10" v-html="ruleTitle(book.author, isDefaultVal)"></p>
                     <p class="description" v-html="ruleTitle(book.description, isDefaultVal)"></p>
+                    <p class="digest" @click.stop="openDetail(book.id)" v-html="ruleTitle(book.content, isDefaultVal)" v-if="book.content"></p>
+                    <p class="digest" v-else style="color: #de181b;">此书籍内容有涉及'{{isDefaultVal}}'</p>
                     <router-link
                             :to="{path: '/bookContentFeed', query: { id: book.id, title: isDefaultVal }}"
                             tag="button"
@@ -68,7 +70,7 @@
                     pagesize: 20,
                     page: 1
                 },
-                defaultImg: require('../../assets/img/no_img.jpg'),
+                defaultImg: require('../../assets/img/no_img.jpg')
             };
         },
         computed: {
@@ -89,12 +91,20 @@
             this.getBookListByChannel(params.id);
         },
         mounted() {
-            EventBus.$emit("isDisplay", { data: false });
+            EventBus.$emit('isDisplay', { data: false });
         },
         components: {
             headSearch
         },
         methods: {
+            /** 2020-4-15 0015
+             *作者:王青高
+             *功能: 跳转内容详情
+             *参数:
+             */
+            openDetail(id) {
+                this.$router.push({ path: '/bookDetail', query: { bookId: id, title: this.isDefaultVal, isSearch: true } });
+            },
             /** 2020/3/31
             * 作者：王青高
             * 功能：{} 点击分类书籍
@@ -487,7 +497,7 @@
                     }
                     .resultsBtns {
                         position: absolute;
-                        bottom: 0;
+                        top: 0;
                         right: 0;
                         color: $color;
                         display: block;

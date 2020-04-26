@@ -13,6 +13,10 @@
 .mt20 {
     margin-top: 20px;
 }
+.mlr5 {
+    margin-left: 5px;
+    margin-right: 5px;
+}
 .ptb20 {
     padding-top: 20px;
     padding-bottom: 20px;
@@ -146,4 +150,8 @@
 }
 .pl250 {
     padding-left: 250px;
+}
+.mtb30 {
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
